@@ -7,6 +7,13 @@
 - Validate package structure with `python3 scripts/validate-package.py <package>`.
 - Do not add Workshop publication identifiers until a page has been published.
 
+## Validation workflow
+
+- Run `scripts/install-local.sh` after gameplay changes so the current package
+  is built, validated, and installed for testing.
+- The user performs the manual RimWorld acceptance test after installation.
+- Do not merge the pull request until the user confirms that test passed.
+
 ## Git Workflow (Build Mode)
 
 - `main` is protected and must never receive direct commits or pushes. All changes go through feature branches.
