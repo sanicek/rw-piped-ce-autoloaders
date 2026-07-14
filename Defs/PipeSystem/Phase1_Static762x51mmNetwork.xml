@@ -41,7 +41,7 @@
       <linkType>Basic</linkType>
       <linkFlags><li>Custom7</li></linkFlags>
     </graphicData>
-    <building><isInert>true</isInert><isEdifice>false</isEdifice><canConstructInCorner>true</canConstructInCorner></building>
+    <building><isInert>true</isInert><isEdifice>false</isEdifice><blueprintGraphicData><texPath>Things/Building/Linked/PowerConduit_Blueprint_Atlas</texPath></blueprintGraphicData><canConstructInCorner>true</canConstructInCorner></building>
     <drawerType>MapMeshOnly</drawerType>
     <altitudeLayer>Conduits</altitudeLayer>
     <passability>Standable</passability>
@@ -85,16 +85,23 @@
     <thingClass>Building_Storage</thingClass>
     <graphicData><texPath>Things/Ammo/Rifle/Battlerifle/FMJ/FMJ_c</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(1,1)</drawSize><drawRotated>false</drawRotated><allowFlip>false</allowFlip></graphicData>
     <rotatable>false</rotatable>
-    <altitudeLayer>Building</altitudeLayer>
-    <passability>PassThroughOnly</passability>
+    <altitudeLayer>BuildingOnTop</altitudeLayer>
+    <passability>Standable</passability>
+    <fillPercent>0.5</fillPercent>
+    <pathCost>50</pathCost>
+    <size>(1,1)</size>
     <statBases><MaxHitPoints>100</MaxHitPoints><WorkToBuild>500</WorkToBuild><Mass>8</Mass><Flammability>0.5</Flammability></statBases>
     <costList><Steel>45</Steel><ComponentIndustrial>1</ComponentIndustrial></costList>
     <building>
       <blueprintClass>Blueprint_Storage</blueprintClass>
+      <preventDeteriorationOnTop>true</preventDeteriorationOnTop>
+      <ignoreStoredThingsBeauty>true</ignoreStoredThingsBeauty>
       <fixedStorageSettings><filter><disallowNotEverStorable>true</disallowNotEverStorable><thingDefs><li>Ammo_762x51mmNATO_FMJ</li></thingDefs></filter></fixedStorageSettings>
       <defaultStorageSettings><priority>Important</priority><filter><disallowNotEverStorable>true</disallowNotEverStorable><thingDefs><li>Ammo_762x51mmNATO_FMJ</li></thingDefs></filter></defaultStorageSettings>
     </building>
     <inspectorTabs><li>ITab_Storage</li></inspectorTabs>
+    <surfaceType>Item</surfaceType>
+    <canOverlapZones>false</canOverlapZones>
     <comps><li Class="PipeSystem.CompProperties_ConvertThingToResource"><pipeNet>PipedCEAutoloaders_762x51mmFMJNet</pipeNet><thing>Ammo_762x51mmNATO_FMJ</thing><ratio>1</ratio></li></comps>
     <designationCategory>PipedCEAutoloaders_PipeNetworks</designationCategory>
     <researchPrerequisites><li>GunTurrets</li></researchPrerequisites>
@@ -107,16 +114,23 @@
     <thingClass>Building_Storage</thingClass>
     <graphicData><texPath>Things/Ammo/Rifle/Battlerifle/AP/AP_c</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(1,1)</drawSize><drawRotated>false</drawRotated><allowFlip>false</allowFlip><color>(0.78,0.62,0.22)</color></graphicData>
     <rotatable>false</rotatable>
-    <altitudeLayer>Building</altitudeLayer>
-    <passability>PassThroughOnly</passability>
+    <altitudeLayer>BuildingOnTop</altitudeLayer>
+    <passability>Standable</passability>
+    <fillPercent>0.5</fillPercent>
+    <pathCost>50</pathCost>
+    <size>(1,1)</size>
     <statBases><MaxHitPoints>100</MaxHitPoints><WorkToBuild>500</WorkToBuild><Mass>8</Mass><Flammability>0.5</Flammability></statBases>
     <costList><Steel>45</Steel><ComponentIndustrial>1</ComponentIndustrial></costList>
     <building>
       <blueprintClass>Blueprint_Storage</blueprintClass>
+      <preventDeteriorationOnTop>true</preventDeteriorationOnTop>
+      <ignoreStoredThingsBeauty>true</ignoreStoredThingsBeauty>
       <fixedStorageSettings><filter><disallowNotEverStorable>true</disallowNotEverStorable><thingDefs><li>Ammo_762x51mmNATO_FMJ</li></thingDefs></filter></fixedStorageSettings>
       <defaultStorageSettings><priority>Important</priority><filter><disallowNotEverStorable>true</disallowNotEverStorable><thingDefs><li>Ammo_762x51mmNATO_FMJ</li></thingDefs></filter></defaultStorageSettings>
     </building>
     <inspectorTabs><li>ITab_Storage</li></inspectorTabs>
+    <surfaceType>Item</surfaceType>
+    <canOverlapZones>false</canOverlapZones>
     <comps><li Class="PipeSystem.CompProperties_ConvertResourceToThing"><pipeNet>PipedCEAutoloaders_762x51mmFMJNet</pipeNet><thing>Ammo_762x51mmNATO_FMJ</thing><ratio>1</ratio><maxOutputStackSize>1</maxOutputStackSize></li></comps>
     <designationCategory>PipedCEAutoloaders_PipeNetworks</designationCategory>
     <researchPrerequisites><li>GunTurrets</li></researchPrerequisites>

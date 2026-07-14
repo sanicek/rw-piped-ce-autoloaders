@@ -131,6 +131,8 @@ def validate_defs(package: Path) -> None:
     tank_comp = things["PipedCEAutoloaders_762x51mmFMJTank"].find("./comps/li[@Class='PipeSystem.CompProperties_ResourceStorage']")
     if pipe_comp is None or pipe_comp.findtext("pipeNet") != "PipedCEAutoloaders_762x51mmFMJNet":
         fail("Phase 1 pipe must attach to the fixed FMJ PipeNetDef")
+    if things["PipedCEAutoloaders_762x51mmFMJPipe"].findtext("./building/blueprintGraphicData/texPath") != "Things/Building/Linked/PowerConduit_Blueprint_Atlas":
+        fail("Phase 1 pipe must define the vanilla PowerConduit blueprint graphic")
     if tank_comp is None or tank_comp.findtext("pipeNet") != "PipedCEAutoloaders_762x51mmFMJNet":
         fail("Phase 1 tank must use VEF resource storage on the fixed FMJ PipeNetDef")
     input_comp = things["PipedCEAutoloaders_762x51mmFMJInput"].find("./comps/li[@Class='PipeSystem.CompProperties_ConvertThingToResource']")
@@ -139,6 +141,21 @@ def validate_defs(package: Path) -> None:
         fail("Phase 1 input must convert Ammo_762x51mmNATO_FMJ at a 1:1 ratio")
     if output_comp is None or output_comp.findtext("thing") != "Ammo_762x51mmNATO_FMJ" or output_comp.findtext("ratio") != "1" or output_comp.findtext("maxOutputStackSize") != "1":
         fail("Phase 1 output must materialize one FMJ item per one resource unit")
+    for def_name in ("PipedCEAutoloaders_762x51mmFMJInput", "PipedCEAutoloaders_762x51mmFMJDiagnosticOutput"):
+        storage = things[def_name]
+        required_fields = {
+            "altitudeLayer": "BuildingOnTop",
+            "passability": "Standable",
+            "fillPercent": "0.5",
+            "pathCost": "50",
+            "size": "(1,1)",
+            "surfaceType": "Item",
+            "canOverlapZones": "false",
+            "building/preventDeteriorationOnTop": "true",
+            "building/ignoreStoredThingsBeauty": "true",
+        }
+        if any(storage.findtext(path) != value for path, value in required_fields.items()):
+            fail(f"Phase 1 {def_name} must use the VEF hauling-safe storage surface pattern")
 
 
 def main() -> None:
