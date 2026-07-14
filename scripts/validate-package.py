@@ -50,7 +50,7 @@ def installed_version(rimworld_dir: Path) -> Optional[str]:
     return match.group(0)
 
 
-def load_folder_mapping(path: Path) -> Dict[str, str]:
+def load_folder_mapping(path: Path) -> Dict[str, tuple[str, ...]]:
     try:
         root = ET.parse(path).getroot()
     except ET.ParseError as error:
@@ -62,14 +62,16 @@ def load_folder_mapping(path: Path) -> Dict[str, str]:
         fail("LoadFolders.xml must contain exactly a v1.6 mapping")
     mapping = {}
     for entry in entries:
-        if entry.attrib or (entry.text and entry.text.strip()) or (entry.tail and entry.tail.strip()) or len(entry) != 1:
+        if entry.attrib or (entry.text and entry.text.strip()) or (entry.tail and entry.tail.strip()) or len(entry) != 2:
             fail(f"invalid LoadFolders.xml mapping for {entry.tag}")
-        item = entry[0]
-        if item.tag != "li" or item.attrib or len(item) != 0 or item.text is None or (item.tail and item.tail.strip()):
-            fail(f"invalid LoadFolders.xml mapping for {entry.tag}")
-        mapping[entry.tag] = item.text.strip()
-    if mapping != {"v1.6": "1.6"}:
-        fail("LoadFolders.xml mapping must select the 1.6 folder")
+        folders = []
+        for item in entry:
+            if item.tag != "li" or item.attrib or len(item) != 0 or item.text is None or (item.tail and item.tail.strip()):
+                fail(f"invalid LoadFolders.xml mapping for {entry.tag}")
+            folders.append(item.text.strip())
+        mapping[entry.tag] = tuple(folders)
+    if mapping != {"v1.6": ("/", "1.6")}:
+        fail("LoadFolders.xml v1.6 mapping must load / followed by 1.6")
     return mapping
 
 
@@ -146,7 +148,7 @@ def main() -> None:
         fail(f"About/About.xml has an unexpected name: {name!r}")
     if package_id != "Sanicek.PipedCEAutoloaders" or not PACKAGE_ID.fullmatch(package_id):
         fail(f"About/About.xml has an invalid packageId: {package_id!r}")
-    if versions != [mapping["v1.6"]]:
+    if versions != [mapping["v1.6"][-1]]:
         fail("About supportedVersions must exactly be [1.6]")
     if dependencies != {"CETeam.CombatExtended", "OskarPotocki.VanillaFactionsExpanded.Core"}:
         fail("About must declare hard Combat Extended and Vanilla Expanded Framework dependencies")
