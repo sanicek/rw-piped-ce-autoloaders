@@ -91,10 +91,12 @@ def validate_defs(package: Path) -> None:
     defs = package / "Defs"
     require_directory(defs)
     expected = defs / "Buildings" / "Phase0_Autoloader.xml"
+    phase_one = defs / "PipeSystem" / "Phase1_Static762x51mmNetwork.xml"
     files = {path.relative_to(defs).as_posix() for path in defs.rglob("*") if path.is_file()}
-    if files != {"Buildings/Phase0_Autoloader.xml"}:
-        fail("Defs must contain exactly Buildings/Phase0_Autoloader.xml")
+    if files != {"Buildings/Phase0_Autoloader.xml", "PipeSystem/Phase1_Static762x51mmNetwork.xml"}:
+        fail("Defs must contain exactly the Phase 0 autoloader and Phase 1 pipe-network files")
     require_file(expected)
+    require_file(phase_one)
     parse_xml_files(defs)
     root = ET.parse(expected).getroot()
     autoloaders = root.findall("ThingDef")
@@ -105,6 +107,38 @@ def validate_defs(package: Path) -> None:
         fail("Phase 0 autoloader has an unexpected defName")
     if autoloader.findtext("thingClass") != "CombatExtended.Building_AutoloaderCE":
         fail("Phase 0 autoloader must use CombatExtended.Building_AutoloaderCE")
+
+    phase_one_root = ET.parse(phase_one).getroot()
+    if phase_one_root.tag != "Defs":
+        fail("Phase 1 pipe-network file must have a Defs root")
+    nets = phase_one_root.findall("PipeSystem.PipeNetDef")
+    net = nets[0] if len(nets) == 1 else None
+    if net is None or net.findtext("defName") != "PipedCEAutoloaders_762x51mmFMJNet":
+        fail("Phase 1 must define the fixed 7.62x51mm FMJ PipeNetDef")
+    expected_things = {
+        "PipedCEAutoloaders_762x51mmFMJPipe": "PipeSystem.Building_Pipe",
+        "PipedCEAutoloaders_762x51mmFMJTank": None,
+        "PipedCEAutoloaders_762x51mmFMJInput": "Building_Storage",
+        "PipedCEAutoloaders_762x51mmFMJDiagnosticOutput": "Building_Storage",
+    }
+    things = {thing.findtext("defName"): thing for thing in phase_one_root.findall("ThingDef")}
+    if set(things) != set(expected_things):
+        fail("Phase 1 must define exactly pipe, tank, input, and diagnostic-output ThingDefs")
+    for def_name, thing_class in expected_things.items():
+        if thing_class is not None and things[def_name].findtext("thingClass") != thing_class:
+            fail(f"Phase 1 {def_name} has an unexpected thingClass")
+    pipe_comp = things["PipedCEAutoloaders_762x51mmFMJPipe"].find("./comps/li[@Class='PipeSystem.CompProperties_Resource']")
+    tank_comp = things["PipedCEAutoloaders_762x51mmFMJTank"].find("./comps/li[@Class='PipeSystem.CompProperties_ResourceStorage']")
+    if pipe_comp is None or pipe_comp.findtext("pipeNet") != "PipedCEAutoloaders_762x51mmFMJNet":
+        fail("Phase 1 pipe must attach to the fixed FMJ PipeNetDef")
+    if tank_comp is None or tank_comp.findtext("pipeNet") != "PipedCEAutoloaders_762x51mmFMJNet":
+        fail("Phase 1 tank must use VEF resource storage on the fixed FMJ PipeNetDef")
+    input_comp = things["PipedCEAutoloaders_762x51mmFMJInput"].find("./comps/li[@Class='PipeSystem.CompProperties_ConvertThingToResource']")
+    output_comp = things["PipedCEAutoloaders_762x51mmFMJDiagnosticOutput"].find("./comps/li[@Class='PipeSystem.CompProperties_ConvertResourceToThing']")
+    if input_comp is None or input_comp.findtext("thing") != "Ammo_762x51mmNATO_FMJ" or input_comp.findtext("ratio") != "1":
+        fail("Phase 1 input must convert Ammo_762x51mmNATO_FMJ at a 1:1 ratio")
+    if output_comp is None or output_comp.findtext("thing") != "Ammo_762x51mmNATO_FMJ" or output_comp.findtext("ratio") != "1" or output_comp.findtext("maxOutputStackSize") != "1":
+        fail("Phase 1 output must materialize one FMJ item per one resource unit")
 
 
 def main() -> None:
