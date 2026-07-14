@@ -1,48 +1,46 @@
 # Piped CE Autoloaders
 
-Piped CE Autoloaders is a RimWorld mod project scaffold. Gameplay behavior has
-not yet been implemented.
+RimWorld 1.6 mod project. Phase 0 is an experimental proof that Combat
+Extended's native XML-defined autoloader can reload a compatible turret. It is
+not a piped-ammunition implementation.
 
-## Status
+## Build
 
-The repository provides a source, build, package-validation, and local-install
-workflow for RimWorld 1.6 only. The generated package contains only metadata
-and the compiled scaffold assembly; no Defs or gameplay content are included.
+Prerequisites: Python 3, a .NET SDK capable of targeting .NET Framework 4.7.2,
+RimWorld 1.6, Combat Extended, and Vanilla Expanded Framework.
 
-## Build and local install
-
-Prerequisites: Linux, Python 3, a .NET SDK compatible with .NET Framework 4.7.2
-targeting, and a RimWorld installation. By default, scripts use
-`$HOME/.steam/steam/steamapps/common/RimWorld`.
-
-Build a runtime-only package:
+Set portable dependency locations when they are not sibling checkouts (the
+build also recognizes `$HOME/gitproj/public/CombatExtended` and
+`$HOME/gitproj/public/VanillaExpandedFramework`):
 
 ```bash
+RIMWORLD_DIR=/path/to/RimWorld \
+COMBAT_EXTENDED_DIR=/path/to/CombatExtended \
+VANILLA_EXPANDED_FRAMEWORK_DIR=/path/to/VanillaExpandedFramework \
 ./scripts/build.sh
 ```
 
-Install the package locally:
+The build writes `artifacts/PipedCEAutoloaders/`, copies the constrained source
+Defs, and runs package validation. Dependency DLLs are compile references only
+and are never packaged. Install locally with `./scripts/install-local.sh` after
+building (use the same environment variables if needed).
 
-```bash
-./scripts/install-local.sh
-```
+## Manual Phase 0 in-game acceptance
 
-To use another installation, set `RIMWORLD_DIR`:
+1. Enable Combat Extended, Vanilla Expanded Framework, and Piped CE Autoloaders
+   in that order, then start/load a 1.6 test map.
+2. Build or dev-spawn **experimental Phase 0 7.62mm autoloader** next to a CE
+   medium turret (`Turret_Medium`, using `Gun_MediumTurret`).
+3. Use the stock CE reload job to load the autoloader with physical
+   7.62x51mm NATO ammunition, then allow the turret to consume its compatible
+   physical ammunition.
+4. Observe the native CE autoloader completing the reload: its stored ammo is
+   reduced and the adjacent turret magazine increases/reloads.
 
-```bash
-RIMWORLD_DIR=/path/to/RimWorld ./scripts/install-local.sh
-```
+**Pass evidence:** the Def loads without errors, the loader is buildable under
+Security after Gun Turrets research, and native CE reload behavior transfers
+the chosen physical ammo. **Fail evidence:** Def/class errors, no stock CE
+reload job, rejected compatible ammo, or no adjacent-turret reload.
 
-The generated package is written to `artifacts/PipedCEAutoloaders/`. Its
-versioned layout retains `LoadFolders.xml`, which maps RimWorld 1.6 to the
-`1.6/` runtime folder.
-
-## Repository layout
-
-- `About/` — RimWorld mod metadata
-- `1.6/` — versioned runtime-folder placeholder populated when packaged
-- `Source/PipedCEAutoloaders/` — C# solution, project, and minimal entry class
-- `scripts/` — build, package validation, and local-install helpers
-- `WORKSHOP_DESCRIPTION.md` — factual placeholder description for a future page
-
-Source: <https://github.com/sanicek/rw-piped-ce-autoloaders>
+See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for the MVP
+roadmap and deferred migration work.

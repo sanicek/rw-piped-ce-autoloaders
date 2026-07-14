@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate a versioned runtime-only RimWorld mod package."""
+"""Validate the constrained RimWorld 1.6 Piped CE Autoloaders package."""
 
 import argparse
 import re
@@ -8,8 +8,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Dict, Optional
 
-
-EXPECTED_TOP_LEVEL = {"About", "LoadFolders.xml", "1.6"}
+EXPECTED_TOP_LEVEL = {"About", "Defs", "LoadFolders.xml", "1.6"}
 EXPECTED_VERSIONS = ("1.6",)
 FORBIDDEN_NAMES = {"Source", ".git", "scripts", "bin", "obj", ".vs"}
 ASSEMBLY_NAME = "PipedCEAutoloaders.dll"
@@ -51,7 +50,7 @@ def installed_version(rimworld_dir: Path) -> Optional[str]:
     return match.group(0)
 
 
-def load_folder_mapping(path: Path) -> Dict[str, str]:
+def load_folder_mapping(path: Path) -> Dict[str, tuple[str, ...]]:
     try:
         root = ET.parse(path).getroot()
     except ET.ParseError as error:
@@ -63,14 +62,16 @@ def load_folder_mapping(path: Path) -> Dict[str, str]:
         fail("LoadFolders.xml must contain exactly a v1.6 mapping")
     mapping = {}
     for entry in entries:
-        if entry.attrib or (entry.text and entry.text.strip()) or (entry.tail and entry.tail.strip()) or len(entry) != 1:
+        if entry.attrib or (entry.text and entry.text.strip()) or (entry.tail and entry.tail.strip()) or len(entry) != 2:
             fail(f"invalid LoadFolders.xml mapping for {entry.tag}")
-        item = entry[0]
-        if item.tag != "li" or item.attrib or len(item) != 0 or item.text is None or (item.tail and item.tail.strip()):
-            fail(f"invalid LoadFolders.xml mapping for {entry.tag}")
-        mapping[entry.tag] = item.text.strip()
-    if mapping != {"v1.6": "1.6"}:
-        fail("LoadFolders.xml mapping must select the 1.6 folder")
+        folders = []
+        for item in entry:
+            if item.tag != "li" or item.attrib or len(item) != 0 or item.text is None or (item.tail and item.tail.strip()):
+                fail(f"invalid LoadFolders.xml mapping for {entry.tag}")
+            folders.append(item.text.strip())
+        mapping[entry.tag] = tuple(folders)
+    if mapping != {"v1.6": ("/", "1.6")}:
+        fail("LoadFolders.xml v1.6 mapping must load / followed by 1.6")
     return mapping
 
 
@@ -86,6 +87,26 @@ def validate_version(package: Path, version: str) -> None:
     require_file(assemblies / ASSEMBLY_NAME)
 
 
+def validate_defs(package: Path) -> None:
+    defs = package / "Defs"
+    require_directory(defs)
+    expected = defs / "Buildings" / "Phase0_Autoloader.xml"
+    files = {path.relative_to(defs).as_posix() for path in defs.rglob("*") if path.is_file()}
+    if files != {"Buildings/Phase0_Autoloader.xml"}:
+        fail("Defs must contain exactly Buildings/Phase0_Autoloader.xml")
+    require_file(expected)
+    parse_xml_files(defs)
+    root = ET.parse(expected).getroot()
+    autoloaders = root.findall("ThingDef")
+    if root.tag != "Defs" or len(autoloaders) != 1:
+        fail("Phase 0 Defs file must contain exactly one ThingDef")
+    autoloader = autoloaders[0]
+    if autoloader.findtext("defName") != "PipedCEAutoloader_Phase0_762x51mm":
+        fail("Phase 0 autoloader has an unexpected defName")
+    if autoloader.findtext("thingClass") != "CombatExtended.Building_AutoloaderCE":
+        fail("Phase 0 autoloader must use CombatExtended.Building_AutoloaderCE")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("package", type=Path)
@@ -98,7 +119,7 @@ def main() -> None:
     if not package.is_dir():
         fail(f"package directory does not exist: {package}")
     if {path.name for path in package.iterdir()} != EXPECTED_TOP_LEVEL:
-        fail("package must contain exactly About, LoadFolders.xml, and 1.6")
+        fail("package must contain exactly About, Defs, LoadFolders.xml, and 1.6")
     for path in package.rglob("*"):
         if path.is_symlink():
             fail(f"symlinks are not allowed in package: {path}")
@@ -108,12 +129,13 @@ def main() -> None:
     about = package / "About"
     require_directory(about)
     if {path.name for path in about.iterdir()} != {"About.xml"}:
-        fail("About must contain exactly About.xml for this scaffold")
+        fail("About must contain exactly About.xml")
     require_file(about / "About.xml")
     load_folders = package / "LoadFolders.xml"
     require_file(load_folders)
     mapping = load_folder_mapping(load_folders)
     parse_xml_files(about)
+    validate_defs(package)
     for version in EXPECTED_VERSIONS:
         validate_version(package, version)
 
@@ -121,12 +143,15 @@ def main() -> None:
     name = metadata.findtext("name", default="").strip()
     package_id = metadata.findtext("packageId", default="").strip()
     versions = [element.text.strip() for element in metadata.findall("./supportedVersions/li") if element.text and element.text.strip()]
+    dependencies = {element.findtext("packageId", default="").strip() for element in metadata.findall("./modDependencies/li")}
     if name != "Piped CE Autoloaders":
         fail(f"About/About.xml has an unexpected name: {name!r}")
     if package_id != "Sanicek.PipedCEAutoloaders" or not PACKAGE_ID.fullmatch(package_id):
         fail(f"About/About.xml has an invalid packageId: {package_id!r}")
-    if versions != [mapping["v1.6"]]:
+    if versions != [mapping["v1.6"][-1]]:
         fail("About supportedVersions must exactly be [1.6]")
+    if dependencies != {"CETeam.CombatExtended", "OskarPotocki.VanillaFactionsExpanded.Core"}:
+        fail("About must declare hard Combat Extended and Vanilla Expanded Framework dependencies")
 
     if args.rimworld_dir:
         version = installed_version(args.rimworld_dir)

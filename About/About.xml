@@ -7,11 +7,23 @@
     <li>1.6</li>
   </supportedVersions>
   <description>
-Piped CE Autoloaders is currently a development scaffold. Gameplay functionality has not yet been implemented.
+Piped CE Autoloaders currently provides an experimental Combat Extended stock autoloader compatibility spike. It does not yet provide piped ammunition delivery.
 
 https://github.com/sanicek/rw-piped-ce-autoloaders
   </description>
   <loadAfter>
     <li>Ludeon.RimWorld</li>
+    <li>CETeam.CombatExtended</li>
+    <li>OskarPotocki.VanillaFactionsExpanded.Core</li>
   </loadAfter>
+  <modDependencies>
+    <li>
+      <packageId>CETeam.CombatExtended</packageId>
+      <displayName>Combat Extended</displayName>
+    </li>
+    <li>
+      <packageId>OskarPotocki.VanillaFactionsExpanded.Core</packageId>
+      <displayName>Vanilla Expanded Framework</displayName>
+    </li>
+  </modDependencies>
 </ModMetaData>
