@@ -1,0 +1,35 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "references": {
+    "rimworld": {
+      "path": "~/.steam/steam/steamapps/common/RimWorld",
+      "description": "Installed RimWorld game, managed assemblies, Defs, and mod documentation"
+    },
+    "rimworld-config": {
+      "path": "~/.config/unity3d/Ludeon Studios/RimWorld by Ludeon Studios",
+      "description": "Local RimWorld configuration, logs, and saves"
+    },
+    "combat-extended": {
+      "path": "~/gitproj/public/CombatExtended",
+      "description": "Combat Extended source and mod integration reference"
+    },
+    "vanilla-chemfuel-expanded": {
+      "path": "~/gitproj/public/VanillaChemfuelExpanded",
+      "description": "Vanilla Chemfuel Expanded source and content reference"
+    },
+    "vanilla-expanded-framework": {
+      "path": "~/gitproj/public/VanillaExpandedFramework",
+      "description": "Vanilla Expanded Framework source and API reference"
+    }
+  },
+  "permission": {
+    "external_directory": {
+      "*": "ask",
+      "~/.steam/steam/steamapps/common/RimWorld/**": "allow",
+      "~/.config/unity3d/Ludeon Studios/RimWorld by Ludeon Studios/**": "allow",
+      "~/gitproj/public/CombatExtended/**": "allow",
+      "~/gitproj/public/VanillaChemfuelExpanded/**": "allow",
+      "~/gitproj/public/VanillaExpandedFramework/**": "allow"
+    }
+  }
+}
