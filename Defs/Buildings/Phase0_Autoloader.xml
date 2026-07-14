@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <!-- Based on CE's AutoLoaderExample: fixed 7.62x51mm NATO for Gun_MediumTurret/Turret_Medium. -->
+  <ThingDef ParentName="BuildingBase">
+    <defName>PipedCEAutoloader_Phase0_762x51mm</defName>
+    <label>experimental Phase 0 7.62mm autoloader</label>
+    <description>An experimental Phase 0 compatibility loader. It uses Combat Extended's native autoloader behavior and physical 7.62x51mm NATO ammunition; it is not the eventual piped loader.</description>
+    <thingClass>CombatExtended.Building_AutoloaderCE</thingClass>
+    <tickerType>Normal</tickerType>
+    <drawerType>MapMeshAndRealTime</drawerType>
+    <comps>
+      <li Class="CombatExtended.CompProperties_AmmoListUser">
+        <magazineSize>400</magazineSize>
+        <reloadTime>7.8</reloadTime>
+        <ammoSet>AmmoSet_762x51mmNATO</ammoSet>
+      </li>
+    </comps>
+    <graphicData>
+      <texPath>Things/Building/Misc/ToolCabinet</texPath>
+      <graphicClass>Graphic_Multi</graphicClass>
+      <drawSize>(2,1)</drawSize>
+    </graphicData>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>PassThroughOnly</passability>
+    <castEdgeShadows>true</castEdgeShadows>
+    <hasInteractionCell>true</hasInteractionCell>
+    <interactionCellOffset>(0,0,-1)</interactionCellOffset>
+    <fillPercent>0.5</fillPercent>
+    <size>(2,1)</size>
+    <costList>
+      <Steel>120</Steel>
+      <ComponentIndustrial>2</ComponentIndustrial>
+    </costList>
+    <building>
+      <destroySound>BuildingDestroyed_Metal_Small</destroySound>
+    </building>
+    <statBases>
+      <MaxHitPoints>100</MaxHitPoints>
+      <WorkToBuild>1200</WorkToBuild>
+      <Mass>20</Mass>
+      <Flammability>0.5</Flammability>
+      <ReloadSpeed>0.5</ReloadSpeed>
+    </statBases>
+    <researchPrerequisites><li>GunTurrets</li></researchPrerequisites>
+    <designationCategory>Security</designationCategory>
+    <minifiedDef>MinifiedThing</minifiedDef>
+    <thingCategories><li>BuildingsSecurity</li></thingCategories>
+  </ThingDef>
+</Defs>

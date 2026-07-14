@@ -1,0 +1,40 @@
+# Implementation plan
+
+## Scope and architecture
+
+RimWorld 1.6 only. The preferred design has three fixed VEF `PipeNetDef`s.
+Each restart-required setting maps one network to one CE `AmmoDef`. One pipe
+unit equals one CE round. Physical input converts `stackCount *
+AmmoDef.ammoCount` into pipe units.
+
+A `Building_AutoloaderCE` subclass keeps `CompAmmoUser` as the durable,
+CE-native ammunition buffer. It fills that buffer through
+`PipeNet.DrawAmongStorage`, then lets CE's unchanged native reload path serve
+the adjacent turret. Suppress only the narrow conflicting jobs/gizmos; do not
+patch CE core reload methods.
+
+### Invariants and spike risks
+
+- Bind each configured `AmmoSetDef` at startup; settings bindings are immutable
+  during a session and must be validated before use.
+- Preserve VEF's float `resourceCredit` exactly enough to prevent loss or
+  duplication when converting whole CE rounds.
+- Exclude pawn refill paths that could bypass pipe accounting, while retaining
+  CE's turret reload behavior.
+- Confirm the configurable `AmmoSetDef` startup binding is viable, VEF float
+  credit remains stable, and job/gizmo suppression closes all pawn-refill
+  bypasses.
+
+## Roadmap and acceptance gates
+
+| Phase | Status | Observable success criterion |
+| --- | --- | --- |
+| 0 — stock CE autoloader compatibility spike | **Implementation/build complete; manual acceptance pending** | In-game, the stock XML `Building_AutoloaderCE` loader accepts physical compatible ammo and natively reloads an adjacent compatible CE turret. |
+| 1 — one static VEF network | Planned | A fixed-ammo pipe, tank, input, and debug outlet build and transfer their resource without settings. |
+| 2 — pipe-backed CE buffer | Planned | The loader withdraws exact rounds into its CE buffer using `DrawAmongStorage`, preserves `resourceCredit`, and survives disconnect and save/load tests; no settings. |
+| 3 — end-to-end native CE reload | Planned | Native CE reload correctly handles partial supply, shortage, cancellation, and one-at-a-time turret scenarios. |
+| 4 — close external mutation/lifecycle paths | Planned | Pawn jobs are excluded, conflicting gizmos filtered, and destruction, refund, and failure paths are fail-closed. |
+| 5 — settings and three networks | Planned | Three restart-required selectors create immutable, validated bindings; end-to-end release validation passes. This completes the MVP. |
+| 6 — existing-save settings migration | Deferred post-MVP; feasibility-dependent | A feasible migration strategy is demonstrated for existing settings/saves. It is explicitly not required for the MVP. |
+
+Phase 0 is not verified until the manual in-game acceptance gate passes.
