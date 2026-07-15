@@ -1,8 +1,8 @@
 # Piped CE Autoloaders
 
-RimWorld 1.6 mod project. Phase 0 is an experimental proof that Combat
-Extended's native XML-defined autoloader can reload a compatible turret. It is
-not a piped-ammunition implementation.
+RimWorld 1.6 mod project implementing Combat Extended autoloaders backed by
+Vanilla Expanded Framework pipe networks. The current Phase 2 prototype fills
+a fixed 7.62x51mm NATO FMJ CE buffer from the Phase 1 network.
 
 ## Build
 
@@ -16,10 +16,13 @@ build also recognizes `$HOME/gitproj/public/CombatExtended` and
 ```bash
 RIMWORLD_DIR=/path/to/RimWorld \
 COMBAT_EXTENDED_DIR=/path/to/CombatExtended \
+COMBAT_EXTENDED_ASSEMBLY=/path/to/CombatExtended.dll \
 VANILLA_EXPANDED_FRAMEWORK_DIR=/path/to/VanillaExpandedFramework \
 ./scripts/build.sh
 ```
 
+`COMBAT_EXTENDED_ASSEMBLY` is optional when the CE checkout contains a built
+`Assemblies/CombatExtended.dll` or CE is installed in RimWorld's `Mods` folder.
 The build writes `artifacts/PipedCEAutoloaders/`, copies the constrained source
 Defs, and runs package validation. Dependency DLLs are compile references only
 and are never packaged. Install locally with `./scripts/install-local.sh` after
@@ -67,5 +70,29 @@ overlay/state is visible, 10 input items become 10 stored units, each cleared
 diagnostic output withdraws/materializes one FMJ item, and disconnect/reconnect
 plus save/load preserve the expected state. **Fail evidence:** missing Defs or
 comps, wrong resource counts, output duplication/loss, no connectivity change,
-or lost stored rounds after reload. This Phase 1 network does not feed an
-autoloading buffer or provide settings.
+or lost stored rounds after reload. This Phase 1 network does not provide
+settings.
+
+## Manual Phase 2 in-game acceptance (passed)
+
+1. Build a Phase 1 FMJ tank and input, then connect the experimental Phase 2
+   piped autoloader to that network with a pipe. Do not place physical ammo in
+   the autoloader.
+2. Put exactly 10 `Ammo_762x51mmNATO_FMJ` items in the input. Confirm the pipe
+   tank loses exactly 10 rounds and the CE ammo gizmo on the loader reaches
+   exactly 10 rounds.
+3. Disconnect the loader, add another 10 FMJ items through the input, and
+   confirm its CE buffer does not increase. Reconnect it and confirm those 10
+   rounds move into the buffer without loss or duplication.
+4. Save and reload with rounds in both the tank and loader. Confirm both amounts
+   are preserved without any transfer occurring while the game loads.
+
+**Pass evidence:** pipe withdrawals and CE-buffer increases match exactly,
+disconnect prevents withdrawal, reconnect resumes it, and save/load preserves
+both balances. **Fail evidence:** physical pawn delivery is required, fractional
+or duplicate rounds appear, a disconnected loader draws resource, or either
+balance changes across save/load. Native turret reload edge cases, pawn-job and
+gizmo suppression, and destruction behavior are covered by later phases.
+
+Phase 2 passed in-game acceptance: the loader drew ammunition from the connected
+tank with the expected accounting and reloaded the adjacent compatible turret.
