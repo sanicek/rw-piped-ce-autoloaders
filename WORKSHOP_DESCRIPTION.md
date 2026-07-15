@@ -1,12 +1,14 @@
 [h1]Piped CE Autoloaders[/h1]
 
-This project is under development. Gameplay functionality has not yet been
-implemented.
+This project is under development. The current prototype provides a fixed
+7.62x51mm NATO FMJ pipe network and a pipe-backed Combat Extended autoloader.
+Reload edge cases, lifecycle restrictions, and configurable networks remain in
+development.
 
 [h2]Compatibility[/h2]
 
-The project scaffold targets RimWorld 1.6 only and retains a versioned runtime
-folder layout.
+Targets RimWorld 1.6 and requires Combat Extended and Vanilla Expanded
+Framework.
 
 [h2]Source and license[/h2]
 
