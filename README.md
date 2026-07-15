@@ -40,11 +40,10 @@ QA matrix. After `./scripts/install-local.sh`, build the setup introduced by the
 current phase and confirm its intended path works. The pull request supplies the
 short setup and expected observation for that phase.
 
-Phase 4 is implemented and awaiting its smoke test. The representative setup
-checks that pawns cannot refill the loader or manually reload its adjacent
-turret, CE ammo-management controls are absent, native autoloader reload still
-works, and removing the loader releases its target and handles ammunition
-refunds without errors.
+Phase 4 passed its smoke test: pawn loader refill and CE ammo-management controls
+were absent, adjacent piped autoloaders blocked manual turret reload without
+breaking native reload, removing the loader restored manual reload, and
+deconstruction stopped an active reload sound.
 
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for completed
 phase evidence, the current roadmap, and deferred work.
