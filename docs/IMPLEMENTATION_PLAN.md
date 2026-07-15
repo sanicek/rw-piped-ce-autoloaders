@@ -64,13 +64,15 @@ limited supply produced a partial turret reload, and forbidding the turret
 cancelled an active reload.
 
 Phase 4 blocks CE's normal autoloader work scan and defensively rejects refill
-jobs that reach startup for the piped subclass. The loader exposes no CE ammo
-management gizmos or pawn interaction cell. Despawning cancels both sides of an
-active reload; ordinary removal retains CE's physical drop for whole buffered
-rounds and first returns fractional withdrawal credit when connected storage
-has capacity. Credit that cannot be returned is warned and discarded rather
-than duplicated; replacement removal leaves buffered and credit state on the
-same instance. Manual acceptance is pending.
+jobs that reach startup for the piped subclass. It also blocks manual turret
+reload jobs whenever CE's native eight-way adjacency check finds a piped
+autoloader, preventing physical ammo from bypassing pipe-only supply. The loader
+exposes no CE ammo management gizmos or pawn interaction cell. Despawning
+cancels both sides of an active reload; ordinary removal retains CE's physical
+drop for whole buffered rounds and first returns fractional withdrawal credit
+when connected storage has capacity. Credit that cannot be returned is warned
+and discarded rather than duplicated; replacement removal leaves buffered and
+credit state on the same instance. Manual acceptance is pending.
 
 ### Phase 1 XML-only conversion note
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CombatExtended;
+using CombatExtended.CombatExtended.Jobs.Utils;
 using CombatExtended.Compatibility;
 using HarmonyLib;
 using PipeSystem;
@@ -16,6 +17,38 @@ namespace PipedCEAutoloaders
             : base(content)
         {
             new Harmony("Sanicek.PipedCEAutoloaders").PatchAll();
+        }
+    }
+
+    internal static class PipedAutoloaderRestrictions
+    {
+        internal static bool HasAdjacentPipedAutoloader(Thing thing)
+        {
+            if (thing?.Spawned != true)
+            {
+                return false;
+            }
+
+            var adjacentThings = new List<Thing>();
+            GenAdjFast.AdjacentThings8Way(thing, adjacentThings);
+            foreach (Thing adjacentThing in adjacentThings)
+            {
+                if (adjacentThing is Building_PipeBackedAutoloaderCE)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        internal static IEnumerable<Toil> EndAsIncompletable(JobDriver jobDriver)
+        {
+            yield return new Toil
+            {
+                initAction = () => jobDriver.EndJobWith(JobCondition.Incompletable),
+                defaultCompleteMode = ToilCompleteMode.Instant
+            };
         }
     }
 
@@ -59,17 +92,81 @@ namespace PipedCEAutoloaders
                 return true;
             }
 
-            __result = EndAsIncompletable(__instance);
+            __result = PipedAutoloaderRestrictions.EndAsIncompletable(__instance);
             return false;
         }
+    }
 
-        private static IEnumerable<Toil> EndAsIncompletable(JobDriver_ReloadAutoLoader jobDriver)
+    [HarmonyPatch(typeof(JobGiverUtils_Reload), nameof(JobGiverUtils_Reload.CanReload))]
+    internal static class TurretCanReloadPatch
+    {
+        private static bool Prefix(Thing thing, ref bool __result)
         {
-            yield return new Toil
+            if (!(thing is Building_Turret)
+                || !PipedAutoloaderRestrictions.HasAdjacentPipedAutoloader(thing))
             {
-                initAction = () => jobDriver.EndJobWith(JobCondition.Incompletable),
-                defaultCompleteMode = ToilCompleteMode.Instant
-            };
+                return true;
+            }
+
+            __result = false;
+            return false;
+        }
+    }
+
+    [HarmonyPatch(
+        typeof(JobGiverUtils_Reload),
+        nameof(JobGiverUtils_Reload.MakeReloadJob),
+        new[] { typeof(Pawn), typeof(Building_Turret) })]
+    internal static class TurretMakeReloadJobPatch
+    {
+        private static bool Prefix(Building_Turret turret, ref Job __result)
+        {
+            if (!PipedAutoloaderRestrictions.HasAdjacentPipedAutoloader(turret))
+            {
+                return true;
+            }
+
+            __result = null;
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(JobDriver_ReloadTurret), nameof(JobDriver_ReloadTurret.TryMakePreToilReservations))]
+    internal static class JobDriverReloadTurretPatch
+    {
+        private static bool Prefix(JobDriver_ReloadTurret __instance, ref bool __result)
+        {
+            if (!PipedAutoloaderRestrictions.HasAdjacentPipedAutoloader(__instance.job?.targetA.Thing))
+            {
+                return true;
+            }
+
+            __result = false;
+            return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(JobDriver_ReloadTurret), nameof(JobDriver_ReloadTurret.MakeNewToils))]
+    internal static class JobDriverReloadTurretToilsPatch
+    {
+        private static void Postfix(JobDriver_ReloadTurret __instance, ref IEnumerable<Toil> __result)
+        {
+            __result = AddPipedAutoloaderEndCondition(__instance, __result);
+        }
+
+        private static IEnumerable<Toil> AddPipedAutoloaderEndCondition(
+            JobDriver_ReloadTurret jobDriver,
+            IEnumerable<Toil> originalToils)
+        {
+            jobDriver.AddEndCondition(() =>
+                PipedAutoloaderRestrictions.HasAdjacentPipedAutoloader(jobDriver.job?.targetA.Thing)
+                    ? JobCondition.Incompletable
+                    : JobCondition.Ongoing);
+
+            foreach (Toil toil in originalToils)
+            {
+                yield return toil;
+            }
         }
     }
 

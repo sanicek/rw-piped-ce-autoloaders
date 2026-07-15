@@ -2,10 +2,10 @@
 
 This project is under development. The current prototype provides a fixed
 7.62x51mm NATO FMJ pipe network and a pipe-backed Combat Extended autoloader
-with native partial-transfer, shortage, and cancellation behavior. Pawn refill
-and CE ammo-management interactions are excluded, and loader removal now closes
-active reload and refund paths. Phase 4 gameplay acceptance and configurable
-networks remain in development.
+with native partial-transfer, shortage, and cancellation behavior. Pawn refill,
+manual reloads of adjacent turrets, and CE ammo-management interactions are
+excluded, and loader removal closes active reload and refund paths. Phase 4
+gameplay acceptance and configurable networks remain in development.
 
 [h2]Compatibility[/h2]
 

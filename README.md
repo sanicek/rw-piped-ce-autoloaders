@@ -41,9 +41,10 @@ current phase and confirm its intended path works. The pull request supplies the
 short setup and expected observation for that phase.
 
 Phase 4 is implemented and awaiting its smoke test. The representative setup
-checks that pawns cannot refill the loader, CE ammo-management controls are
-absent, native turret reload still works, and removing the loader releases its
-target and handles ammunition refunds without errors.
+checks that pawns cannot refill the loader or manually reload its adjacent
+turret, CE ammo-management controls are absent, native autoloader reload still
+works, and removing the loader releases its target and handles ammunition
+refunds without errors.
 
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for completed
 phase evidence, the current roadmap, and deferred work.
