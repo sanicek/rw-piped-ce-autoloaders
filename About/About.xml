@@ -20,10 +20,12 @@ https://github.com/sanicek/rw-piped-ce-autoloaders
     <li>
       <packageId>CETeam.CombatExtended</packageId>
       <displayName>Combat Extended</displayName>
+      <downloadUrl>https://github.com/CombatExtended-Continued/CombatExtended/releases/latest</downloadUrl>
     </li>
     <li>
       <packageId>OskarPotocki.VanillaFactionsExpanded.Core</packageId>
       <displayName>Vanilla Expanded Framework</displayName>
+      <downloadUrl>https://github.com/Vanilla-Expanded/VanillaExpandedFramework</downloadUrl>
     </li>
   </modDependencies>
 </ModMetaData>
