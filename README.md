@@ -73,7 +73,7 @@ comps, wrong resource counts, output duplication/loss, no connectivity change,
 or lost stored rounds after reload. This Phase 1 network does not provide
 settings.
 
-## Manual Phase 2 in-game acceptance
+## Manual Phase 2 in-game acceptance (passed)
 
 1. Build a Phase 1 FMJ tank and input, then connect the experimental Phase 2
    piped autoloader to that network with a pipe. Do not place physical ammo in
@@ -93,3 +93,6 @@ both balances. **Fail evidence:** physical pawn delivery is required, fractional
 or duplicate rounds appear, a disconnected loader draws resource, or either
 balance changes across save/load. Native turret reload edge cases, pawn-job and
 gizmo suppression, and destruction behavior are covered by later phases.
+
+Phase 2 passed in-game acceptance: the loader drew ammunition from the connected
+tank with the expected accounting and reloaded the adjacent compatible turret.
