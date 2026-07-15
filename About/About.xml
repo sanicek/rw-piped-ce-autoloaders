@@ -7,7 +7,7 @@
     <li>1.6</li>
   </supportedVersions>
   <description>
-Piped CE Autoloaders currently provides an experimental fixed-ammunition pipe network and a Phase 2 loader that fills Combat Extended's native autoloader buffer from that network. Reload edge cases, lifecycle restrictions, and configurable networks remain in development.
+Piped CE Autoloaders currently provides an experimental fixed-ammunition pipe network and a Phase 3 loader that fills Combat Extended's native autoloader buffer and preserves Combat Extended's native turret reload behavior. Gameplay acceptance, lifecycle restrictions, and configurable networks remain in development.
 
 https://github.com/sanicek/rw-piped-ce-autoloaders
   </description>

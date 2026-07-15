@@ -1,6 +1,8 @@
 using System;
 using CombatExtended;
+using CombatExtended.Compatibility;
 using PipeSystem;
+using RimWorld;
 using Verse;
 
 namespace PipedCEAutoloaders
@@ -50,7 +52,36 @@ namespace PipedCEAutoloaders
         public override void Tick()
         {
             FillBufferFromPipe();
+
+            var reloadTarget = TargetTurret;
+            bool cancelReload = reloadTarget != null
+                && (!reloadTarget.Spawned
+                    || reloadTarget.IsForbidden(Faction)
+                    || CompAmmoUser == null
+                    || CompAmmoUser.EmptyMagazine
+                    || !shouldBeOn);
+            if (cancelReload)
+            {
+                // CE clears invalid targets before its completion check, so prevent
+                // cancellation and completion from occurring on the same tick.
+                ticksToComplete = 0;
+            }
+            else if (ticksToComplete == 1
+                && TargetAmmoUser?.Props.reloadOneAtATime == true)
+            {
+                // CE's continued reload otherwise rejects the turret as already busy.
+                reloadTarget.SetReloading(false);
+            }
+
             base.Tick();
+
+            if (cancelReload)
+            {
+                reloadTarget.SetReloading(false);
+                TargetTurret = null;
+                ticksToCompleteInitial = 0;
+                ticksToComplete = 0;
+            }
         }
 
         private void FillBufferFromPipe()

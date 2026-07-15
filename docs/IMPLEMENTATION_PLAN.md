@@ -37,7 +37,7 @@ exhaustive QA matrix.
 | 0 — stock CE autoloader compatibility spike | **Complete** | Confirmed in-game: the stock XML `Building_AutoloaderCE` loader is buildable, holds 400 rounds of 7.62x51mm NATO ammunition, and natively reloads an adjacent compatible CE turret. |
 | 1 — one static VEF network | **Complete** | Confirmed in-game: the fixed-ammo pipe, tank, input, and debug outlet build, connect, transfer exact rounds, and preserve state across reconnect and save/load. |
 | 2 — pipe-backed CE buffer | **Complete** | Confirmed in-game: a connected tank supplies the loader's CE buffer and the native autoloader path reloads an adjacent compatible turret; no settings. |
-| 3 — end-to-end native CE reload | Planned | One representative end-to-end setup works while implementation covers partial supply, shortage, cancellation, and one-at-a-time reload behavior. |
+| 3 — end-to-end native CE reload | **Implementation/build complete; manual acceptance pending** | One representative end-to-end setup works while implementation covers partial supply, shortage, cancellation, and one-at-a-time reload behavior. |
 | 4 — close external mutation/lifecycle paths | Planned | Pawn jobs are excluded, CE ammo-management gizmos and the interaction spot are removed, and destruction, refund, and failure paths are fail-closed. |
 | 5 — settings and three networks | Planned | Three restart-required selectors create immutable, validated bindings; end-to-end release validation passes. This completes the MVP. |
 | 6 — existing-save settings migration | Deferred post-MVP; feasibility-dependent | A feasible migration strategy is demonstrated for existing settings/saves. It is explicitly not required for the MVP. |
@@ -53,6 +53,13 @@ responded to pipe removal and replacement, and stored rounds survived save/load.
 Phase 2 manual acceptance passed. The pipe-backed loader drew ammunition from
 the connected tank into its CE buffer and reloaded an adjacent compatible
 turret through CE's native autoloader path.
+
+Phase 3 retains CE's native partial-transfer path and permits CE's intended
+one-at-a-time continuation by clearing its stale busy flag on the completion
+tick. The pipe-backed subclass now also cancels invalid or inactive reloads
+before CE can finalize against a cleared target, resets both sides' reload
+state, and preserves the loader's buffered rounds and fractional pipe credit.
+Manual acceptance is pending.
 
 ### Phase 1 XML-only conversion note
 
