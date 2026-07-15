@@ -171,24 +171,6 @@ namespace PipedCEAutoloaders
         }
     }
 
-    [HarmonyPatch(typeof(Building_AutoloaderCE), nameof(Building_AutoloaderCE.DeSpawn))]
-    internal static class AutoloaderDeSpawnPatch
-    {
-        private static void Prefix(
-            Building_AutoloaderCE __instance,
-            ref Sustainer ___reloadingSustainer)
-        {
-            if (!(__instance is Building_PipeBackedAutoloaderCE)
-                || ___reloadingSustainer == null)
-            {
-                return;
-            }
-
-            ___reloadingSustainer.End();
-            ___reloadingSustainer = null;
-        }
-    }
-
     public sealed class Building_PipeBackedAutoloaderCE : Building_AutoloaderCE
     {
         private const string AmmoDefName = "Ammo_762x51mmNATO_FMJ";
@@ -241,6 +223,7 @@ namespace PipedCEAutoloaders
         public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
         {
             CancelReload();
+            StopReloadSustainer();
             if (mode != DestroyMode.WillReplace)
             {
                 RefundResourceCredit();
@@ -282,6 +265,30 @@ namespace PipedCEAutoloaders
             ticksToCompleteInitial = 0;
             ticksToComplete = 0;
             isReloading = false;
+        }
+
+        private void StopReloadSustainer()
+        {
+            var sustainerField = AccessTools.Field(
+                typeof(Building_AutoloaderCE),
+                "reloadingSustainer");
+            if (sustainerField == null
+                || !typeof(Sustainer).IsAssignableFrom(sustainerField.FieldType))
+            {
+                Log.ErrorOnce(
+                    $"{GetType().Assembly.GetName().Name}: Combat Extended's autoloader sustainer field was not found; reload sound cleanup is unavailable.",
+                    193847521);
+                return;
+            }
+
+            var sustainer = sustainerField.GetValue(this) as Sustainer;
+            if (sustainer == null)
+            {
+                return;
+            }
+
+            sustainer.End();
+            sustainerField.SetValue(this, null);
         }
 
         private void RefundResourceCredit()
