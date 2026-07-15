@@ -13,6 +13,10 @@
       "path": "~/gitproj/public/CombatExtended",
       "description": "Combat Extended source and mod integration reference"
     },
+    "harmony-rimworld": {
+      "path": "~/gitproj/public/HarmonyRimWorld",
+      "description": "Harmony for RimWorld source and mod integration reference"
+    },
     "vanilla-chemfuel-expanded": {
       "path": "~/gitproj/public/VanillaChemfuelExpanded",
       "description": "Vanilla Chemfuel Expanded source and content reference"
@@ -29,6 +33,7 @@
       "~/.local/share/Steam/steamapps/common/RimWorld/**": "allow",
       "~/.config/unity3d/Ludeon Studios/RimWorld by Ludeon Studios/**": "allow",
       "~/gitproj/public/CombatExtended/**": "allow",
+      "~/gitproj/public/HarmonyRimWorld/**": "allow",
       "~/gitproj/public/VanillaChemfuelExpanded/**": "allow",
       "~/gitproj/public/VanillaExpandedFramework/**": "allow"
     }
