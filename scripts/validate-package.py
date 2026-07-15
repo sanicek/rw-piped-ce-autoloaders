@@ -127,11 +127,14 @@ def validate_defs(package: Path) -> None:
     for def_name, thing_class in expected_things.items():
         if thing_class is not None and things[def_name].findtext("thingClass") != thing_class:
             fail(f"Phase 1 {def_name} has an unexpected thingClass")
-    pipe_comp = things["PipedCEAutoloaders_762x51mmFMJPipe"].find("./comps/li[@Class='PipeSystem.CompProperties_Resource']")
+    pipe = things["PipedCEAutoloaders_762x51mmFMJPipe"]
+    pipe_comp = pipe.find("./comps/li[@Class='PipeSystem.CompProperties_Resource']")
     tank_comp = things["PipedCEAutoloaders_762x51mmFMJTank"].find("./comps/li[@Class='PipeSystem.CompProperties_ResourceStorage']")
     if pipe_comp is None or pipe_comp.findtext("pipeNet") != "PipedCEAutoloaders_762x51mmFMJNet":
         fail("Phase 1 pipe must attach to the fixed FMJ PipeNetDef")
-    if things["PipedCEAutoloaders_762x51mmFMJPipe"].findtext("./building/blueprintGraphicData/texPath") != "Things/Building/Linked/PowerConduit_Blueprint_Atlas":
+    if pipe.findtext("uiIconPath") != "Things/Building/Linked/PowerConduit_MenuIcon":
+        fail("Phase 1 linked pipe must define the vanilla PowerConduit menu icon for ghost rendering")
+    if pipe.findtext("./building/blueprintGraphicData/texPath") != "Things/Building/Linked/PowerConduit_Blueprint_Atlas":
         fail("Phase 1 pipe must define the vanilla PowerConduit blueprint graphic")
     if tank_comp is None or tank_comp.findtext("pipeNet") != "PipedCEAutoloaders_762x51mmFMJNet":
         fail("Phase 1 tank must use VEF resource storage on the fixed FMJ PipeNetDef")

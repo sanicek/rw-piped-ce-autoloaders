@@ -41,6 +41,7 @@
       <linkType>Basic</linkType>
       <linkFlags><li>Custom7</li></linkFlags>
     </graphicData>
+    <uiIconPath>Things/Building/Linked/PowerConduit_MenuIcon</uiIconPath>
     <building><isInert>true</isInert><isEdifice>false</isEdifice><blueprintGraphicData><texPath>Things/Building/Linked/PowerConduit_Blueprint_Atlas</texPath></blueprintGraphicData><canConstructInCorner>true</canConstructInCorner></building>
     <drawerType>MapMeshOnly</drawerType>
     <altitudeLayer>Conduits</altitudeLayer>
