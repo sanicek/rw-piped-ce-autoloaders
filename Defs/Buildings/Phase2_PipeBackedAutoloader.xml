@@ -25,8 +25,7 @@
     <altitudeLayer>Building</altitudeLayer>
     <passability>PassThroughOnly</passability>
     <castEdgeShadows>true</castEdgeShadows>
-    <hasInteractionCell>true</hasInteractionCell>
-    <interactionCellOffset>(0,0,-1)</interactionCellOffset>
+    <hasInteractionCell>false</hasInteractionCell>
     <fillPercent>0.5</fillPercent>
     <size>(1,1)</size>
     <costList>

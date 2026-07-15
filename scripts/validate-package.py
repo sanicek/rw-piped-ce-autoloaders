@@ -130,8 +130,10 @@ def validate_defs(package: Path) -> None:
         or phase_two_ammo.findtext("ammoSet") != "AmmoSet_762x51mmNATO"
         or phase_two_loader.findtext("tickerType") != "Normal"
         or phase_two_loader.findtext("drawerType") != "MapMeshAndRealTime"
+        or phase_two_loader.findtext("hasInteractionCell") != "false"
+        or phase_two_loader.find("interactionCellOffset") is not None
     ):
-        fail("Phase 2 autoloader must define the fixed CE buffer and required update modes")
+        fail("Phase 2 autoloader must define the fixed CE buffer, required update modes, and no interaction cell")
     phase_two_resource = phase_two_loader.find("./comps/li[@Class='PipeSystem.CompProperties_Resource']")
     if phase_two_resource is None or phase_two_resource.findtext("pipeNet") != "PipedCEAutoloaders_762x51mmFMJNet":
         fail("Phase 2 autoloader must connect to the fixed FMJ PipeNetDef")
@@ -226,7 +228,8 @@ def main() -> None:
     description = metadata.findtext("description", default="").strip()
     package_id = metadata.findtext("packageId", default="").strip()
     versions = [element.text.strip() for element in metadata.findall("./supportedVersions/li") if element.text and element.text.strip()]
-    dependencies = {element.findtext("packageId", default="").strip() for element in metadata.findall("./modDependencies/li")}
+    dependency_elements = metadata.findall("./modDependencies/li")
+    dependencies = {element.findtext("packageId", default="").strip() for element in dependency_elements}
     if name != "Piped CE Autoloaders":
         fail(f"About/About.xml has an unexpected name: {name!r}")
     if "does not yet provide piped ammunition delivery" in description:
@@ -237,6 +240,8 @@ def main() -> None:
         fail("About supportedVersions must exactly be [1.6]")
     if dependencies != {"CETeam.CombatExtended", "OskarPotocki.VanillaFactionsExpanded.Core"}:
         fail("About must declare hard Combat Extended and Vanilla Expanded Framework dependencies")
+    if any(not element.findtext("downloadUrl", default="").strip() for element in dependency_elements):
+        fail("each hard dependency must provide a downloadUrl")
 
     if args.rimworld_dir:
         version = installed_version(args.rimworld_dir)

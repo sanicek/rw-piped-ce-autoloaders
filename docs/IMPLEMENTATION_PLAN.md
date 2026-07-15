@@ -38,7 +38,7 @@ exhaustive QA matrix.
 | 1 — one static VEF network | **Complete** | Confirmed in-game: the fixed-ammo pipe, tank, input, and debug outlet build, connect, transfer exact rounds, and preserve state across reconnect and save/load. |
 | 2 — pipe-backed CE buffer | **Complete** | Confirmed in-game: a connected tank supplies the loader's CE buffer and the native autoloader path reloads an adjacent compatible turret; no settings. |
 | 3 — end-to-end native CE reload | **Complete** | Confirmed in-game: pipe supply produced the expected partial turret reload, and forbidding the turret cancelled an active reload cleanly. |
-| 4 — close external mutation/lifecycle paths | Planned | Pawn jobs are excluded, CE ammo-management gizmos and the interaction spot are removed, and destruction, refund, and failure paths are fail-closed. |
+| 4 — close external mutation/lifecycle paths | **Complete** | Confirmed in-game: pawn refill and CE gizmos are absent, adjacent loaders control manual turret reload eligibility without breaking native reload, and deconstruction stops an active reload and its sound. |
 | 5 — settings and three networks | Planned | Three restart-required selectors create immutable, validated bindings; end-to-end release validation passes. This completes the MVP. |
 | 6 — existing-save settings migration | Deferred post-MVP; feasibility-dependent | A feasible migration strategy is demonstrated for existing settings/saves. It is explicitly not required for the MVP. |
 
@@ -62,6 +62,21 @@ state, and preserves the loader's buffered rounds and fractional pipe credit.
 Manual acceptance passed: the pipe system supplied the loader as expected,
 limited supply produced a partial turret reload, and forbidding the turret
 cancelled an active reload.
+
+Phase 4 blocks CE's normal autoloader work scan and defensively rejects refill
+jobs that reach startup for the piped subclass. It also blocks manual turret
+reload jobs whenever CE's native eight-way adjacency check finds a piped
+autoloader, preventing physical ammo from bypassing pipe-only supply. The loader
+exposes no CE ammo management gizmos or pawn interaction cell. Despawning
+cancels both sides of an active reload; ordinary removal retains CE's physical
+drop for whole buffered rounds and first returns fractional withdrawal credit
+when connected storage has capacity. Credit that cannot be returned is warned
+and discarded rather than duplicated; replacement removal leaves buffered and
+credit state on the same instance. Manual acceptance passed: CE gizmos and pawn
+loader refill were absent; manual turret reload worked without an adjacent
+loader, was blocked when one was constructed, and resumed after its removal;
+native autoloader reload continued to work; and deconstruction during an active
+reload stopped its ambient sound.
 
 ### Phase 1 XML-only conversion note
 
