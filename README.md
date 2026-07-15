@@ -44,3 +44,28 @@ reload job, rejected compatible ammo, or no adjacent-turret reload.
 
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for the MVP
 roadmap and deferred migration work.
+
+## Manual Phase 1 in-game acceptance
+
+1. With Combat Extended, Vanilla Expanded Framework, and this mod enabled,
+   research Gun Turrets. Confirm the experimental ammunition-pipes category
+   contains the Phase 1 pipe, tank, FMJ input, and FMJ diagnostic output.
+2. Build a tank, input, and diagnostic output linked by pipes. Confirm the VEF
+   pipe overlay shows one connected gold network.
+3. Place exactly 10 `Ammo_762x51mmNATO_FMJ` items in the input. Once converted,
+   the items disappear and the tank/network reports 10 rounds (CE defines this
+   ammo's `ammoCount` as 1, so the fixed ratio is 1 item = 1 round).
+4. Clear the diagnostic output cell. It should materialize exactly one FMJ item
+   and reduce the tank/network by exactly one round; clear it again to repeat.
+5. Deconstruct a connecting pipe: input/output must no longer share the tank's
+   resource. Rebuild it and confirm the network reconnects. Save and reload
+   with stored rounds, then confirm the tank amount and diagnostic withdrawal
+   remain consistent.
+
+**Pass evidence:** all four buildings are visible and buildable, connected
+overlay/state is visible, 10 input items become 10 stored units, each cleared
+diagnostic output withdraws/materializes one FMJ item, and disconnect/reconnect
+plus save/load preserve the expected state. **Fail evidence:** missing Defs or
+comps, wrong resource counts, output duplication/loss, no connectivity change,
+or lost stored rounds after reload. This Phase 1 network does not feed an
+autoloading buffer or provide settings.

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <DesignationCategoryDef>
+    <defName>PipedCEAutoloaders_PipeNetworks</defName>
+    <label>experimental ammunition pipes</label>
+    <order>351</order>
+    <specialDesignatorClasses>
+      <li>Designator_Cancel</li>
+      <li>Designator_Deconstruct</li>
+    </specialDesignatorClasses>
+  </DesignationCategoryDef>
+
+  <!-- One resource unit is exactly one Ammo_762x51mmNATO_FMJ item/round. -->
+  <PipeSystem.PipeNetDef>
+    <defName>PipedCEAutoloaders_762x51mmFMJNet</defName>
+    <resource>
+      <name>7.62x51mm NATO FMJ round</name>
+      <unit>rounds</unit>
+      <color>(0.78,0.62,0.22)</color>
+      <onlyShowStored>true</onlyShowStored>
+      <offTexPath>Things/Ammo/Rifle/Battlerifle/FMJ/FMJ_c</offTexPath>
+    </resource>
+    <pipeDefs><li>PipedCEAutoloaders_762x51mmFMJPipe</li></pipeDefs>
+    <designator>
+      <deconstructIconPath>UI/Designators/Deconstruct</deconstructIconPath>
+      <designationCategoryDef>PipedCEAutoloaders_PipeNetworks</designationCategoryDef>
+    </designator>
+    <overlayOptions><overlayColor>(0.78,0.62,0.22)</overlayColor></overlayOptions>
+  </PipeSystem.PipeNetDef>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>PipedCEAutoloaders_762x51mmFMJPipe</defName>
+    <label>experimental Phase 1 7.62mm ammunition pipe</label>
+    <description>An experimental pipe that transfers abstract 7.62x51mm NATO FMJ rounds for the Phase 1 VEF network spike.</description>
+    <thingClass>PipeSystem.Building_Pipe</thingClass>
+    <category>Building</category>
+    <tickerType>Rare</tickerType>
+    <graphicData>
+      <texPath>Things/Building/Linked/PowerConduit_Atlas</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+      <linkType>Basic</linkType>
+      <linkFlags><li>Custom7</li></linkFlags>
+    </graphicData>
+    <uiIconPath>Things/Building/Linked/PowerConduit_MenuIcon</uiIconPath>
+    <building><isInert>true</isInert><isEdifice>false</isEdifice><blueprintGraphicData><texPath>Things/Building/Linked/PowerConduit_Blueprint_Atlas</texPath></blueprintGraphicData><canConstructInCorner>true</canConstructInCorner></building>
+    <drawerType>MapMeshOnly</drawerType>
+    <altitudeLayer>Conduits</altitudeLayer>
+    <passability>Standable</passability>
+    <statBases><MaxHitPoints>40</MaxHitPoints><WorkToBuild>35</WorkToBuild><Flammability>1</Flammability></statBases>
+    <costList><Steel>2</Steel></costList>
+    <comps><li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_762x51mmFMJNet</pipeNet></li></comps>
+    <placeWorkers><li>PipeSystem.PlaceWorker_Pipe</li></placeWorkers>
+    <rotatable>false</rotatable>
+    <neverMultiSelect>true</neverMultiSelect>
+    <terrainAffordanceNeeded>Light</terrainAffordanceNeeded>
+    <designationCategory>PipedCEAutoloaders_PipeNetworks</designationCategory>
+    <constructEffect>ConstructMetal</constructEffect>
+    <clearBuildingArea>false</clearBuildingArea>
+    <researchPrerequisites><li>GunTurrets</li></researchPrerequisites>
+  </ThingDef>
+
+  <ThingDef ParentName="BuildingBase">
+    <defName>PipedCEAutoloaders_762x51mmFMJTank</defName>
+    <label>experimental Phase 1 7.62mm ammunition tank</label>
+    <description>Stores abstract 7.62x51mm NATO FMJ rounds in the experimental Phase 1 pipe network.</description>
+    <drawerType>MapMeshAndRealTime</drawerType>
+    <graphicData><texPath>Things/Building/Power/Battery</texPath><graphicClass>Graphic_Multi</graphicClass><drawSize>(2,2)</drawSize></graphicData>
+    <altitudeLayer>Building</altitudeLayer>
+    <passability>Impassable</passability>
+    <fillPercent>1</fillPercent>
+    <tickerType>Normal</tickerType>
+    <size>(2,2)</size>
+    <statBases><MaxHitPoints>150</MaxHitPoints><WorkToBuild>800</WorkToBuild><Mass>20</Mass><Flammability>0.5</Flammability></statBases>
+    <costList><Steel>100</Steel><ComponentIndustrial>2</ComponentIndustrial></costList>
+    <comps><li Class="PipeSystem.CompProperties_ResourceStorage"><pipeNet>PipedCEAutoloaders_762x51mmFMJNet</pipeNet><storageCapacity>1000</storageCapacity><barSize>(1.3,0.25)</barSize><centerOffset>(0,0,0.35)</centerOffset></li></comps>
+    <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded>
+    <designationCategory>PipedCEAutoloaders_PipeNetworks</designationCategory>
+    <constructEffect>ConstructMetal</constructEffect>
+    <researchPrerequisites><li>GunTurrets</li></researchPrerequisites>
+  </ThingDef>
+
+  <ThingDef ParentName="FurnitureBase">
+    <defName>PipedCEAutoloaders_762x51mmFMJInput</defName>
+    <label>experimental Phase 1 FMJ pipe input</label>
+    <description>Accepts only physical 7.62x51mm NATO FMJ. Each stored item is consumed into exactly one round in the connected experimental pipe network.</description>
+    <thingClass>Building_Storage</thingClass>
+    <graphicData><texPath>Things/Ammo/Rifle/Battlerifle/FMJ/FMJ_c</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(1,1)</drawSize><drawRotated>false</drawRotated><allowFlip>false</allowFlip></graphicData>
+    <rotatable>false</rotatable>
+    <altitudeLayer>BuildingOnTop</altitudeLayer>
+    <passability>Standable</passability>
+    <fillPercent>0.5</fillPercent>
+    <pathCost>50</pathCost>
+    <size>(1,1)</size>
+    <statBases><MaxHitPoints>100</MaxHitPoints><WorkToBuild>500</WorkToBuild><Mass>8</Mass><Flammability>0.5</Flammability></statBases>
+    <costList><Steel>45</Steel><ComponentIndustrial>1</ComponentIndustrial></costList>
+    <building>
+      <blueprintClass>Blueprint_Storage</blueprintClass>
+      <preventDeteriorationOnTop>true</preventDeteriorationOnTop>
+      <ignoreStoredThingsBeauty>true</ignoreStoredThingsBeauty>
+      <fixedStorageSettings><filter><disallowNotEverStorable>true</disallowNotEverStorable><thingDefs><li>Ammo_762x51mmNATO_FMJ</li></thingDefs></filter></fixedStorageSettings>
+      <defaultStorageSettings><priority>Important</priority><filter><disallowNotEverStorable>true</disallowNotEverStorable><thingDefs><li>Ammo_762x51mmNATO_FMJ</li></thingDefs></filter></defaultStorageSettings>
+    </building>
+    <inspectorTabs><li>ITab_Storage</li></inspectorTabs>
+    <surfaceType>Item</surfaceType>
+    <canOverlapZones>false</canOverlapZones>
+    <comps><li Class="PipeSystem.CompProperties_ConvertThingToResource"><pipeNet>PipedCEAutoloaders_762x51mmFMJNet</pipeNet><thing>Ammo_762x51mmNATO_FMJ</thing><ratio>1</ratio></li></comps>
+    <designationCategory>PipedCEAutoloaders_PipeNetworks</designationCategory>
+    <researchPrerequisites><li>GunTurrets</li></researchPrerequisites>
+  </ThingDef>
+
+  <ThingDef ParentName="FurnitureBase">
+    <defName>PipedCEAutoloaders_762x51mmFMJDiagnosticOutput</defName>
+    <label>experimental Phase 1 FMJ diagnostic output</label>
+    <description>Deterministically materializes one physical 7.62x51mm NATO FMJ item when one round is available in the connected experimental pipe network. Clear its single output item before testing another withdrawal.</description>
+    <thingClass>Building_Storage</thingClass>
+    <graphicData><texPath>Things/Ammo/Rifle/Battlerifle/AP/AP_c</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(1,1)</drawSize><drawRotated>false</drawRotated><allowFlip>false</allowFlip><color>(0.78,0.62,0.22)</color></graphicData>
+    <rotatable>false</rotatable>
+    <altitudeLayer>BuildingOnTop</altitudeLayer>
+    <passability>Standable</passability>
+    <fillPercent>0.5</fillPercent>
+    <pathCost>50</pathCost>
+    <size>(1,1)</size>
+    <statBases><MaxHitPoints>100</MaxHitPoints><WorkToBuild>500</WorkToBuild><Mass>8</Mass><Flammability>0.5</Flammability></statBases>
+    <costList><Steel>45</Steel><ComponentIndustrial>1</ComponentIndustrial></costList>
+    <building>
+      <blueprintClass>Blueprint_Storage</blueprintClass>
+      <preventDeteriorationOnTop>true</preventDeteriorationOnTop>
+      <ignoreStoredThingsBeauty>true</ignoreStoredThingsBeauty>
+      <fixedStorageSettings><filter><disallowNotEverStorable>true</disallowNotEverStorable><thingDefs><li>Ammo_762x51mmNATO_FMJ</li></thingDefs></filter></fixedStorageSettings>
+      <defaultStorageSettings><priority>Important</priority><filter><disallowNotEverStorable>true</disallowNotEverStorable><thingDefs><li>Ammo_762x51mmNATO_FMJ</li></thingDefs></filter></defaultStorageSettings>
+    </building>
+    <inspectorTabs><li>ITab_Storage</li></inspectorTabs>
+    <surfaceType>Item</surfaceType>
+    <canOverlapZones>false</canOverlapZones>
+    <comps><li Class="PipeSystem.CompProperties_ConvertResourceToThing"><pipeNet>PipedCEAutoloaders_762x51mmFMJNet</pipeNet><thing>Ammo_762x51mmNATO_FMJ</thing><ratio>1</ratio><maxOutputStackSize>1</maxOutputStackSize></li></comps>
+    <designationCategory>PipedCEAutoloaders_PipeNetworks</designationCategory>
+    <researchPrerequisites><li>GunTurrets</li></researchPrerequisites>
+  </ThingDef>
+</Defs>

@@ -30,7 +30,7 @@ patch CE core reload methods.
 | Phase | Status | Observable success criterion |
 | --- | --- | --- |
 | 0 — stock CE autoloader compatibility spike | **Complete** | Confirmed in-game: the stock XML `Building_AutoloaderCE` loader is buildable, holds 400 rounds of 7.62x51mm NATO ammunition, and natively reloads an adjacent compatible CE turret. |
-| 1 — one static VEF network | Planned | A fixed-ammo pipe, tank, input, and debug outlet build and transfer their resource without settings. |
+| 1 — one static VEF network | **Implementation/build in progress; manual acceptance pending** | A fixed-ammo pipe, tank, input, and debug outlet build and transfer their resource without settings. |
 | 2 — pipe-backed CE buffer | Planned | The loader withdraws exact rounds into its CE buffer using `DrawAmongStorage`, preserves `resourceCredit`, and survives disconnect and save/load tests; no settings. |
 | 3 — end-to-end native CE reload | Planned | Native CE reload correctly handles partial supply, shortage, cancellation, and one-at-a-time turret scenarios. |
 | 4 — close external mutation/lifecycle paths | Planned | Pawn jobs are excluded, CE ammo-management gizmos and the interaction spot are removed, and destruction, refund, and failure paths are fail-closed. |
@@ -40,3 +40,12 @@ patch CE core reload methods.
 Phase 0 manual acceptance passed. The stock CE gizmos and interaction spot were
 also observed; these are intentionally retained by the spike and must not be
 present on the final piped loader.
+
+### Phase 1 XML-only conversion note
+
+`Ammo_762x51mmNATO_FMJ` inherits CE `AmmoDef.ammoCount = 1`, so this fixed
+network uses VEF converter ratio `1`: one physical stack item is one pipe
+unit/round. The diagnostic output is VEF's automatic storage converter capped
+at one item; it proves exact network withdrawal and materialization after its
+output cell is cleared, not a player-triggered extraction UI or Phase 2 loader
+buffer behavior.
