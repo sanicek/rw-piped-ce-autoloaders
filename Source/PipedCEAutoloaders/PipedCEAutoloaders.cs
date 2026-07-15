@@ -8,6 +8,7 @@ using PipeSystem;
 using RimWorld;
 using Verse;
 using Verse.AI;
+using Verse.Sound;
 
 namespace PipedCEAutoloaders
 {
@@ -167,6 +168,24 @@ namespace PipedCEAutoloaders
             {
                 yield return toil;
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(Building_AutoloaderCE), nameof(Building_AutoloaderCE.DeSpawn))]
+    internal static class AutoloaderDeSpawnPatch
+    {
+        private static void Prefix(
+            Building_AutoloaderCE __instance,
+            ref Sustainer ___reloadingSustainer)
+        {
+            if (!(__instance is Building_PipeBackedAutoloaderCE)
+                || ___reloadingSustainer == null)
+            {
+                return;
+            }
+
+            ___reloadingSustainer.End();
+            ___reloadingSustainer = null;
         }
     }
 
