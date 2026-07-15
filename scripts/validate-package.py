@@ -130,8 +130,10 @@ def validate_defs(package: Path) -> None:
         or phase_two_ammo.findtext("ammoSet") != "AmmoSet_762x51mmNATO"
         or phase_two_loader.findtext("tickerType") != "Normal"
         or phase_two_loader.findtext("drawerType") != "MapMeshAndRealTime"
+        or phase_two_loader.findtext("hasInteractionCell") != "false"
+        or phase_two_loader.find("interactionCellOffset") is not None
     ):
-        fail("Phase 2 autoloader must define the fixed CE buffer and required update modes")
+        fail("Phase 2 autoloader must define the fixed CE buffer, required update modes, and no interaction cell")
     phase_two_resource = phase_two_loader.find("./comps/li[@Class='PipeSystem.CompProperties_Resource']")
     if phase_two_resource is None or phase_two_resource.findtext("pipeNet") != "PipedCEAutoloaders_762x51mmFMJNet":
         fail("Phase 2 autoloader must connect to the fixed FMJ PipeNetDef")

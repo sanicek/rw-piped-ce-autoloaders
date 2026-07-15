@@ -1,9 +1,10 @@
 # Piped CE Autoloaders
 
 RimWorld 1.6 mod project implementing Combat Extended autoloaders backed by
-Vanilla Expanded Framework pipe networks. The Phase 3 prototype fills a fixed
+Vanilla Expanded Framework pipe networks. The Phase 4 prototype fills a fixed
 7.62x51mm NATO FMJ CE buffer from the pipe network and delegates turret reloads
-to Combat Extended's native autoloader path.
+to Combat Extended's native autoloader path while excluding pawn refill and CE
+ammo-management interactions.
 
 ## Build
 
@@ -39,9 +40,10 @@ QA matrix. After `./scripts/install-local.sh`, build the setup introduced by the
 current phase and confirm its intended path works. The pull request supplies the
 short setup and expected observation for that phase.
 
-Phase 3 passed its smoke test: the pipe system supplied the loader, limited
-supply produced the expected partial turret reload, and forbidding the turret
-cancelled an active reload cleanly.
+Phase 4 is implemented and awaiting its smoke test. The representative setup
+checks that pawns cannot refill the loader, CE ammo-management controls are
+absent, native turret reload still works, and removing the loader releases its
+target and handles ammunition refunds without errors.
 
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for completed
 phase evidence, the current roadmap, and deferred work.
