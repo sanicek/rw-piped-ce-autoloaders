@@ -91,11 +91,17 @@ def validate_defs(package: Path) -> None:
     defs = package / "Defs"
     require_directory(defs)
     expected = defs / "Buildings" / "Phase0_Autoloader.xml"
+    phase_two = defs / "Buildings" / "Phase2_PipeBackedAutoloader.xml"
     phase_one = defs / "PipeSystem" / "Phase1_Static762x51mmNetwork.xml"
     files = {path.relative_to(defs).as_posix() for path in defs.rglob("*") if path.is_file()}
-    if files != {"Buildings/Phase0_Autoloader.xml", "PipeSystem/Phase1_Static762x51mmNetwork.xml"}:
-        fail("Defs must contain exactly the Phase 0 autoloader and Phase 1 pipe-network files")
+    if files != {
+        "Buildings/Phase0_Autoloader.xml",
+        "Buildings/Phase2_PipeBackedAutoloader.xml",
+        "PipeSystem/Phase1_Static762x51mmNetwork.xml",
+    }:
+        fail("Defs must contain exactly the Phase 0/2 autoloaders and Phase 1 pipe-network files")
     require_file(expected)
+    require_file(phase_two)
     require_file(phase_one)
     parse_xml_files(defs)
     root = ET.parse(expected).getroot()
@@ -107,6 +113,28 @@ def validate_defs(package: Path) -> None:
         fail("Phase 0 autoloader has an unexpected defName")
     if autoloader.findtext("thingClass") != "CombatExtended.Building_AutoloaderCE":
         fail("Phase 0 autoloader must use CombatExtended.Building_AutoloaderCE")
+
+    phase_two_root = ET.parse(phase_two).getroot()
+    phase_two_loaders = phase_two_root.findall("ThingDef")
+    if phase_two_root.tag != "Defs" or len(phase_two_loaders) != 1:
+        fail("Phase 2 Defs file must contain exactly one ThingDef")
+    phase_two_loader = phase_two_loaders[0]
+    if phase_two_loader.findtext("defName") != "PipedCEAutoloader_Phase2_762x51mm":
+        fail("Phase 2 autoloader has an unexpected defName")
+    if phase_two_loader.findtext("thingClass") != "PipedCEAutoloaders.Building_PipeBackedAutoloaderCE":
+        fail("Phase 2 autoloader must use the pipe-backed building class")
+    phase_two_ammo = phase_two_loader.find("./comps/li[@Class='CombatExtended.CompProperties_AmmoListUser']")
+    if (
+        phase_two_ammo is None
+        or phase_two_ammo.findtext("magazineSize") != "400"
+        or phase_two_ammo.findtext("ammoSet") != "AmmoSet_762x51mmNATO"
+        or phase_two_loader.findtext("tickerType") != "Normal"
+        or phase_two_loader.findtext("drawerType") != "MapMeshAndRealTime"
+    ):
+        fail("Phase 2 autoloader must define the fixed CE buffer and required update modes")
+    phase_two_resource = phase_two_loader.find("./comps/li[@Class='PipeSystem.CompProperties_Resource']")
+    if phase_two_resource is None or phase_two_resource.findtext("pipeNet") != "PipedCEAutoloaders_762x51mmFMJNet":
+        fail("Phase 2 autoloader must connect to the fixed FMJ PipeNetDef")
 
     phase_one_root = ET.parse(phase_one).getroot()
     if phase_one_root.tag != "Defs":
@@ -195,11 +223,14 @@ def main() -> None:
 
     metadata = ET.parse(about / "About.xml").getroot()
     name = metadata.findtext("name", default="").strip()
+    description = metadata.findtext("description", default="").strip()
     package_id = metadata.findtext("packageId", default="").strip()
     versions = [element.text.strip() for element in metadata.findall("./supportedVersions/li") if element.text and element.text.strip()]
     dependencies = {element.findtext("packageId", default="").strip() for element in metadata.findall("./modDependencies/li")}
     if name != "Piped CE Autoloaders":
         fail(f"About/About.xml has an unexpected name: {name!r}")
+    if "does not yet provide piped ammunition delivery" in description:
+        fail("About description must reflect the packaged Phase 2 pipe-backed loader")
     if package_id != "Sanicek.PipedCEAutoloaders" or not PACKAGE_ID.fullmatch(package_id):
         fail(f"About/About.xml has an invalid packageId: {package_id!r}")
     if versions != [mapping["v1.6"][-1]]:

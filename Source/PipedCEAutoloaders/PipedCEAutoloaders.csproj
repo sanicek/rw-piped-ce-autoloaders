@@ -9,11 +9,8 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <!-- Supply these portable directory properties from the build environment. -->
     <CombatExtendedDir Condition="'$(CombatExtendedDir)' == ''">$(COMBAT_EXTENDED_DIR)</CombatExtendedDir>
+    <CombatExtendedAssembly Condition="'$(CombatExtendedAssembly)' == ''">$(COMBAT_EXTENDED_ASSEMBLY)</CombatExtendedAssembly>
     <VanillaExpandedFrameworkDir Condition="'$(VanillaExpandedFrameworkDir)' == ''">$(VANILLA_EXPANDED_FRAMEWORK_DIR)</VanillaExpandedFrameworkDir>
-    <!-- Enable when Phase 1 introduces source that consumes these APIs. The
-         Phase 0 Def-only spike validates their configured locations without
-         loading the dependency metadata into the compiler. -->
-    <UseDependencyApiReferences Condition="'$(UseDependencyApiReferences)' == ''">false</UseDependencyApiReferences>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,13 +21,13 @@
     </Reference>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(UseDependencyApiReferences)' == 'true'">
+  <ItemGroup>
     <Reference Include="CombatExtended">
-      <HintPath>$(CombatExtendedDir)/Source/packages/CombatExtended.dll</HintPath>
+      <HintPath>$(CombatExtendedAssembly)</HintPath>
       <Private>false</Private>
     </Reference>
-    <Reference Include="VEF">
-      <HintPath>$(VanillaExpandedFrameworkDir)/1.6/Assemblies/VEF.dll</HintPath>
+    <Reference Include="PipeSystem">
+      <HintPath>$(VanillaExpandedFrameworkDir)/1.6/Assemblies/PipeSystem.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
@@ -38,9 +35,9 @@
   <Target Name="ValidateRimWorldManagedDir" BeforeTargets="ResolveReferences;CoreCompile">
     <Error Condition="'$(RimWorldManagedDir)' == ''" Text="RimWorldManagedDir must be supplied and point to RimWorldLinux_Data/Managed." />
     <Error Condition="!Exists('$(RimWorldManagedDir)/Assembly-CSharp.dll')" Text="Assembly-CSharp.dll was not found in RimWorldManagedDir: $(RimWorldManagedDir)" />
-    <Error Condition="'$(CombatExtendedDir)' == ''" Text="CombatExtendedDir (or COMBAT_EXTENDED_DIR) must point to the Combat Extended repository; expected Source/packages/CombatExtended.dll." />
-    <Error Condition="!Exists('$(CombatExtendedDir)/Source/packages/CombatExtended.dll')" Text="CombatExtended.dll was not found under CombatExtendedDir: $(CombatExtendedDir)/Source/packages/CombatExtended.dll" />
-    <Error Condition="'$(VanillaExpandedFrameworkDir)' == ''" Text="VanillaExpandedFrameworkDir (or VANILLA_EXPANDED_FRAMEWORK_DIR) must point to Vanilla Expanded Framework; expected 1.6/Assemblies/VEF.dll." />
-    <Error Condition="!Exists('$(VanillaExpandedFrameworkDir)/1.6/Assemblies/VEF.dll')" Text="VEF.dll was not found under VanillaExpandedFrameworkDir: $(VanillaExpandedFrameworkDir)/1.6/Assemblies/VEF.dll" />
+    <Error Condition="'$(CombatExtendedAssembly)' == ''" Text="CombatExtendedAssembly (or COMBAT_EXTENDED_ASSEMBLY) must point to a built CombatExtended.dll." />
+    <Error Condition="!Exists('$(CombatExtendedAssembly)')" Text="CombatExtended.dll was not found: $(CombatExtendedAssembly)" />
+    <Error Condition="'$(VanillaExpandedFrameworkDir)' == ''" Text="VanillaExpandedFrameworkDir (or VANILLA_EXPANDED_FRAMEWORK_DIR) must point to Vanilla Expanded Framework; expected 1.6/Assemblies/PipeSystem.dll." />
+    <Error Condition="!Exists('$(VanillaExpandedFrameworkDir)/1.6/Assemblies/PipeSystem.dll')" Text="PipeSystem.dll was not found under VanillaExpandedFrameworkDir: $(VanillaExpandedFrameworkDir)/1.6/Assemblies/PipeSystem.dll" />
   </Target>
 </Project>

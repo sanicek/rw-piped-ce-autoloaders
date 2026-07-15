@@ -30,8 +30,8 @@ patch CE core reload methods.
 | Phase | Status | Observable success criterion |
 | --- | --- | --- |
 | 0 — stock CE autoloader compatibility spike | **Complete** | Confirmed in-game: the stock XML `Building_AutoloaderCE` loader is buildable, holds 400 rounds of 7.62x51mm NATO ammunition, and natively reloads an adjacent compatible CE turret. |
-| 1 — one static VEF network | **Implementation/build in progress; manual acceptance pending** | A fixed-ammo pipe, tank, input, and debug outlet build and transfer their resource without settings. |
-| 2 — pipe-backed CE buffer | Planned | The loader withdraws exact rounds into its CE buffer using `DrawAmongStorage`, preserves `resourceCredit`, and survives disconnect and save/load tests; no settings. |
+| 1 — one static VEF network | **Complete** | Confirmed in-game: the fixed-ammo pipe, tank, input, and debug outlet build, connect, transfer exact rounds, and preserve state across reconnect and save/load. |
+| 2 — pipe-backed CE buffer | **Implementation/build in progress; manual acceptance pending** | The loader withdraws exact rounds into its CE buffer using `DrawAmongStorage`, preserves `resourceCredit`, and survives disconnect and save/load tests; no settings. |
 | 3 — end-to-end native CE reload | Planned | Native CE reload correctly handles partial supply, shortage, cancellation, and one-at-a-time turret scenarios. |
 | 4 — close external mutation/lifecycle paths | Planned | Pawn jobs are excluded, CE ammo-management gizmos and the interaction spot are removed, and destruction, refund, and failure paths are fail-closed. |
 | 5 — settings and three networks | Planned | Three restart-required selectors create immutable, validated bindings; end-to-end release validation passes. This completes the MVP. |
@@ -40,6 +40,10 @@ patch CE core reload methods.
 Phase 0 manual acceptance passed. The stock CE gizmos and interaction spot were
 also observed; these are intentionally retained by the spike and must not be
 present on the final piped loader.
+
+Phase 1 manual acceptance passed. Ten physical FMJ items converted to ten pipe
+rounds, the diagnostic output withdrew one round at a time, connectivity
+responded to pipe removal and replacement, and stored rounds survived save/load.
 
 ### Phase 1 XML-only conversion note
 
