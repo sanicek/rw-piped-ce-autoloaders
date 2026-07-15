@@ -39,11 +39,9 @@ QA matrix. After `./scripts/install-local.sh`, build the setup introduced by the
 current phase and confirm its intended path works. The pull request supplies the
 short setup and expected observation for that phase.
 
-Phase 3 acceptance is pending. Use an empty CE medium turret and exactly 20
-rounds in the connected pipe system. Let the loader begin reloading, forbid the
-turret during progress, and confirm cancellation leaves the rounds buffered and
-clears the turret's reloading state. Allow the turret again and confirm CE
-transfers exactly 20 rounds, then stops with the turret still 60 rounds short.
+Phase 3 passed its smoke test: the pipe system supplied the loader, limited
+supply produced the expected partial turret reload, and forbidding the turret
+cancelled an active reload cleanly.
 
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for completed
 phase evidence, the current roadmap, and deferred work.

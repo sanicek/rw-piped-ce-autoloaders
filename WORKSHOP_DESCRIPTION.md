@@ -3,7 +3,7 @@
 This project is under development. The current prototype provides a fixed
 7.62x51mm NATO FMJ pipe network and a pipe-backed Combat Extended autoloader
 with native partial-transfer, shortage, and cancellation behavior. Gameplay
-acceptance, lifecycle restrictions, and configurable networks remain in
+acceptance passed; lifecycle restrictions and configurable networks remain in
 development.
 
 [h2]Compatibility[/h2]
