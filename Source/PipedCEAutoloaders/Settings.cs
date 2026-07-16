@@ -7,8 +7,15 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
+// Settings are persisted as Def names, then resolved once after RimWorld has
+// loaded all CE and VEF Defs. The resulting session bindings deliberately do
+// not observe later settings writes: changing a network's resource identity
+// requires a restart and does not migrate existing untyped pipe contents.
 namespace PipedCEAutoloaders
 {
+    /// <summary>
+    /// Stores the exact ammo-set and physical-round selection for each network.
+    /// </summary>
     public sealed class PipedCEAutoloadersSettings : ModSettings
     {
         public string amberAmmoSet = "AmmoSet_762x51mmNATO";
@@ -69,6 +76,9 @@ namespace PipedCEAutoloaders
         }
     }
 
+    // A valid binding always pairs one exact physical AmmoDef with an
+    // AmmoSetDef that contains it. Keeping both resolved Defs together prevents
+    // downstream inputs and loaders from applying only half of the selection.
     internal sealed class PipedAmmoBinding
     {
         internal PipedAmmoBinding(AmmoSetDef ammoSet, AmmoDef ammo)
@@ -83,6 +93,9 @@ namespace PipedCEAutoloaders
 
     internal static class PipedAmmoBindings
     {
+        // These arrays form one positional schema shared with the settings UI
+        // and the corresponding XML Defs. Entries at each index must continue
+        // to describe the same Amber, Blue, or Green network family.
         internal static readonly string[] SlotNames = { "Amber", "Blue", "Green" };
 
         private static readonly string[] NetworkDefNames =
@@ -121,6 +134,9 @@ namespace PipedCEAutoloaders
 
         internal static void Initialize()
         {
+            // Initialization is a one-time session pass. Each slot is
+            // resolved independently so one invalid choice disables only its
+            // own physical input while valid networks remain operational.
             Bindings.Clear();
             var usedAmmo = new HashSet<AmmoDef>();
             for (int slot = 0; slot < SlotNames.Length; slot++)
@@ -269,6 +285,9 @@ namespace PipedCEAutoloaders
 
         private static void ConfigureStorageFilter(ThingDef input, ThingDef allowedThing)
         {
+            // Fixed settings constrain what may ever enter the storage building;
+            // default settings constrain its initial player-facing filter. Both
+            // must agree, and an invalid binding must accept no physical item.
             if (input?.building?.fixedStorageSettings?.filter != null)
             {
                 input.building.fixedStorageSettings.filter.SetDisallowAll();
@@ -288,6 +307,9 @@ namespace PipedCEAutoloaders
         }
     }
 
+    // The settings window edits persisted names only. Validation mirrors
+    // startup resolution for immediate feedback, but runtime Def mutation stays
+    // in Initialize so opening or saving this UI cannot rebind a live colony.
     internal sealed class PipedCEAutoloadersSettingsWindow
     {
         private readonly PipedCEAutoloadersSettings settings;

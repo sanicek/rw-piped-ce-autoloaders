@@ -11,8 +11,15 @@ using Verse;
 using Verse.AI;
 using Verse.Sound;
 
+// The runtime keeps CE authoritative over turret reloads while VEF remains
+// authoritative over bulk resource storage. Startup binds each pipe network to
+// one physical round; inputs convert items into pipe units, and loaders move
+// only whole rounds into CE's durable CompAmmoUser buffer.
 namespace PipedCEAutoloaders
 {
+    /// <summary>
+    /// Owns startup ordering and the restart-required settings contract.
+    /// </summary>
     public sealed class PipedCEAutoloadersMod : Mod
     {
         private readonly PipedCEAutoloadersSettingsWindow settingsWindow;
@@ -73,6 +80,10 @@ namespace PipedCEAutoloaders
         }
     }
 
+    // Piped loaders must have a single supply path. These shared predicates
+    // identify when CE's pawn-driven refill and turret-reload jobs would bypass
+    // pipe accounting, while leaving CE's native autoloader-to-turret path
+    // untouched.
     internal static class PipedAutoloaderRestrictions
     {
         internal static bool HasAdjacentPipedAutoloader(Thing thing)
@@ -106,6 +117,9 @@ namespace PipedCEAutoloaders
         }
     }
 
+    /// <summary>
+    /// Selects the item-consuming resource component declared by the input Defs.
+    /// </summary>
     public sealed class CompProperties_PipedAmmoInput : CompProperties_Resource
     {
         public CompProperties_PipedAmmoInput()
@@ -114,6 +128,13 @@ namespace PipedCEAutoloaders
         }
     }
 
+    // Consumed items become pendingResource before distribution. Persisting that
+    // intermediate value prevents a full network or save/load boundary from
+    // losing already-consumed rounds; the input does not consume another stack
+    // until the previous value has reached storage.
+    /// <summary>
+    /// Atomically converts configured physical ammunition into pipe resource.
+    /// </summary>
     public sealed class CompPipedAmmoInput : CompResource
     {
         private float pendingResource;
@@ -196,6 +217,10 @@ namespace PipedCEAutoloaders
         }
     }
 
+    // CE can enter the same pawn-driven operation through work scanning,
+    // reservation, or toil creation. Patching all three layers keeps the
+    // restriction valid for jobs created before a state change or by another
+    // mod, rather than relying only on the normal work-giver path.
     [HarmonyPatch(typeof(WorkGiver_ReloadAutoLoader), nameof(WorkGiver_ReloadAutoLoader.HasJobOnThing))]
     internal static class WorkGiverReloadAutoLoaderPatch
     {
@@ -241,6 +266,9 @@ namespace PipedCEAutoloaders
         }
     }
 
+    // Manual turret reload has equivalent discovery and execution paths. It is
+    // blocked only while a valid piped loader occupies CE's native eight-way
+    // adjacency, so ordinary CE turret reloading remains available elsewhere.
     [HarmonyPatch(typeof(JobGiverUtils_Reload), nameof(JobGiverUtils_Reload.CanReload))]
     internal static class TurretCanReloadPatch
     {
@@ -314,6 +342,14 @@ namespace PipedCEAutoloaders
         }
     }
 
+    // CompAmmoUser is the durable whole-round buffer and CE remains responsible
+    // for transferring it to the turret. resourceCredit retains VEF's possible
+    // fractional draw between ticks; only floor(resourceCredit) is credited as
+    // ammunition, so conversion can neither duplicate nor silently round away
+    // pipe resource.
+    /// <summary>
+    /// Bridges a VEF pipe network into CE's existing autoloader state machine.
+    /// </summary>
     public sealed class Building_PipeBackedAutoloaderCE : Building_AutoloaderCE
     {
         private AmmoDef pipeAmmo;
@@ -349,6 +385,8 @@ namespace PipedCEAutoloaders
             SetPipeAmmoWhenSafe();
         }
 
+        // Fractional credit belongs to this loader and must survive save/load
+        // until it can form a whole CE round or be returned during removal.
         public override void ExposeData()
         {
             base.ExposeData();
@@ -359,8 +397,9 @@ namespace PipedCEAutoloaders
         {
             foreach (Gizmo gizmo in base.GetGizmos())
             {
-                // CE emits all building gizmos before this marker, followed by
-                // every autoloader ammo-management command.
+                // This boundary depends on CE emitting building gizmos before
+                // GizmoAmmoStatus and all autoloader ammo-management commands
+                // after it. If CE changes that order, review this suppression.
                 if (gizmo is GizmoAmmoStatus)
                 {
                     yield break;
@@ -370,6 +409,10 @@ namespace PipedCEAutoloaders
             }
         }
 
+        // Replacement keeps state on the same instance. Every final removal
+        // instead closes CE's transient reload state, materializes whole ammo
+        // items, and returns fractional values to connected pipe storage where
+        // capacity permits.
         public override void DeSpawn(DestroyMode mode = DestroyMode.Vanish)
         {
             CancelReload();
@@ -383,6 +426,9 @@ namespace PipedCEAutoloaders
             base.DeSpawn(mode);
         }
 
+        // Power and CE's base ShouldBeOn result gate both pipe withdrawal and
+        // reload continuation. Invalid targets are cancelled before base.Tick
+        // can finalize against stale or forbidden turret state.
         public override void Tick()
         {
             if (!HasValidBinding)
@@ -431,6 +477,9 @@ namespace PipedCEAutoloaders
 
         private void StopReloadSustainer()
         {
+            // CE does not expose its active sound. Reflection is deliberately
+            // isolated here so a CE rename degrades to a one-time diagnostic
+            // rather than preventing the rest of despawn cleanup.
             var sustainerField = AccessTools.Field(
                 typeof(Building_AutoloaderCE),
                 "reloadingSustainer");
@@ -493,6 +542,9 @@ namespace PipedCEAutoloaders
             int remainder = bufferedRounds % ammoCount;
             CompAmmoUser.CurMagCount = 0;
 
+            // CE may represent several rounds with one physical item. Whole
+            // items can be dropped; a non-item remainder is meaningful only as
+            // resource in the loader's matching pipe network.
             if (wholeItems > 0)
             {
                 Thing ammoThing = ThingMaker.MakeThing(ammo);
@@ -582,6 +634,8 @@ namespace PipedCEAutoloaders
 
             if (CompAmmoUser.CurrentAmmo != pipeAmmo)
             {
+                // Existing buffered rounds retain their original type. Refusing
+                // an in-place switch avoids reinterpreting them after rebinding.
                 if (CompAmmoUser.CurMagCount > 0)
                 {
                     return false;

@@ -1,4 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    RimWorld 1.6 loads .NET Framework 4.7.2 assemblies. Deterministic compilation
+    and the lockfile make builds repeatable for fixed game and mod references,
+    while manual AssemblyInfo supplies version and descriptive attributes.
+  -->
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>PipedCEAutoloaders</AssemblyName>
@@ -7,12 +12,16 @@
     <Deterministic>true</Deterministic>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <!-- Supply these portable directory properties from the build environment. -->
+    <!-- Dependency locations are portable inputs supplied by the build environment. -->
     <CombatExtendedDir Condition="'$(CombatExtendedDir)' == ''">$(COMBAT_EXTENDED_DIR)</CombatExtendedDir>
     <CombatExtendedAssembly Condition="'$(CombatExtendedAssembly)' == ''">$(COMBAT_EXTENDED_ASSEMBLY)</CombatExtendedAssembly>
     <VanillaExpandedFrameworkDir Condition="'$(VanillaExpandedFrameworkDir)' == ''">$(VANILLA_EXPANDED_FRAMEWORK_DIR)</VanillaExpandedFrameworkDir>
   </PropertyGroup>
 
+  <!--
+    RimWorld and Unity provide these assemblies at runtime. Private=false keeps
+    them as compile references instead of copying game binaries into the mod.
+  -->
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
     <PackageReference Include="Lib.Harmony" Version="2.3.6" ExcludeAssets="runtime" />
@@ -34,6 +43,11 @@
     </Reference>
   </ItemGroup>
 
+  <!--
+    CE likewise remains external. VEF exposes the pipe API from its versioned
+    PipeSystem.dll rather than from VEF.dll, so the reference follows its 1.6
+    runtime layout explicitly.
+  -->
   <ItemGroup>
     <Reference Include="CombatExtended">
       <HintPath>$(CombatExtendedAssembly)</HintPath>
@@ -45,6 +59,7 @@
     </Reference>
   </ItemGroup>
 
+  <!-- Fail before reference resolution with actionable errors for direct builds. -->
   <Target Name="ValidateRimWorldManagedDir" BeforeTargets="ResolveReferences;CoreCompile">
     <Error Condition="'$(RimWorldManagedDir)' == ''" Text="RimWorldManagedDir must be supplied and point to RimWorldLinux_Data/Managed." />
     <Error Condition="!Exists('$(RimWorldManagedDir)/Assembly-CSharp.dll')" Text="Assembly-CSharp.dll was not found in RimWorldManagedDir: $(RimWorldManagedDir)" />

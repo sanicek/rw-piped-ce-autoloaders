@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <loadFolders>
+  <!-- Shared content comes from root; the runtime assembly comes from 1.6. -->
   <v1.6><li>/</li><li>1.6</li></v1.6>
 </loadFolders>
