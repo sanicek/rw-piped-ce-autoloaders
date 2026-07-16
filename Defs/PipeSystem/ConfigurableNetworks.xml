@@ -45,7 +45,7 @@
       <unit>rounds</unit>
       <color>(0.35,0.75,0.4)</color>
       <onlyShowStored>true</onlyShowStored>
-      <offTexPath>Things/Ammo/Shotgun/Shot</offTexPath>
+      <offTexPath>Things/Ammo/Shotgun/Shot/Shot_c</offTexPath>
     </resource>
     <pipeDefs><li>PipedCEAutoloaders_GreenPipe</li></pipeDefs>
     <designator><deconstructIconPath>UI/Designators/Deconstruct</deconstructIconPath><designationCategoryDef>PipedCEAutoloaders_PipeNetworks</designationCategoryDef></designator>

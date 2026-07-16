@@ -111,6 +111,14 @@ def validate_defs(package: Path) -> None:
     nets = {net.findtext("defName"): net for net in networks_root.findall("PipeSystem.PipeNetDef")}
     if set(nets) != {f"PipedCEAutoloaders_{slot}Net" for slot in slots}:
         fail("configurable networks must define exactly the Amber, Blue, and Green PipeNetDefs")
+    expected_off_textures = {
+        "PipedCEAutoloaders_AmberNet": "Things/Ammo/Rifle/Battlerifle/FMJ/FMJ_c",
+        "PipedCEAutoloaders_BlueNet": "Things/Ammo/Rifle/Battlerifle/FMJ/FMJ_c",
+        "PipedCEAutoloaders_GreenNet": "Things/Ammo/Shotgun/Shot/Shot_c",
+    }
+    for net_name, texture_path in expected_off_textures.items():
+        if nets[net_name].findtext("./resource/offTexPath") != texture_path:
+            fail(f"{net_name} must use its concrete startup material texture")
 
     network_things = {
         thing.findtext("defName"): thing
