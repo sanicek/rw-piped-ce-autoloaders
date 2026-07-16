@@ -39,7 +39,7 @@ exhaustive QA matrix.
 | 2 — pipe-backed CE buffer | **Complete** | Confirmed in-game: a connected tank supplies the loader's CE buffer and the native autoloader path reloads an adjacent compatible turret; no settings. |
 | 3 — end-to-end native CE reload | **Complete** | Confirmed in-game: pipe supply produced the expected partial turret reload, and forbidding the turret cancelled an active reload cleanly. |
 | 4 — close external mutation/lifecycle paths | **Complete** | Confirmed in-game: pawn refill and CE gizmos are absent, adjacent loaders control manual turret reload eligibility without breaking native reload, and deconstruction stops an active reload and its sound. |
-| 5 — settings and three networks | Planned | Three restart-required selectors create immutable, validated bindings; end-to-end release validation passes. This completes the MVP. |
+| 5 — settings and three networks | **Complete** | Confirmed in-game: three independent configured networks supply functional autoloaders, and restart rebinding applies to newly built network buildings. This completes the MVP. |
 | 6 — existing-save settings migration | Deferred post-MVP; feasibility-dependent | A feasible migration strategy is demonstrated for existing settings/saves. It is explicitly not required for the MVP. |
 
 Phase 0 manual acceptance passed. The stock CE gizmos and interaction spot were
@@ -77,6 +77,21 @@ loader refill were absent; manual turret reload worked without an adjacent
 loader, was blocked when one was constructed, and resumed after its removal;
 native autoloader reload continued to work; and deconstruction during an active
 reload stopped its ambient sound.
+
+Phase 5 replaces the fixed prototypes with Amber, Blue, and Green network
+families. Each setting selects an `AmmoSetDef` and one exact, non-hidden
+`AmmoDef` from that set. Startup validation rejects missing or mismatched Defs,
+nonphysical rounds, and duplicate exact-round assignments. A rejected slot is
+left unbound and cannot convert or supply rounds; valid slots remain available.
+Successful bindings credit each physical item from `AmmoDef.ammoCount` (or its
+remaining partial charges), configure the loader's CE ammo set, and are never
+reread during gameplay. The diagnostic output was a Phase 1 test aid and is not
+part of the release networks. Manual acceptance passed: all three configured
+networks remained independent and supplied functional autoloaders; changing a
+binding and restarting applied the new ammunition Defs to newly built buildings.
+Buildings loaded from a save retained their pre-change ammo-set state. This
+mixed legacy state is observation, not migration support; existing-save
+reconciliation remains deferred to Phase 6.
 
 ### Phase 1 XML-only conversion note
 

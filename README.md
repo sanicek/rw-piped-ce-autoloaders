@@ -1,10 +1,18 @@
 # Piped CE Autoloaders
 
 RimWorld 1.6 mod project implementing Combat Extended autoloaders backed by
-Vanilla Expanded Framework pipe networks. The Phase 4 prototype fills a fixed
-7.62x51mm NATO FMJ CE buffer from the pipe network and delegates turret reloads
-to Combat Extended's native autoloader path while excluding pawn refill and CE
-ammo-management interactions.
+Vanilla Expanded Framework pipe networks. Three color-coded networks each bind
+to a configured CE ammo set and exact physical round after startup validation.
+Pipe-backed loaders delegate turret reloads to Combat Extended's native path
+while excluding pawn refill and CE ammo-management interactions.
+
+Bindings are configured under Mod Settings. Changes require a restart and are
+then immutable for the session. Duplicate, missing, hidden, or mismatched rounds
+disable the affected network instead of silently changing its resource.
+Changing a binding for a colony that already has stored or buffered rounds is
+not supported yet: those untyped values would take on the new binding after the
+restart. Empty its tanks and loaders, then reset or rebuild its existing inputs,
+or use the new binding in a new game.
 
 ## Build
 
@@ -40,10 +48,11 @@ QA matrix. After `./scripts/install-local.sh`, build the setup introduced by the
 current phase and confirm its intended path works. The pull request supplies the
 short setup and expected observation for that phase.
 
-Phase 4 passed its smoke test: pawn loader refill and CE ammo-management controls
-were absent, adjacent piped autoloaders blocked manual turret reload without
-breaking native reload, removing the loader restored manual reload, and
-deconstruction stopped an active reload sound.
+Phase 5 passed its smoke test: all three configured networks remained
+independent and supplied functional autoloaders. Changing a binding and
+restarting applied the new ammunition Defs to newly built buildings; buildings
+loaded from an existing save retained their prior ammo-set state, so migration
+of mixed legacy state remains deferred.
 
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for completed
 phase evidence, the current roadmap, and deferred work.
