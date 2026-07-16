@@ -41,7 +41,7 @@ exhaustive QA matrix.
 | 4 — close external mutation/lifecycle paths | **Complete** | Confirmed in-game: pawn refill and CE gizmos are absent, adjacent loaders control manual turret reload eligibility without breaking native reload, and deconstruction stops an active reload and its sound. |
 | 5 — settings and three networks | **Complete** | Confirmed in-game: three independent configured networks supply functional autoloaders, and restart rebinding applies to newly built network buildings. This completes the MVP. |
 | 6 — existing-save settings migration | **Skipped for now** | No migration is planned; the current existing-save behavior is accepted unless this phase is reconsidered later. |
-| 7 — powered autoloaders | **Awaiting gameplay acceptance** | An autoloader draws 100 W, neither withdraws pipe rounds nor reloads while unpowered, and resumes normal operation when powered. |
+| 7 — powered autoloaders | **Complete** | Confirmed in-game: an autoloader requires power and functions only while powered. |
 
 Phase 0 manual acceptance passed. The stock CE gizmos and interaction spot were
 also observed; these are intentionally retained by the spike and must not be
@@ -99,8 +99,8 @@ Phase 7 adds a standard 100 W `CompPowerTrader` to all three autoloaders and
 uses CE's native power check to gate operation. Unpowered loaders preserve their
 buffered rounds and fractional pipe credit, do not withdraw additional pipe
 rounds, and cancel active reloads through the existing lifecycle cleanup. Normal
-pipe filling and CE reload behavior resume when power returns. Gameplay
-acceptance is pending.
+pipe filling and CE reload behavior resume when power returns. Manual acceptance
+passed: the autoloader required power and functioned only while powered.
 
 ## Unprioritized future features
 
