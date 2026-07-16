@@ -10,9 +10,10 @@ Bindings are configured under Mod Settings. Changes require a restart and are
 then immutable for the session. Duplicate, missing, hidden, or mismatched rounds
 disable the affected network instead of silently changing its resource.
 Changing a binding for a colony that already has stored or buffered rounds is
-not supported yet: those untyped values would take on the new binding after the
-restart. Empty its tanks and loaders, then reset or rebuild its existing inputs,
-or use the new binding in a new game.
+not supported: those untyped values would take on the new binding after the
+restart. Existing-save migration is not currently planned. Empty its tanks and
+loaders, then reset or rebuild its existing inputs, or use the new binding in a
+new game.
 
 ## Build
 
@@ -52,7 +53,7 @@ Phase 5 passed its smoke test: all three configured networks remained
 independent and supplied functional autoloaders. Changing a binding and
 restarting applied the new ammunition Defs to newly built buildings; buildings
 loaded from an existing save retained their prior ammo-set state, so migration
-of mixed legacy state remains deferred.
+of mixed legacy state remains unsupported and is not currently planned.
 
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for completed
-phase evidence, the current roadmap, and deferred work.
+phase evidence, the current roadmap, and future work.
