@@ -40,7 +40,7 @@ exhaustive QA matrix.
 | 3 — end-to-end native CE reload | **Complete** | Confirmed in-game: pipe supply produced the expected partial turret reload, and forbidding the turret cancelled an active reload cleanly. |
 | 4 — close external mutation/lifecycle paths | **Complete** | Confirmed in-game: pawn refill and CE gizmos are absent, adjacent loaders control manual turret reload eligibility without breaking native reload, and deconstruction stops an active reload and its sound. |
 | 5 — settings and three networks | **Complete** | Confirmed in-game: three independent configured networks supply functional autoloaders, and restart rebinding applies to newly built network buildings. This completes the MVP. |
-| 6 — existing-save settings migration | Deferred post-MVP; feasibility-dependent | A feasible migration strategy is demonstrated for existing settings/saves. It is explicitly not required for the MVP. |
+| 6 — existing-save settings migration | **Skipped for now** | No migration is planned; the current existing-save behavior is accepted unless this phase is reconsidered later. |
 
 Phase 0 manual acceptance passed. The stock CE gizmos and interaction spot were
 also observed; these are intentionally retained by the spike and must not be
@@ -90,8 +90,21 @@ part of the release networks. Manual acceptance passed: all three configured
 networks remained independent and supplied functional autoloaders; changing a
 binding and restarting applied the new ammunition Defs to newly built buildings.
 Buildings loaded from a save retained their pre-change ammo-set state. This
-mixed legacy state is observation, not migration support; existing-save
-reconciliation remains deferred to Phase 6.
+mixed legacy state is observation, not migration support. The current behavior
+is accepted, and Phase 6 is skipped unless existing-save migration is
+reconsidered later.
+
+## Unprioritized future features
+
+The following features are candidates for future implementation in no particular
+order:
+
+- Add electricity consumption to autoloaders and require power for operation.
+- Add custom graphics for all buildings.
+- Add a hidden pipe variant.
+- Add a mod icon.
+- Add settings that configure reload speed independently for each network
+  variant.
 
 ### Phase 1 XML-only conversion note
 
