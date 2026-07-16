@@ -7,6 +7,26 @@
 - Validate package structure with `python3 scripts/validate-package.py <package>`.
 - Do not add Workshop publication identifiers until a page has been published.
 
+## Literate Programming
+
+- Write all maintained code in a literate programming style: present each file
+  and nontrivial section as a top-down narrative that introduces its purpose
+  before its implementation.
+- Keep explanations next to the code they govern. Document intent, invariants,
+  lifecycle, compatibility constraints, failure behavior, and non-obvious
+  tradeoffs rather than restating syntax.
+- Document public entry points and divide multi-phase scripts or validators into
+  named conceptual phases. Prefer clear names and simple code over comments
+  that compensate for avoidable complexity.
+- Remove dead code instead of preserving it in comments. Keep every comment
+  accurate when behavior changes, and update related maintainer documentation
+  when workflows, package layout, supported versions, or validation rules
+  change.
+- Do not add narrative comments to generated files, dependency lockfiles,
+  binaries, artwork, vendored content, or checksum-frozen recovered artifacts.
+  Document those files in the maintained source that produces, validates, or
+  consumes them instead.
+
 ## Validation workflow
 
 - Run `scripts/install-local.sh` after gameplay changes so the current package
