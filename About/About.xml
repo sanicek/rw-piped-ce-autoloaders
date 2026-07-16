@@ -7,7 +7,7 @@
     <li>1.6</li>
   </supportedVersions>
   <description>
-Piped CE Autoloaders currently provides an experimental fixed-ammunition pipe network and a Phase 4 loader that fills Combat Extended's native autoloader buffer while excluding pawn refill, adjacent-turret manual reload, and ammo-management interactions. Configurable networks remain in development.
+Piped CE Autoloaders provides three color-coded ammunition pipe networks. Each restart-required setting binds one network to a validated Combat Extended ammo set and exact physical round. Pipe-backed loaders fill Combat Extended's native autoloader buffer while excluding pawn refill, adjacent-turret manual reload, and ammo-management interactions.
 
 https://github.com/sanicek/rw-piped-ce-autoloaders
   </description>

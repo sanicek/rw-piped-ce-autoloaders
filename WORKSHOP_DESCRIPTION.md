@@ -1,11 +1,12 @@
 [h1]Piped CE Autoloaders[/h1]
 
-This project is under development. The current prototype provides a fixed
-7.62x51mm NATO FMJ pipe network and a pipe-backed Combat Extended autoloader
-with native partial-transfer, shortage, and cancellation behavior. Pawn refill,
-manual reloads of adjacent turrets, and CE ammo-management interactions are
-excluded, and loader removal closes active reload and refund paths. Phase 4
-gameplay acceptance passed; configurable networks remain in development.
+This project is under development. It provides three color-coded ammunition
+pipe networks, each configured with a Combat Extended ammo set and exact round.
+Bindings are validated at startup and remain fixed until RimWorld restarts.
+Pipe-backed autoloaders retain native partial-transfer, shortage, and
+cancellation behavior while excluding pawn refill, adjacent-turret manual
+reload, and CE ammo-management interactions. Phase 5 gameplay acceptance is
+pending.
 
 [h2]Compatibility[/h2]
 

@@ -90,105 +90,109 @@ def validate_version(package: Path, version: str) -> None:
 def validate_defs(package: Path) -> None:
     defs = package / "Defs"
     require_directory(defs)
-    expected = defs / "Buildings" / "Phase0_Autoloader.xml"
-    phase_two = defs / "Buildings" / "Phase2_PipeBackedAutoloader.xml"
-    phase_one = defs / "PipeSystem" / "Phase1_Static762x51mmNetwork.xml"
+    autoloaders_path = defs / "Buildings" / "Autoloaders.xml"
+    networks_path = defs / "PipeSystem" / "ConfigurableNetworks.xml"
     files = {path.relative_to(defs).as_posix() for path in defs.rglob("*") if path.is_file()}
-    if files != {
-        "Buildings/Phase0_Autoloader.xml",
-        "Buildings/Phase2_PipeBackedAutoloader.xml",
-        "PipeSystem/Phase1_Static762x51mmNetwork.xml",
-    }:
-        fail("Defs must contain exactly the Phase 0/2 autoloaders and Phase 1 pipe-network files")
-    require_file(expected)
-    require_file(phase_two)
-    require_file(phase_one)
+    if files != {"Buildings/Autoloaders.xml", "PipeSystem/ConfigurableNetworks.xml"}:
+        fail("Defs must contain exactly the release autoloaders and configurable-network files")
+    require_file(autoloaders_path)
+    require_file(networks_path)
     parse_xml_files(defs)
-    root = ET.parse(expected).getroot()
-    autoloaders = root.findall("ThingDef")
-    if root.tag != "Defs" or len(autoloaders) != 1:
-        fail("Phase 0 Defs file must contain exactly one ThingDef")
-    autoloader = autoloaders[0]
-    if autoloader.findtext("defName") != "PipedCEAutoloader_Phase0_762x51mm":
-        fail("Phase 0 autoloader has an unexpected defName")
-    if autoloader.findtext("thingClass") != "CombatExtended.Building_AutoloaderCE":
-        fail("Phase 0 autoloader must use CombatExtended.Building_AutoloaderCE")
+    autoloaders_root = ET.parse(autoloaders_path).getroot()
+    networks_root = ET.parse(networks_path).getroot()
+    if autoloaders_root.tag != "Defs" or networks_root.tag != "Defs":
+        fail("release Def files must have Defs roots")
 
-    phase_two_root = ET.parse(phase_two).getroot()
-    phase_two_loaders = phase_two_root.findall("ThingDef")
-    if phase_two_root.tag != "Defs" or len(phase_two_loaders) != 1:
-        fail("Phase 2 Defs file must contain exactly one ThingDef")
-    phase_two_loader = phase_two_loaders[0]
-    if phase_two_loader.findtext("defName") != "PipedCEAutoloader_Phase2_762x51mm":
-        fail("Phase 2 autoloader has an unexpected defName")
-    if phase_two_loader.findtext("thingClass") != "PipedCEAutoloaders.Building_PipeBackedAutoloaderCE":
-        fail("Phase 2 autoloader must use the pipe-backed building class")
-    phase_two_ammo = phase_two_loader.find("./comps/li[@Class='CombatExtended.CompProperties_AmmoListUser']")
-    if (
-        phase_two_ammo is None
-        or phase_two_ammo.findtext("magazineSize") != "400"
-        or phase_two_ammo.findtext("ammoSet") != "AmmoSet_762x51mmNATO"
-        or phase_two_loader.findtext("tickerType") != "Normal"
-        or phase_two_loader.findtext("drawerType") != "MapMeshAndRealTime"
-        or phase_two_loader.findtext("hasInteractionCell") != "false"
-        or phase_two_loader.find("interactionCellOffset") is not None
-    ):
-        fail("Phase 2 autoloader must define the fixed CE buffer, required update modes, and no interaction cell")
-    phase_two_resource = phase_two_loader.find("./comps/li[@Class='PipeSystem.CompProperties_Resource']")
-    if phase_two_resource is None or phase_two_resource.findtext("pipeNet") != "PipedCEAutoloaders_762x51mmFMJNet":
-        fail("Phase 2 autoloader must connect to the fixed FMJ PipeNetDef")
-
-    phase_one_root = ET.parse(phase_one).getroot()
-    if phase_one_root.tag != "Defs":
-        fail("Phase 1 pipe-network file must have a Defs root")
-    nets = phase_one_root.findall("PipeSystem.PipeNetDef")
-    net = nets[0] if len(nets) == 1 else None
-    if net is None or net.findtext("defName") != "PipedCEAutoloaders_762x51mmFMJNet":
-        fail("Phase 1 must define the fixed 7.62x51mm FMJ PipeNetDef")
-    expected_things = {
-        "PipedCEAutoloaders_762x51mmFMJPipe": "PipeSystem.Building_Pipe",
-        "PipedCEAutoloaders_762x51mmFMJTank": None,
-        "PipedCEAutoloaders_762x51mmFMJInput": "Building_Storage",
-        "PipedCEAutoloaders_762x51mmFMJDiagnosticOutput": "Building_Storage",
+    slots = {
+        "Amber": ("AmmoSet_762x51mmNATO", "Ammo_762x51mmNATO_FMJ"),
+        "Blue": ("AmmoSet_556x45mmNATO", "Ammo_556x45mmNATO_FMJ"),
+        "Green": ("AmmoSet_12Gauge", "Ammo_12Gauge_Buck"),
     }
-    things = {thing.findtext("defName"): thing for thing in phase_one_root.findall("ThingDef")}
-    if set(things) != set(expected_things):
-        fail("Phase 1 must define exactly pipe, tank, input, and diagnostic-output ThingDefs")
-    for def_name, thing_class in expected_things.items():
-        if thing_class is not None and things[def_name].findtext("thingClass") != thing_class:
-            fail(f"Phase 1 {def_name} has an unexpected thingClass")
-    pipe = things["PipedCEAutoloaders_762x51mmFMJPipe"]
-    pipe_comp = pipe.find("./comps/li[@Class='PipeSystem.CompProperties_Resource']")
-    tank_comp = things["PipedCEAutoloaders_762x51mmFMJTank"].find("./comps/li[@Class='PipeSystem.CompProperties_ResourceStorage']")
-    if pipe_comp is None or pipe_comp.findtext("pipeNet") != "PipedCEAutoloaders_762x51mmFMJNet":
-        fail("Phase 1 pipe must attach to the fixed FMJ PipeNetDef")
-    if pipe.findtext("uiIconPath") != "Things/Building/Linked/PowerConduit_MenuIcon":
-        fail("Phase 1 linked pipe must define the vanilla PowerConduit menu icon for ghost rendering")
-    if pipe.findtext("./building/blueprintGraphicData/texPath") != "Things/Building/Linked/PowerConduit_Blueprint_Atlas":
-        fail("Phase 1 pipe must define the vanilla PowerConduit blueprint graphic")
-    if tank_comp is None or tank_comp.findtext("pipeNet") != "PipedCEAutoloaders_762x51mmFMJNet":
-        fail("Phase 1 tank must use VEF resource storage on the fixed FMJ PipeNetDef")
-    input_comp = things["PipedCEAutoloaders_762x51mmFMJInput"].find("./comps/li[@Class='PipeSystem.CompProperties_ConvertThingToResource']")
-    output_comp = things["PipedCEAutoloaders_762x51mmFMJDiagnosticOutput"].find("./comps/li[@Class='PipeSystem.CompProperties_ConvertResourceToThing']")
-    if input_comp is None or input_comp.findtext("thing") != "Ammo_762x51mmNATO_FMJ" or input_comp.findtext("ratio") != "1":
-        fail("Phase 1 input must convert Ammo_762x51mmNATO_FMJ at a 1:1 ratio")
-    if output_comp is None or output_comp.findtext("thing") != "Ammo_762x51mmNATO_FMJ" or output_comp.findtext("ratio") != "1" or output_comp.findtext("maxOutputStackSize") != "1":
-        fail("Phase 1 output must materialize one FMJ item per one resource unit")
-    for def_name in ("PipedCEAutoloaders_762x51mmFMJInput", "PipedCEAutoloaders_762x51mmFMJDiagnosticOutput"):
-        storage = things[def_name]
-        required_fields = {
+    nets = {net.findtext("defName"): net for net in networks_root.findall("PipeSystem.PipeNetDef")}
+    if set(nets) != {f"PipedCEAutoloaders_{slot}Net" for slot in slots}:
+        fail("configurable networks must define exactly the Amber, Blue, and Green PipeNetDefs")
+
+    network_things = {
+        thing.findtext("defName"): thing
+        for thing in networks_root.findall("ThingDef")
+        if thing.findtext("defName")
+    }
+    loaders = {
+        thing.findtext("defName"): thing
+        for thing in autoloaders_root.findall("ThingDef")
+        if thing.findtext("defName")
+    }
+    expected_network_things = {
+        f"PipedCEAutoloaders_{slot}{suffix}"
+        for slot in slots
+        for suffix in ("Pipe", "Tank", "Input")
+    }
+    if set(network_things) != expected_network_things:
+        fail("each configurable network must define exactly one pipe, tank, and input")
+    if set(loaders) != {f"PipedCEAutoloaders_{slot}Autoloader" for slot in slots}:
+        fail("release autoloaders must define exactly one loader per configurable network")
+
+    pipe_base = networks_root.find("./ThingDef[@Name='PipedCEAutoloaders_PipeBase']")
+    input_base = networks_root.find("./ThingDef[@Name='PipedCEAutoloaders_InputBase']")
+    loader_base = autoloaders_root.find("./ThingDef[@Name='PipedCEAutoloaders_AutoloaderBase']")
+    if (
+        pipe_base is None
+        or pipe_base.findtext("thingClass") != "PipeSystem.Building_Pipe"
+        or pipe_base.findtext("uiIconPath") != "Things/Building/Linked/PowerConduit_MenuIcon"
+        or pipe_base.findtext("./building/blueprintGraphicData/texPath") != "Things/Building/Linked/PowerConduit_Blueprint_Atlas"
+    ):
+        fail("release pipe base must retain the VEF linked-pipe rendering pattern")
+    if input_base is None or any(
+        input_base.findtext(path) != value
+        for path, value in {
+            "thingClass": "Building_Storage",
             "altitudeLayer": "BuildingOnTop",
             "passability": "Standable",
-            "fillPercent": "0.5",
-            "pathCost": "50",
-            "size": "(1,1)",
             "surfaceType": "Item",
             "canOverlapZones": "false",
             "building/preventDeteriorationOnTop": "true",
             "building/ignoreStoredThingsBeauty": "true",
+        }.items()
+    ):
+        fail("release input base must retain the VEF hauling-safe storage pattern")
+    if (
+        loader_base is None
+        or loader_base.findtext("thingClass") != "PipedCEAutoloaders.Building_PipeBackedAutoloaderCE"
+        or loader_base.findtext("tickerType") != "Normal"
+        or loader_base.findtext("drawerType") != "MapMeshAndRealTime"
+        or loader_base.findtext("hasInteractionCell") != "false"
+    ):
+        fail("release autoloader base must use the pipe-backed class and required lifecycle settings")
+
+    for slot, (default_set, _default_ammo) in slots.items():
+        net_name = f"PipedCEAutoloaders_{slot}Net"
+        pipe_name = f"PipedCEAutoloaders_{slot}Pipe"
+        tank_name = f"PipedCEAutoloaders_{slot}Tank"
+        input_name = f"PipedCEAutoloaders_{slot}Input"
+        loader_name = f"PipedCEAutoloaders_{slot}Autoloader"
+        if nets[net_name].findtext("./pipeDefs/li") != pipe_name:
+            fail(f"{slot} PipeNetDef must identify its own pipe")
+        expected_comps = {
+            pipe_name: "PipeSystem.CompProperties_Resource",
+            tank_name: "PipeSystem.CompProperties_ResourceStorage",
+            input_name: "PipedCEAutoloaders.CompProperties_PipedAmmoInput",
         }
-        if any(storage.findtext(path) != value for path, value in required_fields.items()):
-            fail(f"Phase 1 {def_name} must use the VEF hauling-safe storage surface pattern")
+        for thing_name, comp_class in expected_comps.items():
+            comp = network_things[thing_name].find(f"./comps/li[@Class='{comp_class}']")
+            if comp is None or comp.findtext("pipeNet") != net_name:
+                fail(f"{thing_name} must use {comp_class} on its matching PipeNetDef")
+        loader = loaders[loader_name]
+        ammo_comp = loader.find("./comps/li[@Class='CombatExtended.CompProperties_AmmoListUser']")
+        resource_comp = loader.find("./comps/li[@Class='PipeSystem.CompProperties_Resource']")
+        if ammo_comp is None or ammo_comp.findtext("magazineSize") != "400" or ammo_comp.findtext("ammoSet") != default_set:
+            fail(f"{slot} autoloader must provide its valid default CE buffer")
+        if resource_comp is None or resource_comp.findtext("pipeNet") != net_name:
+            fail(f"{slot} autoloader must connect to its matching PipeNetDef")
+
+    if input_base.findtext("tickerType") != "Normal":
+        fail("release inputs must tick normally for atomic physical-item conversion")
+    if networks_root.findall(".//li[@Class='PipeSystem.CompProperties_ConvertResourceToThing']"):
+        fail("release networks must not contain Phase 1 diagnostic outputs")
 
 
 def main() -> None:
