@@ -392,7 +392,11 @@ namespace PipedCEAutoloaders
                 return;
             }
 
-            FillBufferFromPipe();
+            bool operational = shouldBeOn;
+            if (operational)
+            {
+                FillBufferFromPipe();
+            }
 
             var reloadTarget = TargetTurret;
             bool cancelReload = reloadTarget != null
@@ -401,7 +405,7 @@ namespace PipedCEAutoloaders
                     || reloadTarget.GetAmmo() == null
                     || CompAmmoUser == null
                     || CompAmmoUser.EmptyMagazine
-                    || !shouldBeOn);
+                    || !operational);
             if (cancelReload)
             {
                 CancelReload();

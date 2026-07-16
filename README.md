@@ -4,7 +4,8 @@ RimWorld 1.6 mod project implementing Combat Extended autoloaders backed by
 Vanilla Expanded Framework pipe networks. Three color-coded networks each bind
 to a configured CE ammo set and exact physical round after startup validation.
 Pipe-backed loaders delegate turret reloads to Combat Extended's native path
-while excluding pawn refill and CE ammo-management interactions.
+while excluding pawn refill and CE ammo-management interactions. Each loader
+draws 100 W and operates only while powered.
 
 Bindings are configured under Mod Settings. Changes require a restart and are
 then immutable for the session. Duplicate, missing, hidden, or mismatched rounds
