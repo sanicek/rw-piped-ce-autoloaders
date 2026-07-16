@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
+  <!-- This metadata is the user-facing identity and supported-version contract. -->
   <name>Piped CE Autoloaders</name>
   <author>Sanicek</author>
   <packageId>Sanicek.PipedCEAutoloaders</packageId>
@@ -11,6 +12,7 @@ Piped CE Autoloaders provides three color-coded ammunition pipe networks. Each r
 
 https://github.com/sanicek/rw-piped-ce-autoloaders
   </description>
+  <!-- CE and VEF must load first because this mod depends on their runtime Defs and APIs. -->
   <loadAfter>
     <li>Ludeon.RimWorld</li>
     <li>CETeam.CombatExtended</li>

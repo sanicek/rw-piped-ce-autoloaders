@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Defs>
+  <!--
+    The shared loader is a powered CE autoloader with a VEF supply component.
+    Normal ticking is required for pipe withdrawal and reload cancellation;
+    CompAmmoUser remains the durable buffer used by CE's native turret path.
+  -->
   <ThingDef ParentName="BuildingBase" Name="PipedCEAutoloaders_AutoloaderBase" Abstract="True">
     <thingClass>PipedCEAutoloaders.Building_PipeBackedAutoloaderCE</thingClass>
     <tickerType>Normal</tickerType><drawerType>MapMeshAndRealTime</drawerType>
@@ -14,6 +19,11 @@
     </comps>
   </ThingDef>
 
+  <!--
+    Concrete loaders pair one network with a valid startup AmmoSetDef. Settings
+    replace that ammo set before spawned instances use it, while magazine size
+    and CE reload timing remain common gameplay contracts across all slots.
+  -->
   <ThingDef ParentName="PipedCEAutoloaders_AutoloaderBase">
     <defName>PipedCEAutoloaders_AmberAutoloader</defName><label>amber piped autoloader</label><description>Buffers the exact round assigned to the amber ammunition network and uses Combat Extended's native autoloader path. Requires 100 W of power.</description>
     <comps>

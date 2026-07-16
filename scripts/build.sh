@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Build produces a disposable, validator-approved release package from the
+# maintained source tree. Runtime dependencies are compile references only:
+# their assemblies must exist locally but must never be copied into the mod.
+
+# Phase 1: establish the package contract and locate portable dependencies.
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 rimworld_input="${RIMWORLD_DIR:-${HOME:?HOME must be set}/.steam/steam/steamapps/common/RimWorld}"
 project="$repo_root/Source/PipedCEAutoloaders/PipedCEAutoloaders.csproj"
@@ -30,6 +35,10 @@ dependency_dir() {
     fi
 }
 
+# Explicit environment directories take precedence over conventional checkouts.
+# The build currently requires a CE checkout as its integration reference and,
+# separately, a built CombatExtended.dll from that checkout, an explicit
+# override, or the installed mod.
 rimworld_dir="$(canonical_dir "$rimworld_input")"
 managed_dir="$(canonical_dir "$rimworld_dir/RimWorldLinux_Data/Managed")"
 combat_extended_dir="$(dependency_dir "Combat Extended" "${COMBAT_EXTENDED_DIR:-}" "$repo_root/../CombatExtended" "${HOME:?HOME must be set}/gitproj/public/CombatExtended" "COMBAT_EXTENDED_DIR")"
@@ -51,6 +60,9 @@ if [[ ! -f "$project" || ! -f "$managed_dir/Assembly-CSharp.dll" || ! -f "$comba
     exit 1
 fi
 
+# Phase 2: restore the locked dependency graph and compile against the resolved
+# game and mod APIs. The project file independently checks the reference files
+# needed by direct dotnet builds before reference resolution.
 printf 'Repository: %s\nRimWorld: %s\nManaged DLLs: %s\nCombat Extended: %s\nCombat Extended assembly: %s\nVanilla Expanded Framework: %s\n' "$repo_root" "$rimworld_dir" "$managed_dir" "$combat_extended_dir" "$combat_extended_assembly" "$vanilla_expanded_framework_dir"
 dotnet restore "$project" --locked-mode
 dotnet build "$project" --configuration Release --no-restore -p:RimWorldManagedDir="$managed_dir" -p:CombatExtendedDir="$combat_extended_dir" -p:CombatExtendedAssembly="$combat_extended_assembly" -p:VanillaExpandedFrameworkDir="$vanilla_expanded_framework_dir"
@@ -60,6 +72,9 @@ if [[ ! -f "$built_dll" ]]; then
     exit 1
 fi
 
+# Phase 3: regenerate the package from a deliberately small allowlist. Every
+# entry in versions must agree with LoadFolders.xml, About.xml, and the package
+# validator; only this mod's assembly belongs in each runtime folder.
 rm -rf -- "$artifact_dir"
 mkdir -p -- "$artifact_dir"
 cp -a -- "$repo_root/About" "$artifact_dir/"
@@ -70,5 +85,7 @@ for version in "${versions[@]}"; do
     cp -- "$built_dll" "$artifact_dir/$version/Assemblies/PipedCEAutoloaders.dll"
 done
 
+# Phase 4: reject malformed or accidentally expanded output before reporting a
+# usable artifact.
 python3 "$repo_root/scripts/validate-package.py" "$artifact_dir" --rimworld-dir "$rimworld_dir"
 printf 'Success: packaged Piped CE Autoloaders at %s\n' "$artifact_dir"

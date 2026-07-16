@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Validate the constrained RimWorld 1.6 Piped CE Autoloaders package."""
+"""Validate the release contract for the RimWorld 1.6 mod package.
+
+The validator treats package shape, version routing, gameplay Def wiring, and
+metadata as one release boundary. It deliberately validates generated output
+rather than compilation or in-game behavior. Exact package paths and selected
+Def invariants keep common source, build, and dependency artifacts from shipping
+unnoticed.
+"""
 
 import argparse
 import re
@@ -8,6 +15,9 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Dict, Optional
 
+# These allowlists are release policy, not a general RimWorld package schema.
+# Expanding supported versions or package content requires changing the build,
+# routing, metadata, and these expectations together.
 EXPECTED_TOP_LEVEL = {"About", "Defs", "LoadFolders.xml", "1.6"}
 EXPECTED_VERSIONS = ("1.6",)
 FORBIDDEN_NAMES = {"Source", ".git", "scripts", "bin", "obj", ".vs"}
@@ -51,6 +61,8 @@ def installed_version(rimworld_dir: Path) -> Optional[str]:
 
 
 def load_folder_mapping(path: Path) -> Dict[str, tuple[str, ...]]:
+    # Routing is intentionally exact: the mapping must list shared root content
+    # before the sole versioned directory, with no unvalidated fallbacks.
     try:
         root = ET.parse(path).getroot()
     except ET.ParseError as error:
@@ -76,6 +88,8 @@ def load_folder_mapping(path: Path) -> Dict[str, tuple[str, ...]]:
 
 
 def validate_version(package: Path, version: str) -> None:
+    # Runtime folders contain this mod's assembly only. Dependencies are supplied
+    # by RimWorld's mod loader and must not be redistributed in the package.
     version_dir = package / version
     require_directory(version_dir)
     if {path.name for path in version_dir.iterdir()} != {"Assemblies"}:
@@ -88,6 +102,7 @@ def validate_version(package: Path, version: str) -> None:
 
 
 def validate_defs(package: Path) -> None:
+    # Phase 1: constrain the Def surface before interpreting individual fields.
     defs = package / "Defs"
     require_directory(defs)
     autoloaders_path = defs / "Buildings" / "Autoloaders.xml"
@@ -103,6 +118,9 @@ def validate_defs(package: Path) -> None:
     if autoloaders_root.tag != "Defs" or networks_root.tag != "Defs":
         fail("release Def files must have Defs roots")
 
+    # Phase 2: establish the three positional network families and their safe
+    # startup defaults. Runtime settings may replace these concrete identities,
+    # but startup must remain valid before binding initialization runs.
     slots = {
         "Amber": ("AmmoSet_762x51mmNATO", "Ammo_762x51mmNATO_FMJ"),
         "Blue": ("AmmoSet_556x45mmNATO", "Ammo_556x45mmNATO_FMJ"),
@@ -120,6 +138,8 @@ def validate_defs(package: Path) -> None:
         if nets[net_name].findtext("./resource/offTexPath") != texture_path:
             fail(f"{net_name} must use its concrete startup material texture")
 
+    # Phase 3: verify the shared VEF building patterns and the custom loader's
+    # lifecycle requirements before checking each concrete family.
     network_things = {
         thing.findtext("defName"): thing
         for thing in networks_root.findall("ThingDef")
@@ -179,6 +199,9 @@ def validate_defs(package: Path) -> None:
     ):
         fail("release autoloaders must use one 100 W CompPowerTrader")
 
+    # Phase 4: verify each color's required edges from PipeNetDef through its
+    # pipe, tank, physical input, and CE buffer. A wrong required edge would make
+    # settings validation appear correct while moving the wrong resource.
     for slot, (default_set, _default_ammo) in slots.items():
         net_name = f"PipedCEAutoloaders_{slot}Net"
         pipe_name = f"PipedCEAutoloaders_{slot}Pipe"
@@ -211,6 +234,8 @@ def validate_defs(package: Path) -> None:
         if resource_comp is None or resource_comp.findtext("pipeNet") != net_name:
             fail(f"{slot} autoloader must connect to its matching PipeNetDef")
 
+    # Phase 5: retain selected conversion preconditions and exclude the obsolete
+    # spike component that would create a path back to physical items.
     if input_base.findtext("tickerType") != "Normal":
         fail("release inputs must tick normally for atomic physical-item conversion")
     if networks_root.findall(".//li[@Class='PipeSystem.CompProperties_ConvertResourceToThing']"):
@@ -218,6 +243,8 @@ def validate_defs(package: Path) -> None:
 
 
 def main() -> None:
+    # Phase 1: parse the invocation and establish a real, self-contained package
+    # root before traversing any user-supplied path.
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("package", type=Path)
     parser.add_argument("--rimworld-dir", type=Path)
@@ -236,6 +263,9 @@ def main() -> None:
         if path.name in FORBIDDEN_NAMES:
             fail(f"generated or repository artifact is not allowed in package: {path}")
 
+    # Phase 2: validate shared metadata and Defs, then every declared runtime
+    # directory. LoadFolders.xml is parsed first because it defines the version
+    # contract checked by both package layout and About.xml.
     about = package / "About"
     require_directory(about)
     if {path.name for path in about.iterdir()} != {"About.xml"}:
@@ -249,6 +279,9 @@ def main() -> None:
     for version in EXPECTED_VERSIONS:
         validate_version(package, version)
 
+    # Phase 3: enforce the user-facing identity and hard dependencies. The
+    # installed game check remains advisory because package validity must not
+    # depend on the maintainer's currently selected RimWorld version.
     metadata = ET.parse(about / "About.xml").getroot()
     name = metadata.findtext("name", default="").strip()
     description = metadata.findtext("description", default="").strip()

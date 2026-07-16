@@ -1,6 +1,9 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
+// The project disables generated assembly attributes, so this file maintains
+// descriptive metadata, COM visibility, and versioning; the project file owns
+// the simple assembly name.
 [assembly: AssemblyTitle("PipedCEAutoloaders")]
 [assembly: AssemblyDescription("Piped CE Autoloaders RimWorld mod scaffold")]
 [assembly: AssemblyCompany("Sanicek")]
