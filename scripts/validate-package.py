@@ -171,6 +171,13 @@ def validate_defs(package: Path) -> None:
         or loader_base.findtext("hasInteractionCell") != "false"
     ):
         fail("release autoloader base must use the pipe-backed class and required lifecycle settings")
+    loader_power_comps = loader_base.findall("./comps/li[@Class='CompProperties_Power']")
+    if (
+        len(loader_power_comps) != 1
+        or loader_power_comps[0].findtext("compClass") != "CompPowerTrader"
+        or loader_power_comps[0].findtext("basePowerConsumption") != "100"
+    ):
+        fail("release autoloaders must use one 100 W CompPowerTrader")
 
     for slot, (default_set, _default_ammo) in slots.items():
         net_name = f"PipedCEAutoloaders_{slot}Net"
@@ -190,6 +197,13 @@ def validate_defs(package: Path) -> None:
             if comp is None or comp.findtext("pipeNet") != net_name:
                 fail(f"{thing_name} must use {comp_class} on its matching PipeNetDef")
         loader = loaders[loader_name]
+        loader_comps = loader.find("./comps")
+        if (
+            loader_comps is None
+            or loader_comps.get("Inherit", "true").lower() == "false"
+            or loader_comps.findall("./li[@Class='CompProperties_Power']")
+        ):
+            fail(f"{slot} autoloader must inherit its single power component from the loader base")
         ammo_comp = loader.find("./comps/li[@Class='CombatExtended.CompProperties_AmmoListUser']")
         resource_comp = loader.find("./comps/li[@Class='PipeSystem.CompProperties_Resource']")
         if ammo_comp is None or ammo_comp.findtext("magazineSize") != "400" or ammo_comp.findtext("ammoSet") != default_set:
