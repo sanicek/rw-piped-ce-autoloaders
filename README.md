@@ -48,10 +48,11 @@ QA matrix. After `./scripts/install-local.sh`, build the setup introduced by the
 current phase and confirm its intended path works. The pull request supplies the
 short setup and expected observation for that phase.
 
-Phase 5 awaits its smoke test. Configure three distinct bindings, restart, and
-confirm the color-coded networks remain separate. For one representative slot,
-feed its configured physical round into the input and verify its piped loader
-natively reloads an adjacent compatible CE turret.
+Phase 5 passed its smoke test: all three configured networks remained
+independent and supplied functional autoloaders. Changing a binding and
+restarting applied the new ammunition Defs to newly built buildings; buildings
+loaded from an existing save retained their prior ammo-set state, so migration
+of mixed legacy state remains deferred.
 
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for completed
 phase evidence, the current roadmap, and deferred work.

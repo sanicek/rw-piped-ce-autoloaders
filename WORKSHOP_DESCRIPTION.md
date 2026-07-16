@@ -5,8 +5,7 @@ pipe networks, each configured with a Combat Extended ammo set and exact round.
 Bindings are validated at startup and remain fixed until RimWorld restarts.
 Pipe-backed autoloaders retain native partial-transfer, shortage, and
 cancellation behavior while excluding pawn refill, adjacent-turret manual
-reload, and CE ammo-management interactions. Phase 5 gameplay acceptance is
-pending.
+reload, and CE ammo-management interactions. Phase 5 gameplay acceptance passed.
 
 [h2]Compatibility[/h2]
 
