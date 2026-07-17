@@ -230,8 +230,11 @@ def validate_defs(package: Path) -> None:
             comp = network_things[thing_name].find(f"./comps/li[@Class='{comp_class}']")
             if comp is None or comp.findtext("pipeNet") != net_name:
                 fail(f"{thing_name} must use {comp_class} on its matching PipeNetDef")
-            if thing_name == tank_name and comp.findtext("storageCapacity") != "1000":
-                fail(f"{tank_name} must retain the 1000-round startup capacity")
+            if thing_name == tank_name:
+                if comp.findtext("storageCapacity") != "1000":
+                    fail(f"{tank_name} must retain the 1000-round startup capacity")
+                if comp.findtext("centerOffset") != "(0,0,0)":
+                    fail(f"{tank_name} must center its storage gauge on the graphic")
         loader = loaders[loader_name]
         loader_comps = loader.find("./comps")
         if (

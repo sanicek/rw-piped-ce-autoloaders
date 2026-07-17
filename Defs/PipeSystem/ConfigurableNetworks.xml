@@ -119,15 +119,15 @@
 
   <ThingDef ParentName="PipedCEAutoloaders_TankBase">
     <defName>PipedCEAutoloaders_AmberTank</defName><label>amber ammunition tank</label><description>Stores rounds assigned to the amber ammunition network.</description>
-    <comps><li Class="PipeSystem.CompProperties_ResourceStorage"><pipeNet>PipedCEAutoloaders_AmberNet</pipeNet><storageCapacity>1000</storageCapacity><barSize>(1.3,0.25)</barSize><centerOffset>(0,0,0.35)</centerOffset></li></comps>
+    <comps><li Class="PipeSystem.CompProperties_ResourceStorage"><pipeNet>PipedCEAutoloaders_AmberNet</pipeNet><storageCapacity>1000</storageCapacity><barSize>(1.3,0.25)</barSize><centerOffset>(0,0,0)</centerOffset></li></comps>
   </ThingDef>
   <ThingDef ParentName="PipedCEAutoloaders_TankBase">
     <defName>PipedCEAutoloaders_BlueTank</defName><label>blue ammunition tank</label><description>Stores rounds assigned to the blue ammunition network.</description>
-    <comps><li Class="PipeSystem.CompProperties_ResourceStorage"><pipeNet>PipedCEAutoloaders_BlueNet</pipeNet><storageCapacity>1000</storageCapacity><barSize>(1.3,0.25)</barSize><centerOffset>(0,0,0.35)</centerOffset></li></comps>
+    <comps><li Class="PipeSystem.CompProperties_ResourceStorage"><pipeNet>PipedCEAutoloaders_BlueNet</pipeNet><storageCapacity>1000</storageCapacity><barSize>(1.3,0.25)</barSize><centerOffset>(0,0,0)</centerOffset></li></comps>
   </ThingDef>
   <ThingDef ParentName="PipedCEAutoloaders_TankBase">
     <defName>PipedCEAutoloaders_GreenTank</defName><label>green ammunition tank</label><description>Stores rounds assigned to the green ammunition network.</description>
-    <comps><li Class="PipeSystem.CompProperties_ResourceStorage"><pipeNet>PipedCEAutoloaders_GreenNet</pipeNet><storageCapacity>1000</storageCapacity><barSize>(1.3,0.25)</barSize><centerOffset>(0,0,0.35)</centerOffset></li></comps>
+    <comps><li Class="PipeSystem.CompProperties_ResourceStorage"><pipeNet>PipedCEAutoloaders_GreenNet</pipeNet><storageCapacity>1000</storageCapacity><barSize>(1.3,0.25)</barSize><centerOffset>(0,0,0)</centerOffset></li></comps>
   </ThingDef>
 
   <!--
