@@ -177,9 +177,9 @@ def validate_defs(package: Path) -> None:
     if (
         tank_base is None
         or tank_base.findtext("size") != "(1,2)"
-        or tank_base.findtext("./graphicData/drawSize") != "(1,2)"
+        or tank_base.findtext("./graphicData/drawSize") != "(2,3)"
     ):
-        fail("release tank base must use its compact 1x2 footprint and drawing")
+        fail("release tank base must use its compact 1x2 footprint and vanilla battery draw scale")
     if input_base is None or any(
         input_base.findtext(path) != value
         for path, value in {

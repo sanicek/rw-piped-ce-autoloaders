@@ -107,8 +107,9 @@ rounds, and cancel active reloads through the existing lifecycle cleanup. Normal
 pipe filling and CE reload behavior resume when power returns. Manual acceptance
 passed: the autoloader required power and functioned only while powered.
 
-Phase 8 changes the shared tank footprint from 2x2 to 1x2, shortens the architect
-category label to `Ammo Pipes`, and adds independent
+Phase 8 changes the shared tank footprint from 2x2 to 1x2, renders its placeholder
+at the vanilla battery's 2x3 draw scale, shortens the architect category label to
+`Ammo Pipes`, and adds independent
 restart-required reload-speed and tank-capacity sliders for Amber, Blue, and
 Green. Reload speed configures CE's `ReloadSpeed` stat from 0.1x to 5.0x in 0.1
 steps; capacity configures VEF storage from 100 to 10,000 rounds in 100-round

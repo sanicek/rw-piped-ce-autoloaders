@@ -102,10 +102,14 @@
     <comps><li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_GreenNet</pipeNet></li></comps>
   </ThingDef>
 
-  <!-- Tanks are compact 1x2 durable bulk resource storage for each network. -->
+  <!--
+    Tanks keep a compact 1x2 footprint. The placeholder uses the vanilla
+    battery's larger draw scale so its transparent texture margins align the
+    visible body with occupied cells; future custom art should preserve that fit.
+  -->
   <ThingDef ParentName="BuildingBase" Name="PipedCEAutoloaders_TankBase" Abstract="True">
     <drawerType>MapMeshAndRealTime</drawerType>
-    <graphicData><texPath>Things/Building/Power/Battery</texPath><graphicClass>Graphic_Multi</graphicClass><drawSize>(1,2)</drawSize></graphicData>
+    <graphicData><texPath>Things/Building/Power/Battery</texPath><graphicClass>Graphic_Multi</graphicClass><drawSize>(2,3)</drawSize></graphicData>
     <altitudeLayer>Building</altitudeLayer><passability>Impassable</passability><fillPercent>1</fillPercent><tickerType>Normal</tickerType><size>(1,2)</size>
     <statBases><MaxHitPoints>150</MaxHitPoints><WorkToBuild>800</WorkToBuild><Mass>20</Mass><Flammability>0.5</Flammability></statBases>
     <costList><Steel>100</Steel><ComponentIndustrial>2</ComponentIndustrial></costList>
