@@ -46,7 +46,7 @@ exhaustive QA matrix.
 | 5 — settings and three networks | **Complete** | Confirmed in-game: three independent configured networks supply functional autoloaders, and restart rebinding applies to newly built network buildings. This completes the MVP. |
 | 6 — existing-save settings migration | **Skipped for now** | No migration is planned; the current existing-save behavior is accepted unless this phase is reconsidered later. |
 | 7 — powered autoloaders | **Complete** | Confirmed in-game: an autoloader requires power and functions only while powered. |
-| 8 — compact tanks and network performance | **Awaiting smoke test** | Confirm that new and pre-change tanks occupy the expected 1x2 rotated cells, store each network's configured capacity, and use distinct native CE reload times after restart. |
+| 8 — compact tanks and network performance | **Complete** | Confirmed in-game: 1x2 tanks use the intended battery-scale fit and centered gauge, the `Ammo Pipes` label fits, and each network applies its configured tank capacity and reload speed. |
 
 Phase 0 manual acceptance passed. The stock CE gizmos and interaction spot were
 also observed; these are intentionally retained by the spike and must not be
@@ -116,8 +116,11 @@ steps; capacity configures VEF storage from 100 to 10,000 rounds in 100-round
 steps. Existing defaults remain 0.5x and 1,000 rounds. Capacity reductions are
 not migrated: VEF can cap existing contents during load or later serialization,
 so tanks must be emptied before lowering their configured capacity. Existing
-2x2 tanks also adopt the 1x2 Def in place; smoke testing must inspect adjacent
-rooms, roofs, paths, pipe connections, and all rotations in a pre-change save.
+2x2 tanks also adopt the 1x2 Def in place; pre-change-save troubleshooting must
+account for adjacent rooms, roofs, paths, pipe connections, and tank rotation.
+Manual acceptance passed: capacity and reload-speed settings worked independently,
+the tank footprint and `Ammo Pipes` label were correct, the battery placeholder
+fit the occupied cells, and the storage gauge was centered on the graphic.
 
 ## Unprioritized future features
 
