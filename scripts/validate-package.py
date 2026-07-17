@@ -161,6 +161,7 @@ def validate_defs(package: Path) -> None:
         fail("release autoloaders must define exactly one loader per configurable network")
 
     pipe_base = networks_root.find("./ThingDef[@Name='PipedCEAutoloaders_PipeBase']")
+    tank_base = networks_root.find("./ThingDef[@Name='PipedCEAutoloaders_TankBase']")
     input_base = networks_root.find("./ThingDef[@Name='PipedCEAutoloaders_InputBase']")
     loader_base = autoloaders_root.find("./ThingDef[@Name='PipedCEAutoloaders_AutoloaderBase']")
     if (
@@ -170,6 +171,12 @@ def validate_defs(package: Path) -> None:
         or pipe_base.findtext("./building/blueprintGraphicData/texPath") != "Things/Building/Linked/PowerConduit_Blueprint_Atlas"
     ):
         fail("release pipe base must retain the VEF linked-pipe rendering pattern")
+    if (
+        tank_base is None
+        or tank_base.findtext("size") != "(2,1)"
+        or tank_base.findtext("./graphicData/drawSize") != "(2,1)"
+    ):
+        fail("release tank base must use its compact 2x1 footprint and drawing")
     if input_base is None or any(
         input_base.findtext(path) != value
         for path, value in {
@@ -189,8 +196,9 @@ def validate_defs(package: Path) -> None:
         or loader_base.findtext("tickerType") != "Normal"
         or loader_base.findtext("drawerType") != "MapMeshAndRealTime"
         or loader_base.findtext("hasInteractionCell") != "false"
+        or loader_base.findtext("./statBases/ReloadSpeed") != "0.5"
     ):
-        fail("release autoloader base must use the pipe-backed class and required lifecycle settings")
+        fail("release autoloader base must use the pipe-backed class, default reload speed, and required lifecycle settings")
     loader_power_comps = loader_base.findall("./comps/li[@Class='CompProperties_Power']")
     if (
         len(loader_power_comps) != 1
@@ -219,6 +227,8 @@ def validate_defs(package: Path) -> None:
             comp = network_things[thing_name].find(f"./comps/li[@Class='{comp_class}']")
             if comp is None or comp.findtext("pipeNet") != net_name:
                 fail(f"{thing_name} must use {comp_class} on its matching PipeNetDef")
+            if thing_name == tank_name and comp.findtext("storageCapacity") != "1000":
+                fail(f"{tank_name} must retain the 1000-round startup capacity")
         loader = loaders[loader_name]
         loader_comps = loader.find("./comps")
         if (

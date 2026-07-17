@@ -102,11 +102,11 @@
     <comps><li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_GreenNet</pipeNet></li></comps>
   </ThingDef>
 
-  <!-- Tanks are the only durable bulk resource storage in each network. -->
+  <!-- Tanks are compact 2x1 durable bulk resource storage for each network. -->
   <ThingDef ParentName="BuildingBase" Name="PipedCEAutoloaders_TankBase" Abstract="True">
     <drawerType>MapMeshAndRealTime</drawerType>
-    <graphicData><texPath>Things/Building/Power/Battery</texPath><graphicClass>Graphic_Multi</graphicClass><drawSize>(2,2)</drawSize></graphicData>
-    <altitudeLayer>Building</altitudeLayer><passability>Impassable</passability><fillPercent>1</fillPercent><tickerType>Normal</tickerType><size>(2,2)</size>
+    <graphicData><texPath>Things/Building/Power/Battery</texPath><graphicClass>Graphic_Multi</graphicClass><drawSize>(2,1)</drawSize></graphicData>
+    <altitudeLayer>Building</altitudeLayer><passability>Impassable</passability><fillPercent>1</fillPercent><tickerType>Normal</tickerType><size>(2,1)</size>
     <statBases><MaxHitPoints>150</MaxHitPoints><WorkToBuild>800</WorkToBuild><Mass>20</Mass><Flammability>0.5</Flammability></statBases>
     <costList><Steel>100</Steel><ComponentIndustrial>2</ComponentIndustrial></costList>
     <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded><designationCategory>PipedCEAutoloaders_PipeNetworks</designationCategory><constructEffect>ConstructMetal</constructEffect>

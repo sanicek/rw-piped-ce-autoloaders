@@ -2,10 +2,13 @@
 
 This project is under development. It provides three color-coded ammunition
 pipe networks, each configured with a Combat Extended ammo set and exact round.
-Bindings are validated at startup and remain fixed until RimWorld restarts.
+Each network also has independent 0.1x-5.0x reload speed and 100-10,000-round
+tank capacity settings. Configuration is validated at startup and remains fixed
+until RimWorld restarts; empty tanks before lowering their capacity.
 Pipe-backed autoloaders retain native partial-transfer, shortage, and
 cancellation behavior while excluding pawn refill, adjacent-turret manual
-reload, and CE ammo-management interactions. Phase 5 gameplay acceptance passed.
+reload, and CE ammo-management interactions. Ammunition tanks occupy 2x1 cells.
+Existing 2x2 tanks shrink in place after updating, so inspect nearby structures.
 
 [h2]Compatibility[/h2]
 

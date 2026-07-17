@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using CombatExtended;
 using CombatExtended.CombatExtended.Jobs.Utils;
 using CombatExtended.Compatibility;
@@ -13,8 +14,8 @@ using Verse.Sound;
 
 // The runtime keeps CE authoritative over turret reloads while VEF remains
 // authoritative over bulk resource storage. Startup binds each pipe network to
-// one physical round; inputs convert items into pipe units, and loaders move
-// only whole rounds into CE's durable CompAmmoUser buffer.
+// one physical round and its configured performance; inputs convert items into
+// pipe units, and loaders move only whole rounds into CE's durable buffer.
 namespace PipedCEAutoloaders
 {
     /// <summary>
@@ -57,7 +58,7 @@ namespace PipedCEAutoloaders
             if (startupSettingsSnapshot != SettingsSnapshot())
             {
                 Find.WindowStack.Add(new Dialog_MessageBox(
-                    "Piped CE Autoloaders settings were saved. Restart RimWorld to apply the new network bindings.",
+                    "Piped CE Autoloaders settings were saved. Restart RimWorld to apply the new network configuration.",
                     "Restart now",
                     GenCommandLine.Restart,
                     "Later",
@@ -72,10 +73,16 @@ namespace PipedCEAutoloaders
             {
                 Settings.amberAmmoSet,
                 Settings.amberAmmo,
+                Settings.amberReloadSpeed.ToString("R", CultureInfo.InvariantCulture),
+                Settings.amberTankCapacity.ToString("R", CultureInfo.InvariantCulture),
                 Settings.blueAmmoSet,
                 Settings.blueAmmo,
+                Settings.blueReloadSpeed.ToString("R", CultureInfo.InvariantCulture),
+                Settings.blueTankCapacity.ToString("R", CultureInfo.InvariantCulture),
                 Settings.greenAmmoSet,
-                Settings.greenAmmo
+                Settings.greenAmmo,
+                Settings.greenReloadSpeed.ToString("R", CultureInfo.InvariantCulture),
+                Settings.greenTankCapacity.ToString("R", CultureInfo.InvariantCulture)
             });
         }
     }

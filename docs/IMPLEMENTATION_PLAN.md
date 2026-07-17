@@ -7,6 +7,10 @@ Each restart-required setting maps one network to one CE `AmmoDef`. One pipe
 unit equals one CE round. Physical input converts `stackCount *
 AmmoDef.ammoCount` into pipe units.
 
+The same startup pass applies each network's independent reload-speed multiplier
+and tank capacity to its concrete Def. Tanks occupy 2x1 cells. Performance
+settings remain immutable during a session for the same reason as bindings.
+
 A `Building_AutoloaderCE` subclass keeps `CompAmmoUser` as the durable,
 CE-native ammunition buffer. It fills that buffer through
 `PipeNet.DrawAmongStorage`, then lets CE's unchanged native reload path serve
@@ -42,6 +46,7 @@ exhaustive QA matrix.
 | 5 — settings and three networks | **Complete** | Confirmed in-game: three independent configured networks supply functional autoloaders, and restart rebinding applies to newly built network buildings. This completes the MVP. |
 | 6 — existing-save settings migration | **Skipped for now** | No migration is planned; the current existing-save behavior is accepted unless this phase is reconsidered later. |
 | 7 — powered autoloaders | **Complete** | Confirmed in-game: an autoloader requires power and functions only while powered. |
+| 8 — compact tanks and network performance | **Awaiting smoke test** | Confirm that new and pre-change tanks occupy the expected 2x1 rotated cells, store each network's configured capacity, and use distinct native CE reload times after restart. |
 
 Phase 0 manual acceptance passed. The stock CE gizmos and interaction spot were
 also observed; these are intentionally retained by the spike and must not be
@@ -102,6 +107,16 @@ rounds, and cancel active reloads through the existing lifecycle cleanup. Normal
 pipe filling and CE reload behavior resume when power returns. Manual acceptance
 passed: the autoloader required power and functioned only while powered.
 
+Phase 8 changes the shared tank footprint from 2x2 to 2x1 and adds independent
+restart-required reload-speed and tank-capacity sliders for Amber, Blue, and
+Green. Reload speed configures CE's `ReloadSpeed` stat from 0.1x to 5.0x in 0.1
+steps; capacity configures VEF storage from 100 to 10,000 rounds in 100-round
+steps. Existing defaults remain 0.5x and 1,000 rounds. Capacity reductions are
+not migrated: VEF can cap existing contents during load or later serialization,
+so tanks must be emptied before lowering their configured capacity. Existing
+2x2 tanks also adopt the 2x1 Def in place; smoke testing must inspect adjacent
+rooms, roofs, paths, pipe connections, and all rotations in a pre-change save.
+
 ## Unprioritized future features
 
 The following features are candidates for future implementation in no particular
@@ -110,8 +125,6 @@ order:
 - Add custom graphics for all buildings.
 - Add a hidden pipe variant.
 - Add a mod icon.
-- Add settings that configure reload speed independently for each network
-  variant.
 
 ### Phase 1 XML-only conversion note
 

@@ -7,32 +7,61 @@ using RimWorld;
 using UnityEngine;
 using Verse;
 
-// Settings are persisted as Def names, then resolved once after RimWorld has
-// loaded all CE and VEF Defs. The resulting session bindings deliberately do
-// not observe later settings writes: changing a network's resource identity
-// requires a restart and does not migrate existing untyped pipe contents.
+// Settings persist Def names and bounded performance values, then apply once
+// after RimWorld has loaded all CE and VEF Defs. The resulting session
+// configuration deliberately does not observe later writes: changing a
+// network requires a restart and does not migrate existing pipe contents.
 namespace PipedCEAutoloaders
 {
     /// <summary>
-    /// Stores the exact ammo-set and physical-round selection for each network.
+    /// Stores each network's resource identity and performance configuration.
     /// </summary>
     public sealed class PipedCEAutoloadersSettings : ModSettings
     {
+        internal const float DefaultReloadSpeed = 0.5f;
+        internal const float MinimumReloadSpeed = 0.1f;
+        internal const float MaximumReloadSpeed = 5f;
+        internal const float DefaultTankCapacity = 1000f;
+        internal const float MinimumTankCapacity = 100f;
+        internal const float MaximumTankCapacity = 10000f;
+
         public string amberAmmoSet = "AmmoSet_762x51mmNATO";
         public string amberAmmo = "Ammo_762x51mmNATO_FMJ";
+        public float amberReloadSpeed = DefaultReloadSpeed;
+        public float amberTankCapacity = DefaultTankCapacity;
         public string blueAmmoSet = "AmmoSet_556x45mmNATO";
         public string blueAmmo = "Ammo_556x45mmNATO_FMJ";
+        public float blueReloadSpeed = DefaultReloadSpeed;
+        public float blueTankCapacity = DefaultTankCapacity;
         public string greenAmmoSet = "AmmoSet_12Gauge";
         public string greenAmmo = "Ammo_12Gauge_Buck";
+        public float greenReloadSpeed = DefaultReloadSpeed;
+        public float greenTankCapacity = DefaultTankCapacity;
 
         public override void ExposeData()
         {
             Scribe_Values.Look(ref amberAmmoSet, "amberAmmoSet", "AmmoSet_762x51mmNATO");
             Scribe_Values.Look(ref amberAmmo, "amberAmmo", "Ammo_762x51mmNATO_FMJ");
+            Scribe_Values.Look(ref amberReloadSpeed, "amberReloadSpeed", DefaultReloadSpeed);
+            Scribe_Values.Look(ref amberTankCapacity, "amberTankCapacity", DefaultTankCapacity);
             Scribe_Values.Look(ref blueAmmoSet, "blueAmmoSet", "AmmoSet_556x45mmNATO");
             Scribe_Values.Look(ref blueAmmo, "blueAmmo", "Ammo_556x45mmNATO_FMJ");
+            Scribe_Values.Look(ref blueReloadSpeed, "blueReloadSpeed", DefaultReloadSpeed);
+            Scribe_Values.Look(ref blueTankCapacity, "blueTankCapacity", DefaultTankCapacity);
             Scribe_Values.Look(ref greenAmmoSet, "greenAmmoSet", "AmmoSet_12Gauge");
             Scribe_Values.Look(ref greenAmmo, "greenAmmo", "Ammo_12Gauge_Buck");
+            Scribe_Values.Look(ref greenReloadSpeed, "greenReloadSpeed", DefaultReloadSpeed);
+            Scribe_Values.Look(ref greenTankCapacity, "greenTankCapacity", DefaultTankCapacity);
+
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                amberReloadSpeed = BoundedReloadSpeed(amberReloadSpeed);
+                amberTankCapacity = BoundedTankCapacity(amberTankCapacity);
+                blueReloadSpeed = BoundedReloadSpeed(blueReloadSpeed);
+                blueTankCapacity = BoundedTankCapacity(blueTankCapacity);
+                greenReloadSpeed = BoundedReloadSpeed(greenReloadSpeed);
+                greenTankCapacity = BoundedTankCapacity(greenTankCapacity);
+            }
         }
 
         internal string AmmoSetFor(int slot)
@@ -55,6 +84,26 @@ namespace PipedCEAutoloaders
             }
         }
 
+        internal float ReloadSpeedFor(int slot)
+        {
+            switch (slot)
+            {
+                case 0: return BoundedReloadSpeed(amberReloadSpeed);
+                case 1: return BoundedReloadSpeed(blueReloadSpeed);
+                default: return BoundedReloadSpeed(greenReloadSpeed);
+            }
+        }
+
+        internal float TankCapacityFor(int slot)
+        {
+            switch (slot)
+            {
+                case 0: return BoundedTankCapacity(amberTankCapacity);
+                case 1: return BoundedTankCapacity(blueTankCapacity);
+                default: return BoundedTankCapacity(greenTankCapacity);
+            }
+        }
+
         internal void SetAmmoSet(int slot, string value)
         {
             switch (slot)
@@ -74,9 +123,48 @@ namespace PipedCEAutoloaders
                 default: greenAmmo = value; break;
             }
         }
+
+        internal void SetReloadSpeed(int slot, float value)
+        {
+            value = BoundedReloadSpeed(value);
+            switch (slot)
+            {
+                case 0: amberReloadSpeed = value; break;
+                case 1: blueReloadSpeed = value; break;
+                default: greenReloadSpeed = value; break;
+            }
+        }
+
+        internal void SetTankCapacity(int slot, float value)
+        {
+            value = BoundedTankCapacity(value);
+            switch (slot)
+            {
+                case 0: amberTankCapacity = value; break;
+                case 1: blueTankCapacity = value; break;
+                default: greenTankCapacity = value; break;
+            }
+        }
+
+        // Settings files are user-editable and may contain non-finite values
+        // that Unity's Clamp preserves. Restore defaults before values can reach
+        // CE tick math or VEF capacity accounting.
+        private static float BoundedReloadSpeed(float value)
+        {
+            return float.IsNaN(value) || float.IsInfinity(value)
+                ? DefaultReloadSpeed
+                : Mathf.Clamp(value, MinimumReloadSpeed, MaximumReloadSpeed);
+        }
+
+        private static float BoundedTankCapacity(float value)
+        {
+            return float.IsNaN(value) || float.IsInfinity(value)
+                ? DefaultTankCapacity
+                : Mathf.Clamp(value, MinimumTankCapacity, MaximumTankCapacity);
+        }
     }
 
-    // A valid binding always pairs one exact physical AmmoDef with an
+    // A valid resource binding always pairs one exact physical AmmoDef with an
     // AmmoSetDef that contains it. Keeping both resolved Defs together prevents
     // downstream inputs and loaders from applying only half of the selection.
     internal sealed class PipedAmmoBinding
@@ -119,6 +207,13 @@ namespace PipedCEAutoloaders
             "PipedCEAutoloaders_GreenAutoloader"
         };
 
+        private static readonly string[] TankDefNames =
+        {
+            "PipedCEAutoloaders_AmberTank",
+            "PipedCEAutoloaders_BlueTank",
+            "PipedCEAutoloaders_GreenTank"
+        };
+
         private static readonly Dictionary<PipeNetDef, PipedAmmoBinding> Bindings =
             new Dictionary<PipeNetDef, PipedAmmoBinding>();
 
@@ -134,9 +229,10 @@ namespace PipedCEAutoloaders
 
         internal static void Initialize()
         {
-            // Initialization is a one-time session pass. Each slot is
-            // resolved independently so one invalid choice disables only its
-            // own physical input while valid networks remain operational.
+            // Initialization is a one-time session pass. Resource identity and
+            // performance are applied together so instances cannot spawn with
+            // a partially configured network. One invalid slot disables only
+            // its own physical input while valid networks remain operational.
             Bindings.Clear();
             var usedAmmo = new HashSet<AmmoDef>();
             for (int slot = 0; slot < SlotNames.Length; slot++)
@@ -144,15 +240,25 @@ namespace PipedCEAutoloaders
                 PipeNetDef network = DefDatabase<PipeNetDef>.GetNamedSilentFail(NetworkDefNames[slot]);
                 ThingDef input = DefDatabase<ThingDef>.GetNamedSilentFail(InputDefNames[slot]);
                 ThingDef loader = DefDatabase<ThingDef>.GetNamedSilentFail(LoaderDefNames[slot]);
+                ThingDef tank = DefDatabase<ThingDef>.GetNamedSilentFail(TankDefNames[slot]);
                 PipedAmmoBinding binding = Resolve(
                     PipedCEAutoloadersMod.Settings.AmmoSetFor(slot),
                     PipedCEAutoloadersMod.Settings.AmmoFor(slot),
                     usedAmmo,
                     out string error);
 
-                if (network == null || input == null || loader == null)
+                CompProperties_AmmoListUser ammoProperties =
+                    loader?.GetCompProperties<CompProperties_AmmoListUser>();
+                CompProperties_ResourceStorage storageProperties =
+                    tank?.GetCompProperties<CompProperties_ResourceStorage>();
+                if (network == null || input == null || loader == null || tank == null)
                 {
                     error = $"required definitions for the {SlotNames[slot]} network were not found";
+                    binding = null;
+                }
+                else if (ammoProperties == null || storageProperties == null)
+                {
+                    error = $"required components for the {SlotNames[slot]} network were not found";
                     binding = null;
                 }
 
@@ -163,16 +269,12 @@ namespace PipedCEAutoloaders
                     continue;
                 }
 
+                loader.SetStatBaseValue(
+                    CE_StatDefOf.ReloadSpeed,
+                    PipedCEAutoloadersMod.Settings.ReloadSpeedFor(slot));
+                storageProperties.storageCapacity =
+                    PipedCEAutoloadersMod.Settings.TankCapacityFor(slot);
                 ConfigureInput(input, binding.Ammo);
-                CompProperties_AmmoListUser ammoProperties =
-                    loader.GetCompProperties<CompProperties_AmmoListUser>();
-                if (ammoProperties == null)
-                {
-                    DisableInput(input);
-                    Log.Error($"PipedCEAutoloaders: {SlotNames[slot]} network is disabled: its autoloader has no CE ammunition component.");
-                    continue;
-                }
-
                 ammoProperties.ammoSet = binding.AmmoSet;
                 ammoProperties.additionalAmmoSets.Clear();
                 Bindings.Add(network, binding);
@@ -307,12 +409,13 @@ namespace PipedCEAutoloaders
         }
     }
 
-    // The settings window edits persisted names only. Validation mirrors
-    // startup resolution for immediate feedback, but runtime Def mutation stays
-    // in Initialize so opening or saving this UI cannot rebind a live colony.
+    // The settings window edits persisted configuration only. Validation
+    // mirrors startup resolution for immediate feedback, but runtime Def
+    // mutation stays in Initialize so this UI cannot reconfigure a live colony.
     internal sealed class PipedCEAutoloadersSettingsWindow
     {
         private readonly PipedCEAutoloadersSettings settings;
+        private Vector2 scrollPosition;
 
         internal PipedCEAutoloadersSettingsWindow(PipedCEAutoloadersSettings settings)
         {
@@ -321,10 +424,15 @@ namespace PipedCEAutoloaders
 
         internal void Draw(Rect inRect)
         {
+            string errors = PipedAmmoBindings.ValidateSettings(settings);
+            float viewWidth = inRect.width - 16f;
+            float errorHeight = errors.NullOrEmpty() ? 0f : Text.CalcHeight(errors, viewWidth);
+            var viewRect = new Rect(0f, 0f, viewWidth, Math.Max(inRect.height, 550f + errorHeight));
+            Widgets.BeginScrollView(inRect, ref scrollPosition, viewRect);
             var listing = new Listing_Standard();
-            listing.Begin(inRect);
-            listing.Label("Each network carries one exact CE round type. Changes take effect after restarting RimWorld.");
-            listing.Label("Existing buildings are not migrated. Empty tanks/loaders and reset or rebuild inputs before rebinding.");
+            listing.Begin(viewRect);
+            listing.Label("Each network carries one exact CE round type and has independent performance settings. Changes take effect after restarting RimWorld.");
+            listing.Label("Existing buildings are not migrated. Empty tanks/loaders before rebinding or lowering capacity, then reset or rebuild inputs.");
             listing.GapLine();
             for (int slot = 0; slot < PipedAmmoBindings.SlotNames.Length; slot++)
             {
@@ -332,7 +440,6 @@ namespace PipedCEAutoloaders
                 listing.Gap();
             }
 
-            string errors = PipedAmmoBindings.ValidateSettings(settings);
             if (!errors.NullOrEmpty())
             {
                 GUI.color = ColorLibrary.RedReadable;
@@ -340,6 +447,7 @@ namespace PipedCEAutoloaders
                 GUI.color = Color.white;
             }
             listing.End();
+            Widgets.EndScrollView();
         }
 
         private void DrawSlot(Listing_Standard listing, int slot)
@@ -379,6 +487,23 @@ namespace PipedCEAutoloaders
                 }
                 Find.WindowStack.Add(new FloatMenu(options));
             }
+            float reloadSpeed = settings.ReloadSpeedFor(slot);
+            reloadSpeed = listing.SliderLabeled(
+                $"Reload speed: {reloadSpeed:0.0}x",
+                reloadSpeed,
+                PipedCEAutoloadersSettings.MinimumReloadSpeed,
+                PipedCEAutoloadersSettings.MaximumReloadSpeed,
+                tooltip: "Higher values reload adjacent turrets faster.");
+            settings.SetReloadSpeed(slot, Mathf.Round(reloadSpeed * 10f) / 10f);
+
+            float tankCapacity = settings.TankCapacityFor(slot);
+            tankCapacity = listing.SliderLabeled(
+                $"Tank capacity: {tankCapacity:0}",
+                tankCapacity,
+                PipedCEAutoloadersSettings.MinimumTankCapacity,
+                PipedCEAutoloadersSettings.MaximumTankCapacity,
+                tooltip: "Maximum rounds stored by each tank in this network.");
+            settings.SetTankCapacity(slot, Mathf.Round(tankCapacity / 100f) * 100f);
         }
     }
 }
