@@ -21,8 +21,8 @@
 
   <!--
     Concrete loaders pair one network with a valid startup AmmoSetDef. Settings
-    replace that ammo set before spawned instances use it, while magazine size
-    and CE reload timing remain common gameplay contracts across all slots.
+    replace that ammo set and inherited reload speed before spawned instances
+    use them, while magazine size and CE base timing remain shared contracts.
   -->
   <ThingDef ParentName="PipedCEAutoloaders_AutoloaderBase">
     <defName>PipedCEAutoloaders_AmberAutoloader</defName><label>amber piped autoloader</label><description>Buffers the exact round assigned to the amber ammunition network and uses Combat Extended's native autoloader path. Requires 100 W of power.</description>
