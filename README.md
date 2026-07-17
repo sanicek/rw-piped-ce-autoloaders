@@ -5,8 +5,9 @@ Vanilla Expanded Framework pipe networks. Three color-coded networks each bind
 to a configured CE ammo set and exact physical round after startup validation.
 Pipe-backed loaders delegate turret reloads to Combat Extended's native path
 while excluding pawn refill and CE ammo-management interactions. Each loader
-draws 100 W and operates only while powered. Compact 2x1 tanks and independently
+draws 100 W and operates only while powered. Compact 1x2 tanks and independently
 configured network performance let each ammunition line fit a different role.
+All network buildings appear under the short `Ammo Pipes` architect category.
 
 Bindings, reload-speed multipliers, and tank capacities are configured under Mod
 Settings. Each network supports 0.1x-5.0x reload speed and 100-10,000 rounds per
@@ -23,7 +24,7 @@ Lowering tank capacity is also not migrated. Empty affected tanks before saving
 the new setting because VEF can discard stored resource above the reduced
 capacity when the colony next loads or the tank is later serialized.
 
-Updating an existing colony also changes placed tanks from 2x2 to 2x1 in place.
+Updating an existing colony also changes placed tanks from 2x2 to 1x2 in place.
 Inspect walls, rooms, roofs, paths, and pipe connections around existing tanks
 after loading; rebuild the surrounding layout where the released cell matters.
 

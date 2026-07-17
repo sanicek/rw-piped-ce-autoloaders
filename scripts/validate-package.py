@@ -117,6 +117,9 @@ def validate_defs(package: Path) -> None:
     networks_root = ET.parse(networks_path).getroot()
     if autoloaders_root.tag != "Defs" or networks_root.tag != "Defs":
         fail("release Def files must have Defs roots")
+    category = networks_root.find("DesignationCategoryDef")
+    if category is None or category.findtext("label") != "Ammo Pipes":
+        fail("release architect category must use the compact Ammo Pipes label")
 
     # Phase 2: establish the three positional network families and their safe
     # startup defaults. Runtime settings may replace these concrete identities,
@@ -173,10 +176,10 @@ def validate_defs(package: Path) -> None:
         fail("release pipe base must retain the VEF linked-pipe rendering pattern")
     if (
         tank_base is None
-        or tank_base.findtext("size") != "(2,1)"
-        or tank_base.findtext("./graphicData/drawSize") != "(2,1)"
+        or tank_base.findtext("size") != "(1,2)"
+        or tank_base.findtext("./graphicData/drawSize") != "(1,2)"
     ):
-        fail("release tank base must use its compact 2x1 footprint and drawing")
+        fail("release tank base must use its compact 1x2 footprint and drawing")
     if input_base is None or any(
         input_base.findtext(path) != value
         for path, value in {

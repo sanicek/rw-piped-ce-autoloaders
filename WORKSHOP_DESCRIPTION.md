@@ -7,7 +7,8 @@ tank capacity settings. Configuration is validated at startup and remains fixed
 until RimWorld restarts; empty tanks before lowering their capacity.
 Pipe-backed autoloaders retain native partial-transfer, shortage, and
 cancellation behavior while excluding pawn refill, adjacent-turret manual
-reload, and CE ammo-management interactions. Ammunition tanks occupy 2x1 cells.
+reload, and CE ammo-management interactions. Ammunition tanks occupy 1x2 cells,
+and all network buildings use the compact Ammo Pipes architect category.
 Existing 2x2 tanks shrink in place after updating, so inspect nearby structures.
 
 [h2]Compatibility[/h2]
