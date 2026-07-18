@@ -58,13 +58,15 @@ building (use the same environment variables if needed).
 
 ## Artwork
 
-Artwork uses a manual-generation, deterministic-intake workflow. The tracked
-`artwork/manifest.toml` supplies exact prompts and game asset contracts. The
-reusable sibling `rw-art-pipeline` normally submits resumable Scenario API
-batches, archives provider provenance and originals outside Git, presents four
-final-size options, and promotes the selected candidate only after explicit
-approval. Manual downloads use the same deterministic intake as a fallback.
-See `artwork/README.md` for the short workflow.
+Artwork is generated through Scenario, reviewed by a human, and processed
+deterministically. The tracked `artwork/manifest.toml` pins each request's prompt,
+model parameters, references, canvas contract, and game outputs. The sibling
+`rw-art-pipeline` first estimates the cost, submits a paid four-option batch only
+after explicit confirmation, and stores originals, receipts, and review sheets
+outside Git. After an option is selected, approval promotes its processed color
+variants into the tracked `Textures/` tree. Manual intake remains a fallback for
+externally generated or recovered source images. Credentials and raw provider
+downloads never enter this repository. See `artwork/README.md` for the commands.
 
 ## Maintenance style
 
