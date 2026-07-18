@@ -7,6 +7,38 @@
 - Validate package structure with `python3 scripts/validate-package.py <package>`.
 - Do not add Workshop publication identifiers until a page has been published.
 
+## Engineering guardrails
+
+- Prefer the simplest engine-native or declarative solution. Do not introduce a
+  workaround whose implementation complexity, compatibility risk, or maintenance
+  cost is disproportionate to the minor issue it addresses without explicit user
+  approval.
+- Before requesting approval for a complex workaround, explain the underlying
+  issue, the proposed mechanism, its implementation and maintenance complexity,
+  compatibility or failure risks, and the simpler alternatives considered. A
+  general request to fix the issue does not implicitly approve the workaround.
+- Any new or materially expanded Harmony patch requires explicit user approval
+  before implementation. Explain why XML, inheritance, composition, or a
+  supported public API cannot solve the problem; identify the target method and
+  patch type; and justify the patch's scope, implementation complexity, and
+  compatibility risk.
+- Existing Harmony patches accepted in completed phases remain approved unless
+  their targets, scope, or behavior materially change.
+
+## Artwork workflow
+
+- Follow `artwork/README.md` and use `scripts/artwork.sh` instead of ad hoc
+  generation or image processing.
+- Keep credentials, raw generations, receipts, candidates, and review sheets
+  outside version control. Only explicitly approved game-ready outputs enter the
+  tracked `Textures/` tree.
+- Show the Scenario dry-run batch cost and obtain explicit user approval before
+  paid generation. Do not treat a general request for new art as approval of the
+  estimated charge.
+- Present the configured candidate sheet and do not select or promote an option
+  until the user explicitly chooses it.
+- Validate approved artwork and package output before committing.
+
 ## Literate Programming
 
 - Write all maintained code in a literate programming style: present each file
