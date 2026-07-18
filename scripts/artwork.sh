@@ -20,7 +20,7 @@ fi
 command="$1"
 shift
 
-# The promotional preview uses CE's canonical sombrero mark as a deterministic
+# The promotional preview uses CE's canonical full emblem as a deterministic
 # compatibility cue. Pinning the official media-pack source protects the final
 # image from silently changing when the dependency checkout moves forward.
 if [[ "$command" == "stamp-ce-logo" ]]; then
@@ -30,9 +30,9 @@ if [[ "$command" == "stamp-ce-logo" ]]; then
     elif [[ -z "$combat_extended_dir" ]]; then
         combat_extended_dir="${HOME:?HOME must be set}/gitproj/public/CombatExtended"
     fi
-    logo="$combat_extended_dir/Media/CE_ModIcon_JustHat.svg"
+    logo="$combat_extended_dir/Media/Icon_CE_large.svg"
     preview="$repo_root/About/Preview.png"
-    expected_logo_sha256="6f24df16420a88dd57fc7a1aa3ecae8d21f48719a58ec4e9adf42b65f36159bb"
+    expected_logo_sha256="3e568d5bcd1387233ead4689e73de51ec8f03ee12caeaa84a317d50012d6d225"
     if [[ ! -f "$logo" || ! -f "$preview" ]]; then
         printf 'Error: approved preview and official CE media-pack logo are required.\n' >&2
         exit 1
@@ -48,8 +48,13 @@ if [[ "$command" == "stamp-ce-logo" ]]; then
     fi
     temporary="$(mktemp "$repo_root/About/.Preview.png.XXXXXX")"
     trap 'rm -f -- "$temporary"' EXIT
-    magick "$preview" \( -background none "$logo" -resize 96x96 \) \
-        -geometry +8+226 -composite -alpha off -colorspace sRGB -type TrueColor "png:$temporary"
+    magick "$preview" \
+        \( -background none "$logo" -resize 78x78 \) \
+        -gravity northwest -geometry +10+228 -composite \
+        \( -size 78x18 'xc:#101010CC' -font DejaVu-Sans-Bold -pointsize 13 \
+            -fill white -gravity center -annotate +0+0 'CE ONLY' \) \
+        -gravity northwest -geometry +10+306 -composite \
+        -alpha off -colorspace sRGB -type TrueColor "png:$temporary"
     mv -- "$temporary" "$preview"
     trap - EXIT
     printf 'Stamped official CE logo: %s\n' "$preview"
