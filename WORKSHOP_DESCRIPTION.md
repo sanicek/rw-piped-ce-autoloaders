@@ -4,7 +4,10 @@ This project is under development. It provides three color-coded ammunition
 pipe networks, each configured with a Combat Extended ammo set and exact round.
 Each network also has independent 0.1x-5.0x reload speed and 100-10,000-round
 magazine capacity settings. Configuration is validated at startup and remains fixed
-until RimWorld restarts; empty magazines before lowering their capacity.
+until RimWorld restarts. Rebinding an existing network converts its stored pipe
+resource and autoloader counts to the newly selected round and updates its input
+filters; physical ammunition already on an input remains available to haul away.
+Empty magazines before lowering their capacity.
 Pipe-backed autoloaders retain native partial-transfer, shortage, and
 cancellation behavior while excluding pawn refill, adjacent-turret manual
 reload, and CE ammo-management interactions. Ammunition magazines occupy 2x2 cells,

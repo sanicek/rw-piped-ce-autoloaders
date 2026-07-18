@@ -44,7 +44,7 @@ exhaustive QA matrix.
 | 3 — end-to-end native CE reload | **Complete** | Confirmed in-game: pipe supply produced the expected partial turret reload, and forbidding the turret cancelled an active reload cleanly. |
 | 4 — close external mutation/lifecycle paths | **Complete** | Confirmed in-game: pawn refill and CE gizmos are absent, adjacent loaders control manual turret reload eligibility without breaking native reload, and deconstruction stops an active reload and its sound. |
 | 5 — settings and three networks | **Complete** | Confirmed in-game: three independent configured networks supply functional autoloaders, and restart rebinding applies to newly built network buildings. This completes the MVP. |
-| 6 — existing-save settings migration | **Skipped for now** | No migration is planned; the current existing-save behavior is accepted unless this phase is reconsidered later. |
+| 6 — authoritative existing-save rebinding | **Complete** | Confirmed in-game: existing pipe resource and autoloader counts adopted the newly configured round, while existing inputs accepted that round after restart. |
 | 7 — powered autoloaders | **Complete** | Confirmed in-game: an autoloader requires power and functions only while powered. |
 | 8 — compact tanks and network performance | **Complete** | Confirmed in-game: 1x2 tanks use the intended battery-scale fit and centered gauge, the `Ammo Pipes` label fits, and each network applies its configured tank capacity and reload speed. |
 | 9 — custom machinery graphics and square magazines | **Complete** | Confirmed in-game: custom autoloader, input, and magazine graphics render clearly with matching network accents; all machinery retains one fixed visual orientation, and square 2x2 magazines keep their storage gauge centered on the lid. |
@@ -97,9 +97,21 @@ part of the release networks. Manual acceptance passed: all three configured
 networks remained independent and supplied functional autoloaders; changing a
 binding and restarting applied the new ammunition Defs to newly built buildings.
 Buildings loaded from a save retained their pre-change ammo-set state. This
-mixed legacy state is observation, not migration support. The current behavior
-is accepted, and Phase 6 is skipped unless existing-save migration is
-reconsidered later.
+mixed legacy state motivated the intentionally simple authoritative rebinding
+policy implemented in Phase 6.
+
+Phase 6 treats restart-applied settings as authoritative instead of tracking or
+materializing a network's former resource identity. Existing VEF storage and
+pending fractional values keep their numeric round counts and therefore become
+the newly configured round. Existing CE autoloaders preserve their buffered
+count while replacing their saved ammo set, current round, and selected round;
+any saved active reload is cancelled when that identity changes. Existing input
+buildings replace their saved item filter with the configured round while
+preserving storage priority and physical items already on the cell. Those old
+items are no longer consumed and can be hauled to other compatible storage.
+Manual acceptance passed: after rebinding and restarting, existing stored and
+buffered round counts used the new binding, the existing input accepted the new
+round, and old physical ammunition remained available to haul elsewhere.
 
 Phase 7 adds a standard 100 W `CompPowerTrader` to all three autoloaders and
 uses CE's native power check to gate operation. Unpowered loaders preserve their
