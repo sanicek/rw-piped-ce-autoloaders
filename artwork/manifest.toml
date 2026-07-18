@@ -184,3 +184,65 @@ TECHNICAL REQUIREMENTS
 - Do not create variants, callouts, a sprite sheet, or additional views
 - Return one high-resolution PNG
 """
+
+# RimWorld displays this wide RGB image as the mod's browser and Workshop
+# preview. The approved machines anchor its visual identity, while the center-safe
+# composition survives the deterministic crop from Scenario's landscape canvas.
+[[requests]]
+id = "preview"
+title = "Dramatic piped autoloader preview"
+width = 630
+height = 330
+occupied_fraction = 1.0
+alpha_required = false
+background_removal = "none"
+fit = "cover"
+output_mode = "RGB"
+generation = { provider = "scenario", model_id = "model_openai-gpt-image-2", candidates = 4, reference_parameter = "referenceImages", parameters = { width = 1536, height = 1024, quality = "medium", background = "opaque", numOutputs = 1 } }
+references = ["autoloader", "input", "magazine"]
+outputs = [
+  { path = "About/Preview.png" },
+]
+prompt = """
+Create one bold gaming-thumbnail hero image for the RimWorld mod Piped CE Autoloaders, using the attached approved machine sprites as the authoritative design references.
+
+HERO COMPOSITION
+- Build one unified near-top-down RimWorld-inspired colony scene, never a split screen, before-and-after comparison, collage, or product lineup
+- Place one large defensive turret at the visual center, firing toward the upper-right with a bright controlled muzzle flash
+- Arrange approved compact autoloaders, square magazines, and input hoppers around the turret as one believable automated ammunition installation
+- Three clearly distinct pipe networks in amber, electric blue, and green sweep inward from the lower corners and sides toward the autoloading machinery
+- Use the colored pipe routes as strong graphic leading lines that frame the turret without crossing the title
+- Preserve the approved machines' neutral gray steel, dark recesses, broad simple geometry, and distinct functions
+- Add boxed ammunition only inside or immediately beside the input area; keep the main mechanism visually clean
+
+EXACT TYPOGRAPHY
+- Render exactly these two lines and no other text:
+- Main title: PIPED CE AUTOLOADERS
+- Subtitle: AMMO ON TAP.
+- Spell both lines exactly, with every character fully visible and unobstructed
+- Main title uses very large bold condensed uppercase cream lettering with a thick black outline and restrained amber shadow
+- Subtitle uses smaller bright amber uppercase lettering on a simple dark banner
+- Center both lines horizontally in the upper-middle area
+
+CROP-SAFE LAYOUT
+- The final image will be cropped much wider than this source: reserve the outermost 15 percent on the top and bottom as sacrificial scenery
+- Absolutely no letter, title outline, muzzle flash, turret, machine, or other important detail may enter the top 15 percent or bottom 15 percent
+- Keep all typography fully between 20 percent and 43 percent of the source image height
+- Keep all typography and important machinery at least 8 percent away from the left and right edges
+- Fill crop margins only with continuous dark terrain, subtle vegetation, and nonessential pipe extensions
+
+VISUAL STYLE
+- Premium illustrated mod key art with the punch, saturation, and immediate readability of a high-performing gaming thumbnail
+- RimWorld-inspired orthographic forms and chunky outlines, not photorealistic military concept art
+- Dramatic warm workshop lighting against dark rocky terrain, with crisp silhouettes and selective glow around powered pipes
+- Strong central hierarchy: title first, firing turret second, three-color automated network third
+- High contrast but controlled detail so the scene remains readable at 630 by 330 pixels
+- Keep amber, blue, and green networks unmistakably separate; do not tint neutral machinery or terrain
+
+EXCLUSIONS
+- No split screen, dividing line, before-and-after layout, red arrow, circle, reaction face, colonist portrait, hands, or meme character
+- No logos, interface panels, menus, statistics, labels, caliber markings, borders, watermarks, or signatures
+- No realistic humans, gore, enemies, giant explosions, or effects obscuring the machinery
+- No text fragments or writing except the exact title PIPED CE AUTOLOADERS and exact subtitle AMMO ON TAP.
+- Return one finished opaque landscape PNG
+"""
