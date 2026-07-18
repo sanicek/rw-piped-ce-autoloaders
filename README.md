@@ -13,12 +13,11 @@ Bindings, reload-speed multipliers, and magazine capacities are configured under
 Settings. Each network supports 0.1x-5.0x reload speed and 100-10,000 rounds per
 magazine. Changes require a restart and are then immutable for the session.
 Duplicate, missing, hidden, or mismatched rounds disable the affected network
-instead of silently changing its resource.
-Changing a binding for a colony that already has stored or buffered rounds is
-not supported: those untyped values would take on the new binding after the
-restart. Existing-save migration is not currently planned. Empty its magazines and
-loaders, then reset or rebuild its existing inputs, or use the new binding in a
-new game.
+instead of silently selecting another resource. After a binding changes and
+RimWorld restarts, that setting is authoritative for existing colonies: stored
+pipe resource and buffered autoloader counts become the newly selected round,
+and existing input filters update to accept it. Old physical ammunition already
+on an input remains on the map and can be hauled to compatible storage.
 
 Lowering magazine capacity is also not migrated. Empty affected magazines before saving
 the new setting because VEF can discard stored resource above the reduced
@@ -90,11 +89,11 @@ QA matrix. After `./scripts/install-local.sh`, build the setup introduced by the
 current phase and confirm its intended path works. The pull request supplies the
 short setup and expected observation for that phase.
 
-Phase 5 passed its smoke test: all three configured networks remained
-independent and supplied functional autoloaders. Changing a binding and
-restarting applied the new ammunition Defs to newly built buildings; buildings
-loaded from an existing save retained their prior ammo-set state, so migration
-of mixed legacy state remains unsupported and is not currently planned.
+Phase 6 awaits its smoke test. Save a colony with pipe resource, a loaded
+autoloader, and old physical ammunition on an input; change that network's
+binding and restart. Confirm the stored and buffered round counts use the new
+binding, the existing input accepts only the new round, and the old physical
+stack remains available to haul elsewhere.
 
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for completed
 phase evidence, the current roadmap, and future work.

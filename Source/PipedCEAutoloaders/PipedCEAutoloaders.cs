@@ -146,6 +146,28 @@ namespace PipedCEAutoloaders
     {
         private float pendingResource;
 
+        // Building_Storage persists its player-facing filter in each save. The
+        // startup binding is authoritative, so every spawned input replaces
+        // that saved filter while retaining its priority and any item already
+        // occupying the input cell.
+        public override void PostSpawnSetup(bool respawningAfterLoad)
+        {
+            base.PostSpawnSetup(respawningAfterLoad);
+
+            StorageSettings settings = (parent as Building_Storage)?.GetStoreSettings();
+            if (settings?.filter == null)
+            {
+                return;
+            }
+
+            AmmoDef allowedAmmo = PipedAmmoBindings.For(Props.pipeNet)?.Ammo;
+            settings.filter.SetDisallowAll();
+            if (allowedAmmo != null)
+            {
+                settings.filter.SetAllow(allowedAmmo, true);
+            }
+        }
+
         public override void PostExposeData()
         {
             base.PostExposeData();
@@ -359,11 +381,13 @@ namespace PipedCEAutoloaders
     /// </summary>
     public sealed class Building_PipeBackedAutoloaderCE : Building_AutoloaderCE
     {
+        private AmmoSetDef pipeAmmoSet;
         private AmmoDef pipeAmmo;
         private CompResource resourceComp;
         private float resourceCredit;
 
-        internal bool HasValidBinding => pipeAmmo != null
+        internal bool HasValidBinding => pipeAmmoSet != null
+            && pipeAmmo != null
             && CompAmmoUser != null
             && CompAmmoUser.UseAmmo;
 
@@ -376,20 +400,28 @@ namespace PipedCEAutoloaders
         {
             base.SpawnSetup(map, respawningAfterLoad);
             resourceComp = GetComp<CompResource>();
-            pipeAmmo = PipedAmmoBindings.For(resourceComp?.Props.pipeNet)?.Ammo;
+            PipedAmmoBinding binding = PipedAmmoBindings.For(resourceComp?.Props.pipeNet);
+            pipeAmmoSet = binding?.AmmoSet;
+            pipeAmmo = binding?.Ammo;
 
-            if (pipeAmmo == null)
+            if (binding == null)
             {
                 Log.Error($"{GetType().Assembly.GetName().Name}: {Label} has no valid startup ammunition binding.");
                 return;
             }
-            if (CompAmmoUser != null && !CompAmmoUser.UseAmmo)
+
+            bool bindingChanged = CompAmmoUser != null
+                && (CompAmmoUser.CurAmmoSet != pipeAmmoSet
+                    || CompAmmoUser.CurrentAmmo != pipeAmmo);
+            if (!ApplyPipeBinding())
             {
                 Log.Error($"{GetType().Assembly.GetName().Name}: {Label} requires Combat Extended's ammunition system.");
                 return;
             }
-
-            SetPipeAmmoWhenSafe();
+            if (bindingChanged)
+            {
+                CancelReload();
+            }
         }
 
         // Fractional credit belongs to this loader and must survive save/load
@@ -602,7 +634,7 @@ namespace PipedCEAutoloaders
                 return;
             }
 
-            if (!SetPipeAmmoWhenSafe() || CompAmmoUser.CurMagCount >= CompAmmoUser.MagSize)
+            if (!ApplyPipeBinding() || CompAmmoUser.CurMagCount >= CompAmmoUser.MagSize)
             {
                 return;
             }
@@ -632,26 +664,22 @@ namespace PipedCEAutoloaders
             Notify_ColorChanged();
         }
 
-        private bool SetPipeAmmoWhenSafe()
+        private bool ApplyPipeBinding()
         {
-            if (CompAmmoUser == null || !CompAmmoUser.UseAmmo)
+            if (CompAmmoUser == null || pipeAmmoSet == null || pipeAmmo == null)
             {
                 return false;
             }
 
-            if (CompAmmoUser.CurrentAmmo != pipeAmmo)
+            if (CompAmmoUser is CompVariableAmmoUser variableAmmoUser)
             {
-                // Existing buffered rounds retain their original type. Refusing
-                // an in-place switch avoids reinterpreting them after rebinding.
-                if (CompAmmoUser.CurMagCount > 0)
-                {
-                    return false;
-                }
-                CompAmmoUser.CurrentAmmo = pipeAmmo;
+                variableAmmoUser.SelectedAmmoSet = pipeAmmoSet;
             }
-
+            CompAmmoUser.CurrentAmmo = pipeAmmo;
             CompAmmoUser.SelectedAmmo = pipeAmmo;
-            return CompAmmoUser.CurrentAmmo == pipeAmmo;
+            return CompAmmoUser.UseAmmo
+                && CompAmmoUser.CurAmmoSet == pipeAmmoSet
+                && CompAmmoUser.CurrentAmmo == pipeAmmo;
         }
     }
 }

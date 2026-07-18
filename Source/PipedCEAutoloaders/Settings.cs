@@ -10,7 +10,8 @@ using Verse;
 // Settings persist Def names and bounded performance values, then apply once
 // after RimWorld has loaded all CE and VEF Defs. The resulting session
 // configuration deliberately does not observe later writes: changing a
-// network requires a restart and does not migrate existing pipe contents.
+// network requires a restart, after which its binding authoritatively
+// reinterprets existing pipe resource and loader contents as the new round.
 namespace PipedCEAutoloaders
 {
     /// <summary>
@@ -432,7 +433,7 @@ namespace PipedCEAutoloaders
             var listing = new Listing_Standard();
             listing.Begin(viewRect);
             listing.Label("Each network carries one exact CE round type and has independent performance settings. Changes take effect after restarting RimWorld.");
-            listing.Label("Existing buildings are not migrated. Empty magazines/loaders before rebinding or lowering capacity, then reset or rebuild inputs.");
+            listing.Label("After a restart, rebinding converts stored pipe resource and loader contents to the new round and updates existing inputs. Empty magazines before lowering capacity.");
             listing.GapLine();
             for (int slot = 0; slot < PipedAmmoBindings.SlotNames.Length; slot++)
             {
