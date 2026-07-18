@@ -188,6 +188,7 @@ TECHNICAL REQUIREMENTS
 # RimWorld displays this wide RGB image as the mod's browser and Workshop
 # preview. The approved machines anchor its visual identity, while the center-safe
 # composition survives the deterministic crop from Scenario's landscape canvas.
+# After approval, artwork.sh stamps CE's checksum-pinned official sombrero mark.
 [[requests]]
 id = "preview"
 title = "Dramatic piped autoloader preview"

@@ -16,6 +16,7 @@ path; manual intake remains available for recovered or externally produced art:
 ./scripts/artwork.sh generate magazine --confirm-cost
 ./scripts/artwork.sh select magazine 4
 ./scripts/artwork.sh approve magazine
+./scripts/artwork.sh stamp-ce-logo
 
 # Manual fallback
 ./scripts/artwork.sh intake autoloader /path/to/download.png
@@ -29,6 +30,9 @@ normalizes every output variant, and prints one numbered contact sheet. Run
 `select` with the approved option number, review its final sheet, then run
 `approve`. A generation receipt prevents an interrupted command from silently
 submitting another paid batch; `--restart` is the explicit escape hatch.
+
+`stamp-ce-logo` composites CE's checksum-pinned official media-pack sombrero
+onto the approved promotional preview. Run it only after approving `preview`.
 
 Credentials come from `SCENARIO_API_KEY` plus `SCENARIO_API_SECRET`, or from the
 mode-0600 file created interactively by `auth scenario`. Neither credentials nor
