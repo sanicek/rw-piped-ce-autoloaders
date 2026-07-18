@@ -158,6 +158,9 @@ passed: mixed normal and hidden segments transferred ammunition as one connected
 network, completed hidden segments disappeared and resisted attacks, and the
 network deconstruction designator removed them.
 
+Startup-localization maintenance acceptance passed: RimWorld displayed
+`Initializing Piped CE Autoloaders` without missing-translation markers.
+
 ## Unprioritized future features
 
 The following features are candidates for future implementation in no particular
