@@ -79,6 +79,7 @@ rm -rf -- "$artifact_dir"
 mkdir -p -- "$artifact_dir"
 cp -a -- "$repo_root/About" "$artifact_dir/"
 cp -a -- "$repo_root/Defs" "$artifact_dir/"
+cp -a -- "$repo_root/Textures" "$artifact_dir/"
 cp -- "$repo_root/LoadFolders.xml" "$artifact_dir/LoadFolders.xml"
 for version in "${versions[@]}"; do
     mkdir -p -- "$artifact_dir/$version/Assemblies"

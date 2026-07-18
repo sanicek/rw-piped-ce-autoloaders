@@ -10,15 +10,17 @@ unnoticed.
 
 import argparse
 import re
+import struct
 import sys
 import xml.etree.ElementTree as ET
+import zlib
 from pathlib import Path
 from typing import Dict, Optional
 
 # These allowlists are release policy, not a general RimWorld package schema.
 # Expanding supported versions or package content requires changing the build,
 # routing, metadata, and these expectations together.
-EXPECTED_TOP_LEVEL = {"About", "Defs", "LoadFolders.xml", "1.6"}
+EXPECTED_TOP_LEVEL = {"About", "Defs", "Textures", "LoadFolders.xml", "1.6"}
 EXPECTED_VERSIONS = ("1.6",)
 FORBIDDEN_NAMES = {"Source", ".git", "scripts", "bin", "obj", ".vs"}
 ASSEMBLY_NAME = "PipedCEAutoloaders.dll"
@@ -176,14 +178,25 @@ def validate_defs(package: Path) -> None:
         fail("release pipe base must retain the VEF linked-pipe rendering pattern")
     if (
         tank_base is None
-        or tank_base.findtext("size") != "(1,2)"
-        or tank_base.findtext("./graphicData/drawSize") != "(2,3)"
+        or tank_base.find("thingClass") is not None
+        or tank_base.findtext("size") != "(2,2)"
+        or tank_base.findtext("rotatable") != "false"
+        or tank_base.findtext("./graphicData/graphicClass") != "Graphic_Single"
+        or tank_base.findtext("./graphicData/drawSize") != "(2,2)"
+        or tank_base.findtext("./graphicData/drawRotated") != "false"
+        or tank_base.findtext("./graphicData/allowFlip") != "false"
     ):
-        fail("release tank base must use its compact 1x2 footprint and vanilla battery draw scale")
+        fail("release magazines must use one fixed square graphic on their 2x2 footprint")
     if input_base is None or any(
         input_base.findtext(path) != value
         for path, value in {
             "thingClass": "Building_Storage",
+            "size": "(1,1)",
+            "rotatable": "false",
+            "graphicData/graphicClass": "Graphic_Single",
+            "graphicData/drawSize": "(1,1)",
+            "graphicData/drawRotated": "false",
+            "graphicData/allowFlip": "false",
             "altitudeLayer": "BuildingOnTop",
             "passability": "Standable",
             "surfaceType": "Item",
@@ -192,16 +205,22 @@ def validate_defs(package: Path) -> None:
             "building/ignoreStoredThingsBeauty": "true",
         }.items()
     ):
-        fail("release input base must retain the VEF hauling-safe storage pattern")
+        fail("release inputs must retain fixed one-way graphics and VEF hauling-safe storage")
     if (
         loader_base is None
         or loader_base.findtext("thingClass") != "PipedCEAutoloaders.Building_PipeBackedAutoloaderCE"
         or loader_base.findtext("tickerType") != "Normal"
         or loader_base.findtext("drawerType") != "MapMeshAndRealTime"
+        or loader_base.findtext("size") != "(1,1)"
+        or loader_base.findtext("rotatable") != "false"
+        or loader_base.findtext("./graphicData/graphicClass") != "Graphic_Single"
+        or loader_base.findtext("./graphicData/drawSize") != "(1,1)"
+        or loader_base.findtext("./graphicData/drawRotated") != "false"
+        or loader_base.findtext("./graphicData/allowFlip") != "false"
         or loader_base.findtext("hasInteractionCell") != "false"
         or loader_base.findtext("./statBases/ReloadSpeed") != "0.5"
     ):
-        fail("release autoloader base must use the pipe-backed class, default reload speed, and required lifecycle settings")
+        fail("release autoloaders must retain fixed one-way graphics and required pipe-backed lifecycle settings")
     loader_power_comps = loader_base.findall("./comps/li[@Class='CompProperties_Power']")
     if (
         len(loader_power_comps) != 1
@@ -231,11 +250,17 @@ def validate_defs(package: Path) -> None:
             if comp is None or comp.findtext("pipeNet") != net_name:
                 fail(f"{thing_name} must use {comp_class} on its matching PipeNetDef")
             if thing_name == tank_name:
+                expected_texture = f"Things/Building/PipedCEAutoloaders/{slot}Magazine"
+                if network_things[thing_name].findtext("./graphicData/texPath") != expected_texture:
+                    fail(f"{tank_name} must use its matching fixed magazine texture")
                 if comp.findtext("storageCapacity") != "1000":
                     fail(f"{tank_name} must retain the 1000-round startup capacity")
-                if comp.findtext("centerOffset") != "(0,0,0)":
-                    fail(f"{tank_name} must center its storage gauge on the graphic")
+                if comp.findtext("centerOffset") != "(0,0,0.2)":
+                    fail(f"{tank_name} must center its storage gauge on the magazine lid")
         loader = loaders[loader_name]
+        expected_loader_texture = f"Things/Building/PipedCEAutoloaders/{slot}Autoloader"
+        if loader.findtext("./graphicData/texPath") != expected_loader_texture:
+            fail(f"{loader_name} must use its matching custom autoloader texture")
         loader_comps = loader.find("./comps")
         if (
             loader_comps is None
@@ -249,6 +274,9 @@ def validate_defs(package: Path) -> None:
             fail(f"{slot} autoloader must provide its valid default CE buffer")
         if resource_comp is None or resource_comp.findtext("pipeNet") != net_name:
             fail(f"{slot} autoloader must connect to its matching PipeNetDef")
+        expected_input_texture = f"Things/Building/PipedCEAutoloaders/{slot}Input"
+        if network_things[input_name].findtext("./graphicData/texPath") != expected_input_texture:
+            fail(f"{input_name} must use its matching custom input texture")
 
     # Phase 5: retain selected conversion preconditions and exclude the obsolete
     # spike component that would create a path back to physical items.
@@ -256,6 +284,83 @@ def validate_defs(package: Path) -> None:
         fail("release inputs must tick normally for atomic physical-item conversion")
     if networks_root.findall(".//li[@Class='PipeSystem.CompProperties_ConvertResourceToThing']"):
         fail("release networks must not contain Phase 1 diagnostic outputs")
+
+
+def validate_png(path: Path, dimensions: tuple[int, int], color_type: int) -> None:
+    """Decode the complete PNG stream rather than trusting header metadata."""
+    require_file(path)
+    idat = bytearray()
+    header_data = None
+    saw_iend = False
+    try:
+        with path.open("rb") as stream:
+            if stream.read(8) != b"\x89PNG\r\n\x1a\n":
+                fail(f"file is not a PNG: {path}")
+            chunk_index = 0
+            while not saw_iend:
+                chunk_header = stream.read(8)
+                if len(chunk_header) != 8:
+                    fail(f"PNG has a truncated chunk header: {path}")
+                length, chunk_type = struct.unpack(">I4s", chunk_header)
+                if length > 100 * 1024 * 1024:
+                    fail(f"PNG chunk exceeds the package safety limit: {path}")
+                data, checksum = stream.read(length), stream.read(4)
+                if len(data) != length or len(checksum) != 4:
+                    fail(f"PNG has a truncated chunk: {path}")
+                if zlib.crc32(chunk_type + data) & 0xFFFFFFFF != struct.unpack(">I", checksum)[0]:
+                    fail(f"PNG has an invalid chunk checksum: {path}")
+                chunk_index += 1
+                if chunk_index == 1:
+                    if chunk_type != b"IHDR" or length != 13:
+                        fail(f"PNG does not begin with a valid IHDR: {path}")
+                    header_data = data
+                elif chunk_type == b"IDAT":
+                    idat.extend(data)
+                elif chunk_type == b"IEND":
+                    if length != 0 or stream.read(1):
+                        fail(f"PNG has an invalid terminal chunk or trailing data: {path}")
+                    saw_iend = True
+    except (OSError, struct.error) as error:
+        fail(f"cannot read PNG {path}: {error}")
+    if header_data is None or not idat or not saw_iend:
+        fail(f"PNG is missing required image chunks: {path}")
+    width, height, bit_depth, actual_color_type, compression, filtering, interlace = struct.unpack(">IIBBBBB", header_data)
+    if (width, height) != dimensions or (bit_depth, actual_color_type, compression, filtering, interlace) != (8, color_type, 0, 0, 0):
+        mode = "RGBA" if color_type == 6 else "RGB"
+        fail(f"PNG must be an 8-bit non-interlaced {mode} image at {dimensions[0]}x{dimensions[1]}: {path}")
+    channels = 4 if color_type == 6 else 3
+    expected_size = height * (1 + width * channels)
+    try:
+        decompressor = zlib.decompressobj()
+        decoded = decompressor.decompress(bytes(idat), expected_size + 1)
+        if decompressor.unconsumed_tail or len(decoded) > expected_size:
+            fail(f"PNG image data expands beyond its declared dimensions: {path}")
+        decoded += decompressor.flush()
+    except zlib.error as error:
+        fail(f"PNG image data cannot be decoded in {path}: {error}")
+    if not decompressor.eof or decompressor.unused_data or len(decoded) != expected_size:
+        fail(f"PNG image data has an unexpected decoded size: {path}")
+    row_size = 1 + width * channels
+    if any(decoded[row * row_size] > 4 for row in range(height)):
+        fail(f"PNG image data uses an invalid scanline filter: {path}")
+
+
+def validate_textures(package: Path) -> None:
+    """Phase 6: constrain custom sprites to exact paths and game-ready PNGs."""
+    textures = package / "Textures"
+    require_directory(textures)
+    texture_root = textures / "Things" / "Building" / "PipedCEAutoloaders"
+    expected = {
+        f"Things/Building/PipedCEAutoloaders/{slot}{kind}.png": (256, 256) if kind == "Magazine" else (128, 128)
+        for slot in ("Amber", "Blue", "Green")
+        for kind in ("Autoloader", "Input", "Magazine")
+    }
+    files = {path.relative_to(textures).as_posix() for path in textures.rglob("*") if path.is_file()}
+    if files != set(expected):
+        fail("Textures must contain exactly the three color variants for each custom building graphic")
+    require_directory(texture_root)
+    for relative, dimensions in expected.items():
+        validate_png(textures / relative, dimensions, color_type=6)
 
 
 def main() -> None:
@@ -272,7 +377,7 @@ def main() -> None:
     if not package.is_dir():
         fail(f"package directory does not exist: {package}")
     if {path.name for path in package.iterdir()} != EXPECTED_TOP_LEVEL:
-        fail("package must contain exactly About, Defs, LoadFolders.xml, and 1.6")
+        fail("package must contain exactly About, Defs, Textures, LoadFolders.xml, and 1.6")
     for path in package.rglob("*"):
         if path.is_symlink():
             fail(f"symlinks are not allowed in package: {path}")
@@ -284,14 +389,18 @@ def main() -> None:
     # contract checked by both package layout and About.xml.
     about = package / "About"
     require_directory(about)
-    if {path.name for path in about.iterdir()} != {"About.xml"}:
-        fail("About must contain exactly About.xml")
+    about_files = {path.name for path in about.iterdir()}
+    if "About.xml" not in about_files or not about_files <= {"About.xml", "Preview.png"}:
+        fail("About must contain About.xml and may contain one validated Preview.png")
     require_file(about / "About.xml")
+    if "Preview.png" in about_files:
+        validate_png(about / "Preview.png", (630, 330), color_type=2)
     load_folders = package / "LoadFolders.xml"
     require_file(load_folders)
     mapping = load_folder_mapping(load_folders)
     parse_xml_files(about)
     validate_defs(package)
+    validate_textures(package)
     for version in EXPECTED_VERSIONS:
         validate_version(package, version)
 

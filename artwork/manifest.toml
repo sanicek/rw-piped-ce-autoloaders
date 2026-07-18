@@ -1,0 +1,186 @@
+# This manifest is the tracked boundary between subjective image generation and
+# deterministic game assets. Web UI downloads and review sheets live in the
+# toolkit's local state directory; only explicitly approved outputs enter Git.
+[project]
+package_id = "Sanicek.PipedCEAutoloaders"
+name = "Piped CE Autoloaders"
+root = ".."
+
+# Scenario generation is asynchronous and resumable. Four one-image jobs avoid
+# relying on model-specific batch fields; the live schema and dry-run estimate
+# are checked before the first charged request for a pinned model.
+[providers.scenario]
+candidates = 4
+poll_seconds = 3
+max_wait_seconds = 900
+
+# Amber is the source accent for machinery. The processor moves saturated
+# pixels to each network hue while preserving neutral steel and modeled value.
+[[requests]]
+id = "autoloader"
+title = "Compact piped ammunition autoloader"
+width = 128
+height = 128
+occupied_fraction = 0.90
+alpha_required = true
+background_removal = "light-checkerboard"
+fit = "contain"
+output_mode = "RGBA"
+accent_saturation_min = 0.20
+generation = { provider = "scenario", model_id = "model_openai-gpt-image-2", candidates = 4, reference_parameter = "referenceImages", external_references = [{ receipt = "magazine", asset_id = "asset_NzYXrGFrUFu9Q46aq9z2G6ze", source_sha256 = "08d6a25bd799f73b76aa53947b9115c9d5a53a8a39fd721dce2fa2be2955ccf8" }], parameters = { width = 1024, height = 1024, quality = "medium", background = "opaque", numOutputs = 1 } }
+outputs = [
+  { path = "Textures/Things/Building/PipedCEAutoloaders/AmberAutoloader.png", accent_color = "#c79e38" },
+  { path = "Textures/Things/Building/PipedCEAutoloaders/BlueAutoloader.png", accent_color = "#408ce6" },
+  { path = "Textures/Things/Building/PipedCEAutoloaders/GreenAutoloader.png", accent_color = "#59bf66" },
+]
+prompt = """
+Create one clean, game-ready building sprite for a compact powered ammunition autoloader in the simple visual language of vanilla RimWorld and Vanilla Expanded.
+
+REFERENCE AND CAMERA
+- Use the attached approved ammunition magazine as the authoritative reference for orthographic camera, line weight, gray material, amber color treatment, lighting, and clean RimWorld simplicity
+- Do not copy its storage lid, dimensions, or function; this must be a distinct one-tile loading mechanism
+- Match its near-top-down orthographic projection: no camera perspective, vanishing point, or convergence toward the back
+- Keep left and right outer edges parallel, with no narrowing toward the north/top
+- Show only a shallow amount of the south/front wall
+
+SUBJECT AND SILHOUETTE
+- A low, compact powered ammunition feeder occupying one square floor tile
+- Bold near-square silhouette, almost equal in width and depth, with no long side rail or narrow cabinet shape
+- One broad north-south guide rail must run across the top as the dominant functional shape
+- Put one large rectangular feed carriage or pusher block on the rail so the machine clearly reads as an automatic loader
+- The rail, carriage, and one dark feed opening are the entire visible mechanism; construct them from two or three large geometric forms
+- One broad amber panel across the south/front edge makes the network color unmistakable at game zoom
+- Keep the mechanism empty and closed enough to avoid showing loose ammunition
+- It must read as powered loading machinery, not a storage magazine, hopper, turret, weapon, or conveyor belt
+- Exactly one isolated machine centered on a square canvas, filling it tightly with narrow even margins
+
+STYLE AND COLOR
+- Extremely simple, clean vanilla-like game art designed to remain readable at 64 pixels
+- Use only a few broad shapes, thick dark outlines, clear value separation, and soft top-left lighting
+- Neutral medium-gray steel body, one dark feed recess, and only one saturated amber identification area
+- Smooth painted surfaces with no photorealistic materials
+- No other colored parts, colored reflections, or glow
+- No tiny bolts, rivets, gears, teeth, pistons, vents, ribs, cables, handles, latches, repeated grooves, fine seams, scratches, grime, or decorative greebles
+
+TECHNICAL REQUIREMENTS
+- Solid pure white background for deterministic local removal; do not draw a checkerboard or environment
+- Crisp complete silhouette with no cropped parts and no external cast shadow
+- No external pipe coupling, connector, socket, nozzle, hose, or protruding mechanism
+- No floor tile, terrain, backdrop, border, or surrounding scene
+- No text, letters, numbers, labels, symbols, caliber markings, people, weapons, loose ammunition, UI, watermark, or signature
+- Do not create variants, callouts, a sprite sheet, or multiple views
+- Return one high-resolution PNG
+"""
+
+[[requests]]
+id = "input"
+title = "Compact ammunition intake hopper"
+width = 128
+height = 128
+occupied_fraction = 0.90
+alpha_required = true
+background_removal = "light-checkerboard"
+fit = "contain"
+output_mode = "RGBA"
+accent_saturation_min = 0.20
+generation = { provider = "scenario", model_id = "model_openai-gpt-image-2", candidates = 4, parameters = { width = 1024, height = 1024, quality = "medium", background = "opaque", numOutputs = 1 } }
+outputs = [
+  { path = "Textures/Things/Building/PipedCEAutoloaders/AmberInput.png", accent_color = "#c79e38" },
+  { path = "Textures/Things/Building/PipedCEAutoloaders/BlueInput.png", accent_color = "#408ce6" },
+  { path = "Textures/Things/Building/PipedCEAutoloaders/GreenInput.png", accent_color = "#59bf66" },
+]
+prompt = """
+Create one clean, game-ready building sprite for a compact ammunition intake hopper in the simple visual language of vanilla RimWorld and Vanilla Expanded.
+
+SUBJECT AND SILHOUETTE
+- A low, one-tile square receiving hopper where colonists deposit boxed ammunition
+- One large, empty, dark recessed tray must dominate the sprite and make its input function obvious at game zoom
+- A simple thick gray rim surrounds the tray
+- One broad amber panel across the south/front edge makes the network color unmistakable
+- Use a bold near-square silhouette with no external machinery or protruding connector
+- It must read as a loading hopper, not a storage chest, weapon, conveyor, or liquid container
+
+CAMERA AND FOOTPRINT
+- Strict orthographic near-top-down RimWorld building projection, not a low-angle product render
+- No camera perspective, vanishing point, or convergence toward the back
+- The left and right outer edges must remain parallel; the hopper must not narrow toward the north/top
+- The tray must have parallel opposite edges and must not become a trapezoid
+- Show only a shallow amount of the south/front wall
+- Exactly one isolated machine centered on a square canvas, filling it tightly with narrow even margins
+
+STYLE AND COLOR
+- Extremely simple, clean vanilla-like game art designed to remain readable at 64 pixels
+- Use only a few broad shapes, thick dark outlines, clear value separation, and soft top-left lighting
+- Neutral medium-gray steel body, one dark tray recess, and only one saturated amber identification area
+- Smooth painted surfaces with no photorealistic material rendering
+- No other colored components, colored reflections, or glow
+- No tiny bolts, rivets, vents, ribs, cables, handles, latches, repeated grooves, fine seams, scratches, grime, or decorative greebles
+
+TECHNICAL REQUIREMENTS
+- Solid pure white background for deterministic local removal; do not draw a checkerboard or environment
+- Complete crisp silhouette with no cropped parts and no external cast shadow
+- Keep the tray empty: no ammunition, boxes, cartridges, shells, or loose items
+- No pipe coupling, connector, socket, nozzle, hose, gauge, or other protrusion
+- No floor tile, terrain, backdrop, border, interaction arrow, or surrounding scene
+- No text, letters, numbers, labels, symbols, people, weapons, UI, watermark, or signature
+- Do not create variants, callouts, a sprite sheet, or multiple views
+- Return one high-resolution PNG
+"""
+
+# The square footprint and Graphic_Single rendering need one fixed visual for all
+# game rotations. The accepted 1x2 concept remains the style/mechanism reference.
+[[requests]]
+id = "magazine"
+title = "Square bulk ammunition magazine"
+width = 256
+height = 256
+occupied_fraction = 0.96
+alpha_required = true
+background_removal = "light-checkerboard"
+fit = "contain"
+output_mode = "RGBA"
+accent_saturation_min = 0.20
+generation = { provider = "scenario", model_id = "model_openai-gpt-image-2", candidates = 4, reference_parameter = "referenceImages", external_references = [{ receipt = "magazine-ornate-reference", asset_id = "asset_jrQ7JWQ4D5g3biRmsqTsH3qQ", source_sha256 = "a87d546428b9b7efea5415bdb74c8bb6670e492b7dde412521ff2dbdc6398259" }], parameters = { width = 1024, height = 1024, quality = "medium", background = "opaque", numOutputs = 1 } }
+outputs = [
+  { path = "Textures/Things/Building/PipedCEAutoloaders/AmberMagazine.png", accent_color = "#c79e38" },
+  { path = "Textures/Things/Building/PipedCEAutoloaders/BlueMagazine.png", accent_color = "#408ce6" },
+  { path = "Textures/Things/Building/PipedCEAutoloaders/GreenMagazine.png", accent_color = "#59bf66" },
+]
+prompt = """
+Create one clean, game-ready building sprite for a bulk ammunition magazine in the simple visual language of vanilla RimWorld and Vanilla Expanded.
+
+REFERENCE AND CAMERA
+- Use the attached ornate magazine only as the authoritative reference for camera angle, orthographic projection, square footprint, overall dimensions, and canvas fit
+- Do not preserve its small mechanical details, multiple hatches, pipe connector, or ornamentation
+- Match its near-top-down RimWorld projection: no camera perspective, no vanishing point, and no convergence toward the back
+- The chassis must occupy a true near-square silhouette; its left and right outer edges must remain parallel rather than narrowing toward the top
+- The large top lid must also have parallel opposite edges and must not become a trapezoid
+- Show only a shallow amount of side wall, matching the reference rather than a low-angle product render
+
+SUBJECT AND SILHOUETTE
+- A low, squat, square armored container that stores bulk ammunition
+- Near-square two-cells-wide by two-cells-deep footprint with a bold, immediately readable silhouette
+- One large top access lid or recessed storage panel should dominate the body
+- One large amber panel or broad amber band makes the network color unmistakable at game zoom
+- Exactly one isolated square storage machine centered on a square canvas
+- Fill the canvas tightly with narrow, even margins
+
+STYLE AND COLOR
+- Extremely simple, clean vanilla-like game art designed to remain readable when displayed at 64 pixels
+- Use only a few broad shapes, thick dark outlines, clear value separation, and soft top-left lighting
+- Neutral medium-gray steel body, one dark recess, and only one saturated amber identification area
+- Smooth painted surfaces with at most two large panel divisions
+- Slightly stylized rather than realistic, with no photorealistic materials or intricate engineering
+- No other colored components, colored reflections, or glow
+- No tiny bolts, rivets, vents, ribs, cables, handles, latches, corner machinery, repeated grooves, fine seams, scratches, grime, or decorative greebles
+
+TECHNICAL REQUIREMENTS
+- Solid pure white background for deterministic local removal; do not draw a checkerboard or environment
+- Full crisp silhouette with no cropped fittings and no external cast shadow
+- Keep all four outer edges clean and uninterrupted, with no pipe coupling, connector, socket, nozzle, port, or other protrusion
+- It must read as ammunition storage, not a fuel or liquid tank
+- No cylindrical vessel, barrel, drum, silo, pressure tank, reservoir, rounded tank body, hoses, gauges, or fluid-storage cues
+- No floor, terrain, backdrop, border, text, labels, symbols, ammunition, people, UI, watermark, or signature
+- Do not create variants, callouts, a sprite sheet, or additional views
+- Return one high-resolution PNG
+"""

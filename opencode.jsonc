@@ -24,9 +24,20 @@
     "vanilla-expanded-framework": {
       "path": "~/gitproj/public/VanillaExpandedFramework",
       "description": "Vanilla Expanded Framework source and API reference"
+    },
+    "rw-art-pipeline": {
+      "path": "~/gitproj/personal/rw-art-pipeline",
+      "description": "Shared RimWorld artwork prompt, intake, processing, review, and approval tooling"
     }
   },
   "permission": {
+    "scenario_*": "ask",
+    "scenario_asset_delete": "deny",
+    "scenario_model_delete": "deny",
+    "scenario_workflow_delete": "deny",
+    "scenario_api_key_delete": "deny",
+    "scenario_team_members_remove": "deny",
+    "scenario_project_members_remove": "deny",
     "external_directory": {
       "*": "ask",
       "~/.steam/steam/steamapps/common/RimWorld/**": "allow",
@@ -35,7 +46,16 @@
       "~/gitproj/public/CombatExtended/**": "allow",
       "~/gitproj/public/HarmonyRimWorld/**": "allow",
       "~/gitproj/public/VanillaChemfuelExpanded/**": "allow",
-      "~/gitproj/public/VanillaExpandedFramework/**": "allow"
+      "~/gitproj/public/VanillaExpandedFramework/**": "allow",
+      "~/gitproj/personal/rw-art-pipeline/**": "allow",
+      "~/.local/share/rw-art-pipeline/Sanicek.PipedCEAutoloaders/**": "allow"
+    }
+  },
+  "mcp": {
+    "scenario": {
+      "type": "remote",
+      "url": "https://mcp.scenario.com/mcp",
+      "oauth": {}
     }
   }
 }
