@@ -25,7 +25,10 @@
       <onlyShowStored>true</onlyShowStored>
       <offTexPath>Things/Ammo/Rifle/Battlerifle/FMJ/FMJ_c</offTexPath>
     </resource>
-    <pipeDefs><li>PipedCEAutoloaders_AmberPipe</li></pipeDefs>
+    <pipeDefs>
+      <li>PipedCEAutoloaders_AmberPipe</li>
+      <li>PipedCEAutoloaders_AmberHiddenPipe</li>
+    </pipeDefs>
     <designator><deconstructIconPath>UI/Designators/Deconstruct</deconstructIconPath><designationCategoryDef>PipedCEAutoloaders_PipeNetworks</designationCategoryDef></designator>
     <overlayOptions><overlayColor>(0.78,0.62,0.22)</overlayColor></overlayOptions>
   </PipeSystem.PipeNetDef>
@@ -39,7 +42,10 @@
       <onlyShowStored>true</onlyShowStored>
       <offTexPath>Things/Ammo/Rifle/Battlerifle/FMJ/FMJ_c</offTexPath>
     </resource>
-    <pipeDefs><li>PipedCEAutoloaders_BluePipe</li></pipeDefs>
+    <pipeDefs>
+      <li>PipedCEAutoloaders_BluePipe</li>
+      <li>PipedCEAutoloaders_BlueHiddenPipe</li>
+    </pipeDefs>
     <designator><deconstructIconPath>UI/Designators/Deconstruct</deconstructIconPath><designationCategoryDef>PipedCEAutoloaders_PipeNetworks</designationCategoryDef></designator>
     <overlayOptions><overlayColor>(0.25,0.55,0.9)</overlayColor></overlayOptions>
   </PipeSystem.PipeNetDef>
@@ -53,7 +59,10 @@
       <onlyShowStored>true</onlyShowStored>
       <offTexPath>Things/Ammo/Shotgun/Shot/Shot_c</offTexPath>
     </resource>
-    <pipeDefs><li>PipedCEAutoloaders_GreenPipe</li></pipeDefs>
+    <pipeDefs>
+      <li>PipedCEAutoloaders_GreenPipe</li>
+      <li>PipedCEAutoloaders_GreenHiddenPipe</li>
+    </pipeDefs>
     <designator><deconstructIconPath>UI/Designators/Deconstruct</deconstructIconPath><designationCategoryDef>PipedCEAutoloaders_PipeNetworks</designationCategoryDef></designator>
     <overlayOptions><overlayColor>(0.35,0.75,0.4)</overlayColor></overlayOptions>
   </PipeSystem.PipeNetDef>
@@ -99,6 +108,33 @@
   </ThingDef>
   <ThingDef ParentName="PipedCEAutoloaders_PipeBase">
     <defName>PipedCEAutoloaders_GreenPipe</defName><label>green ammunition pipe</label><description>Transfers rounds assigned to the green ammunition network.</description>
+    <comps><li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_GreenNet</pipeNet></li></comps>
+  </ThingDef>
+
+  <!--
+    Hidden pipes remain ordinary VEF transmitters but use its established
+    invisible pipe texture. Buried construction costs more and cannot be targeted
+    or damaged by attacks; selection and the network deconstruction designator
+    remain available for deliberate removal.
+  -->
+  <ThingDef ParentName="PipedCEAutoloaders_PipeBase" Name="PipedCEAutoloaders_HiddenPipeBase" Abstract="True">
+    <graphicData><texPath>UI/CSG/IConduit</texPath></graphicData>
+    <uiIconPath>Things/Building/Linked/HiddenConduit_MenuIcon</uiIconPath>
+    <building><ai_neverTrashThis>true</ai_neverTrashThis><isTargetable>false</isTargetable><expandHomeArea>false</expandHomeArea><canBeDamagedByAttacks>false</canBeDamagedByAttacks></building>
+    <statBases><MaxHitPoints>48</MaxHitPoints><WorkToBuild>280</WorkToBuild><Flammability>0</Flammability></statBases>
+    <costList><Steel>4</Steel></costList>
+  </ThingDef>
+
+  <ThingDef ParentName="PipedCEAutoloaders_HiddenPipeBase">
+    <defName>PipedCEAutoloaders_AmberHiddenPipe</defName><label>hidden amber ammunition pipe</label><description>Hidden pipes that transfer rounds assigned to the amber ammunition network.</description>
+    <comps><li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_AmberNet</pipeNet></li></comps>
+  </ThingDef>
+  <ThingDef ParentName="PipedCEAutoloaders_HiddenPipeBase">
+    <defName>PipedCEAutoloaders_BlueHiddenPipe</defName><label>hidden blue ammunition pipe</label><description>Hidden pipes that transfer rounds assigned to the blue ammunition network.</description>
+    <comps><li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_BlueNet</pipeNet></li></comps>
+  </ThingDef>
+  <ThingDef ParentName="PipedCEAutoloaders_HiddenPipeBase">
+    <defName>PipedCEAutoloaders_GreenHiddenPipe</defName><label>hidden green ammunition pipe</label><description>Hidden pipes that transfer rounds assigned to the green ammunition network.</description>
     <comps><li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_GreenNet</pipeNet></li></comps>
   </ThingDef>
 

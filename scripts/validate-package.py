@@ -158,14 +158,15 @@ def validate_defs(package: Path) -> None:
     expected_network_things = {
         f"PipedCEAutoloaders_{slot}{suffix}"
         for slot in slots
-        for suffix in ("Pipe", "Tank", "Input")
+        for suffix in ("Pipe", "HiddenPipe", "Tank", "Input")
     }
     if set(network_things) != expected_network_things:
-        fail("each configurable network must define exactly one pipe, tank, and input")
+        fail("each configurable network must define exactly one visible pipe, hidden pipe, tank, and input")
     if set(loaders) != {f"PipedCEAutoloaders_{slot}Autoloader" for slot in slots}:
         fail("release autoloaders must define exactly one loader per configurable network")
 
     pipe_base = networks_root.find("./ThingDef[@Name='PipedCEAutoloaders_PipeBase']")
+    hidden_pipe_base = networks_root.find("./ThingDef[@Name='PipedCEAutoloaders_HiddenPipeBase']")
     tank_base = networks_root.find("./ThingDef[@Name='PipedCEAutoloaders_TankBase']")
     input_base = networks_root.find("./ThingDef[@Name='PipedCEAutoloaders_InputBase']")
     loader_base = autoloaders_root.find("./ThingDef[@Name='PipedCEAutoloaders_AutoloaderBase']")
@@ -176,6 +177,22 @@ def validate_defs(package: Path) -> None:
         or pipe_base.findtext("./building/blueprintGraphicData/texPath") != "Things/Building/Linked/PowerConduit_Blueprint_Atlas"
     ):
         fail("release pipe base must retain the VEF linked-pipe rendering pattern")
+    if hidden_pipe_base is None or hidden_pipe_base.get("ParentName") != "PipedCEAutoloaders_PipeBase" or any(
+        hidden_pipe_base.findtext(path) != value
+        for path, value in {
+            "graphicData/texPath": "UI/CSG/IConduit",
+            "uiIconPath": "Things/Building/Linked/HiddenConduit_MenuIcon",
+            "building/ai_neverTrashThis": "true",
+            "building/isTargetable": "false",
+            "building/expandHomeArea": "false",
+            "building/canBeDamagedByAttacks": "false",
+            "statBases/MaxHitPoints": "48",
+            "statBases/WorkToBuild": "280",
+            "statBases/Flammability": "0",
+            "costList/Steel": "4",
+        }.items()
+    ):
+        fail("release hidden pipes must retain the buried VEF pipe pattern and vanilla hidden-conduit icon")
     if (
         tank_base is None
         or tank_base.find("thingClass") is not None
@@ -235,13 +252,16 @@ def validate_defs(package: Path) -> None:
     for slot, (default_set, _default_ammo) in slots.items():
         net_name = f"PipedCEAutoloaders_{slot}Net"
         pipe_name = f"PipedCEAutoloaders_{slot}Pipe"
+        hidden_pipe_name = f"PipedCEAutoloaders_{slot}HiddenPipe"
         tank_name = f"PipedCEAutoloaders_{slot}Tank"
         input_name = f"PipedCEAutoloaders_{slot}Input"
         loader_name = f"PipedCEAutoloaders_{slot}Autoloader"
-        if nets[net_name].findtext("./pipeDefs/li") != pipe_name:
-            fail(f"{slot} PipeNetDef must identify its own pipe")
+        pipe_defs = [element.text for element in nets[net_name].findall("./pipeDefs/li")]
+        if pipe_defs != [pipe_name, hidden_pipe_name]:
+            fail(f"{slot} PipeNetDef must identify its visible and hidden pipes in order")
         expected_comps = {
             pipe_name: "PipeSystem.CompProperties_Resource",
+            hidden_pipe_name: "PipeSystem.CompProperties_Resource",
             tank_name: "PipeSystem.CompProperties_ResourceStorage",
             input_name: "PipedCEAutoloaders.CompProperties_PipedAmmoInput",
         }
