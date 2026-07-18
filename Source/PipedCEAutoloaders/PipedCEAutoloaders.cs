@@ -37,7 +37,7 @@ namespace PipedCEAutoloaders
             new Harmony("Sanicek.PipedCEAutoloaders").PatchAll();
             LongEventHandler.QueueLongEvent(
                 PipedAmmoBindings.Initialize,
-                "Initializing Piped CE Autoloaders",
+                "PCA_LongEvent_Initialize",
                 false,
                 null);
         }

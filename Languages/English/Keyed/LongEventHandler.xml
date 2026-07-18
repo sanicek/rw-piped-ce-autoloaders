@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Long events receive translation keys rather than display text. -->
+  <PCA_LongEvent_Initialize>Initializing Piped CE Autoloaders</PCA_LongEvent_Initialize>
+</LanguageData>
