@@ -8,8 +8,8 @@
   <ThingDef ParentName="BuildingBase" Name="PipedCEAutoloaders_AutoloaderBase" Abstract="True">
     <thingClass>PipedCEAutoloaders.Building_PipeBackedAutoloaderCE</thingClass>
     <tickerType>Normal</tickerType><drawerType>MapMeshAndRealTime</drawerType>
-    <graphicData><texPath>Things/Ammo/Rifle/Battlerifle/FMJ/FMJ_c</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(1,1)</drawSize></graphicData>
-    <altitudeLayer>Building</altitudeLayer><passability>PassThroughOnly</passability><castEdgeShadows>true</castEdgeShadows><hasInteractionCell>false</hasInteractionCell><fillPercent>0.5</fillPercent><size>(1,1)</size>
+    <graphicData><texPath>Things/Ammo/Rifle/Battlerifle/FMJ/FMJ_c</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(1,1)</drawSize><drawRotated>false</drawRotated><allowFlip>false</allowFlip></graphicData>
+    <rotatable>false</rotatable><altitudeLayer>Building</altitudeLayer><passability>PassThroughOnly</passability><castEdgeShadows>true</castEdgeShadows><hasInteractionCell>false</hasInteractionCell><fillPercent>0.5</fillPercent><size>(1,1)</size>
     <costList><Steel>120</Steel><ComponentIndustrial>2</ComponentIndustrial></costList>
     <building><destroySound>BuildingDestroyed_Metal_Small</destroySound></building>
     <statBases><MaxHitPoints>100</MaxHitPoints><WorkToBuild>1200</WorkToBuild><Mass>20</Mass><Flammability>0.5</Flammability><ReloadSpeed>0.5</ReloadSpeed></statBases>
@@ -26,6 +26,7 @@
   -->
   <ThingDef ParentName="PipedCEAutoloaders_AutoloaderBase">
     <defName>PipedCEAutoloaders_AmberAutoloader</defName><label>amber piped autoloader</label><description>Buffers the exact round assigned to the amber ammunition network and uses Combat Extended's native autoloader path. Requires 100 W of power.</description>
+    <graphicData><texPath>Things/Building/PipedCEAutoloaders/AmberAutoloader</texPath></graphicData>
     <comps>
       <li Class="CombatExtended.CompProperties_AmmoListUser"><magazineSize>400</magazineSize><reloadTime>7.8</reloadTime><ammoSet>AmmoSet_762x51mmNATO</ammoSet></li>
       <li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_AmberNet</pipeNet></li>
@@ -33,6 +34,7 @@
   </ThingDef>
   <ThingDef ParentName="PipedCEAutoloaders_AutoloaderBase">
     <defName>PipedCEAutoloaders_BlueAutoloader</defName><label>blue piped autoloader</label><description>Buffers the exact round assigned to the blue ammunition network and uses Combat Extended's native autoloader path. Requires 100 W of power.</description>
+    <graphicData><texPath>Things/Building/PipedCEAutoloaders/BlueAutoloader</texPath></graphicData>
     <comps>
       <li Class="CombatExtended.CompProperties_AmmoListUser"><magazineSize>400</magazineSize><reloadTime>7.8</reloadTime><ammoSet>AmmoSet_556x45mmNATO</ammoSet></li>
       <li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_BlueNet</pipeNet></li>
@@ -40,6 +42,7 @@
   </ThingDef>
   <ThingDef ParentName="PipedCEAutoloaders_AutoloaderBase">
     <defName>PipedCEAutoloaders_GreenAutoloader</defName><label>green piped autoloader</label><description>Buffers the exact round assigned to the green ammunition network and uses Combat Extended's native autoloader path. Requires 100 W of power.</description>
+    <graphicData><texPath>Things/Building/PipedCEAutoloaders/GreenAutoloader</texPath></graphicData>
     <comps>
       <li Class="CombatExtended.CompProperties_AmmoListUser"><magazineSize>400</magazineSize><reloadTime>7.8</reloadTime><ammoSet>AmmoSet_12Gauge</ammoSet></li>
       <li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_GreenNet</pipeNet></li>

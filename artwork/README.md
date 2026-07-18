@@ -1,0 +1,40 @@
+# Artwork Workflow
+
+The tracked manifest defines prompts and exact game outputs. Raw Web UI
+downloads, processing receipts, candidates, and contact sheets are intentionally
+stored outside this repository by the sibling `rw-art-pipeline` toolkit.
+
+Run commands through the project wrapper. Scenario is the normal generation
+path; manual intake remains available for recovered or externally produced art:
+
+```bash
+./scripts/artwork.sh prompt
+./scripts/artwork.sh auth scenario
+./scripts/artwork.sh models gpt
+./scripts/artwork.sh generate magazine --estimate-only
+./scripts/artwork.sh generate magazine
+./scripts/artwork.sh generate magazine --confirm-cost
+./scripts/artwork.sh select magazine 4
+./scripts/artwork.sh approve magazine
+
+# Manual fallback
+./scripts/artwork.sh intake autoloader /path/to/download.png
+./scripts/artwork.sh approve autoloader
+./scripts/artwork.sh validate
+```
+
+`generate` refreshes and stores the four-option estimate without charging;
+`--confirm-cost` submits or resumes the paid jobs, downloads every source,
+normalizes every output variant, and prints one numbered contact sheet. Run
+`select` with the approved option number, review its final sheet, then run
+`approve`. A generation receipt prevents an interrupted command from silently
+submitting another paid batch; `--restart` is the explicit escape hatch.
+
+Credentials come from `SCENARIO_API_KEY` plus `SCENARIO_API_SECRET`, or from the
+mode-0600 file created interactively by `auth scenario`. Neither credentials nor
+raw provider downloads enter Git. Approval does not overwrite an existing
+tracked image unless `--replace` is explicitly supplied.
+
+The linked pipe atlas is excluded from image generation because its 640x640
+layout encodes exact connection states. It will be constructed deterministically
+after the machine palette and line weight are established by approved sprites.

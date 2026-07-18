@@ -8,7 +8,7 @@ unit equals one CE round. Physical input converts `stackCount *
 AmmoDef.ammoCount` into pipe units.
 
 The same startup pass applies each network's independent reload-speed multiplier
-and tank capacity to its concrete Def. Tanks occupy 1x2 cells. Performance
+and magazine capacity to its concrete Def. Magazines occupy 2x2 cells. Performance
 settings remain immutable during a session for the same reason as bindings.
 
 A `Building_AutoloaderCE` subclass keeps `CompAmmoUser` as the durable,
@@ -47,6 +47,7 @@ exhaustive QA matrix.
 | 6 — existing-save settings migration | **Skipped for now** | No migration is planned; the current existing-save behavior is accepted unless this phase is reconsidered later. |
 | 7 — powered autoloaders | **Complete** | Confirmed in-game: an autoloader requires power and functions only while powered. |
 | 8 — compact tanks and network performance | **Complete** | Confirmed in-game: 1x2 tanks use the intended battery-scale fit and centered gauge, the `Ammo Pipes` label fits, and each network applies its configured tank capacity and reload speed. |
+| 9 — custom machinery graphics and square magazines | **Complete** | Confirmed in-game: custom autoloader, input, and magazine graphics render clearly with matching network accents; all machinery retains one fixed visual orientation, and square 2x2 magazines keep their storage gauge centered on the lid. |
 
 Phase 0 manual acceptance passed. The stock CE gizmos and interaction spot were
 also observed; these are intentionally retained by the spike and must not be
@@ -122,12 +123,23 @@ Manual acceptance passed: capacity and reload-speed settings worked independentl
 the tank footprint and `Ammo Pipes` label were correct, the battery placeholder
 fit the occupied cells, and the storage gauge was centered on the graphic.
 
+Phase 9 replaces the placeholder autoloader, input, and storage art with custom
+network-colored sprites. Storage returns to a square 2x2 footprint and keeps its
+existing Tank-suffixed DefNames for save compatibility, while user-facing labels
+call it an ammunition magazine. `Graphic_Single`, disabled rotation/flip, and a
+square draw size keep one visual orientation through ordinary and gravship
+rotation. Existing 1x2 storage is not migrated and can obstruct adjacent cells
+after the update. Manual acceptance passed: the simplified sprites were readable
+and acceptable at normal game scale, the fixed orientations and magazine gauge
+placement were correct, and the representative piped-autoloader setup remained
+functional.
+
 ## Unprioritized future features
 
 The following features are candidates for future implementation in no particular
 order:
 
-- Add custom graphics for all buildings.
+- Add a custom linked-pipe atlas and menu/blueprint icons.
 - Add a hidden pipe variant.
 - Add a mod icon.
 

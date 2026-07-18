@@ -432,7 +432,7 @@ namespace PipedCEAutoloaders
             var listing = new Listing_Standard();
             listing.Begin(viewRect);
             listing.Label("Each network carries one exact CE round type and has independent performance settings. Changes take effect after restarting RimWorld.");
-            listing.Label("Existing buildings are not migrated. Empty tanks/loaders before rebinding or lowering capacity, then reset or rebuild inputs.");
+            listing.Label("Existing buildings are not migrated. Empty magazines/loaders before rebinding or lowering capacity, then reset or rebuild inputs.");
             listing.GapLine();
             for (int slot = 0; slot < PipedAmmoBindings.SlotNames.Length; slot++)
             {
@@ -498,11 +498,11 @@ namespace PipedCEAutoloaders
 
             float tankCapacity = settings.TankCapacityFor(slot);
             tankCapacity = listing.SliderLabeled(
-                $"Tank capacity: {tankCapacity:0}",
+                $"Magazine capacity: {tankCapacity:0}",
                 tankCapacity,
                 PipedCEAutoloadersSettings.MinimumTankCapacity,
                 PipedCEAutoloadersSettings.MaximumTankCapacity,
-                tooltip: "Maximum rounds stored by each tank in this network.");
+                tooltip: "Maximum rounds stored by each magazine in this network.");
             settings.SetTankCapacity(slot, Mathf.Round(tankCapacity / 100f) * 100f);
         }
     }

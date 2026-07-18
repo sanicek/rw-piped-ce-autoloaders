@@ -5,28 +5,29 @@ Vanilla Expanded Framework pipe networks. Three color-coded networks each bind
 to a configured CE ammo set and exact physical round after startup validation.
 Pipe-backed loaders delegate turret reloads to Combat Extended's native path
 while excluding pawn refill and CE ammo-management interactions. Each loader
-draws 100 W and operates only while powered. Compact 1x2 tanks and independently
-configured network performance let each ammunition line fit a different role.
+draws 100 W and operates only while powered. Square 2x2 ammunition magazines and
+independently configured network performance let each line fit a different role.
 All network buildings appear under the short `Ammo Pipes` architect category.
 
-Bindings, reload-speed multipliers, and tank capacities are configured under Mod
+Bindings, reload-speed multipliers, and magazine capacities are configured under Mod
 Settings. Each network supports 0.1x-5.0x reload speed and 100-10,000 rounds per
-tank. Changes require a restart and are then immutable for the session.
+magazine. Changes require a restart and are then immutable for the session.
 Duplicate, missing, hidden, or mismatched rounds disable the affected network
 instead of silently changing its resource.
 Changing a binding for a colony that already has stored or buffered rounds is
 not supported: those untyped values would take on the new binding after the
-restart. Existing-save migration is not currently planned. Empty its tanks and
+restart. Existing-save migration is not currently planned. Empty its magazines and
 loaders, then reset or rebuild its existing inputs, or use the new binding in a
 new game.
 
-Lowering tank capacity is also not migrated. Empty affected tanks before saving
+Lowering magazine capacity is also not migrated. Empty affected magazines before saving
 the new setting because VEF can discard stored resource above the reduced
-capacity when the colony next loads or the tank is later serialized.
+capacity when the colony next loads or the magazine is later serialized.
 
-Updating an existing colony also changes placed tanks from 2x2 to 1x2 in place.
-Inspect walls, rooms, roofs, paths, and pipe connections around existing tanks
-after loading; rebuild the surrounding layout where the released cell matters.
+Updating an existing colony changes placed ammunition storage from 1x2 back to
+2x2 in place. Empty and deconstruct existing magazines before updating when
+possible. After loading an older save, inspect walls, rooms, roofs, paths, and
+pipe connections around every expanded footprint and rebuild obstructed layouts.
 
 ## Build
 
@@ -54,6 +55,16 @@ The build writes `artifacts/PipedCEAutoloaders/`, copies the constrained source
 Defs, and runs package validation. Dependency DLLs are compile references only
 and are never packaged. Install locally with `./scripts/install-local.sh` after
 building (use the same environment variables if needed).
+
+## Artwork
+
+Artwork uses a manual-generation, deterministic-intake workflow. The tracked
+`artwork/manifest.toml` supplies exact prompts and game asset contracts. The
+reusable sibling `rw-art-pipeline` normally submits resumable Scenario API
+batches, archives provider provenance and originals outside Git, presents four
+final-size options, and promotes the selected candidate only after explicit
+approval. Manual downloads use the same deterministic intake as a fallback.
+See `artwork/README.md` for the short workflow.
 
 ## Maintenance style
 
