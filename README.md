@@ -7,7 +7,9 @@ Pipe-backed loaders delegate turret reloads to Combat Extended's native path
 while excluding pawn refill and CE ammo-management interactions. Each loader
 draws 100 W and operates only while powered. Square 2x2 ammunition magazines and
 independently configured network performance let each line fit a different role.
-All network buildings appear under the short `Ammo Pipes` architect category.
+Each network provides normal pipes and slower, more expensive hidden pipes that
+disappear after construction and cannot be targeted or damaged by attacks. All
+network buildings appear under the short `Ammo Pipes` architect category.
 
 Bindings, reload-speed multipliers, and magazine capacities are configured under Mod
 Settings. Each network supports 0.1x-5.0x reload speed and 100-10,000 rounds per
@@ -89,9 +91,10 @@ QA matrix. After `./scripts/install-local.sh`, build the setup introduced by the
 current phase and confirm its intended path works. The pull request supplies the
 short setup and expected observation for that phase.
 
-Phase 6 passed its smoke test: after rebinding and restarting, existing stored
-and buffered round counts used the new binding, the existing input accepted the
-new round, and old physical ammunition remained available to haul elsewhere.
+Phase 10 awaits its smoke test: connect one network through mixed normal and
+hidden segments, confirm ammunition transfer and overlay connectivity, verify
+that completed hidden segments disappear and resist attacks, then remove them
+with the network deconstruction designator.
 
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for completed
 phase evidence, the current roadmap, and future work.

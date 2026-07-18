@@ -12,6 +12,9 @@ Pipe-backed autoloaders retain native partial-transfer, shortage, and
 cancellation behavior while excluding pawn refill, adjacent-turret manual
 reload, and CE ammo-management interactions. Ammunition magazines occupy 2x2 cells,
 and all network buildings use the compact Ammo Pipes architect category.
+Each color also includes a hidden pipe. Hidden pipes take longer and cost more
+steel to build, disappear when completed, and cannot be targeted or damaged by
+attacks.
 Existing 1x2 storage expands to a square 2x2 footprint after updating, so empty
 and deconstruct old magazines first or inspect nearby structures after loading.
 

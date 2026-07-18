@@ -48,6 +48,7 @@ exhaustive QA matrix.
 | 7 — powered autoloaders | **Complete** | Confirmed in-game: an autoloader requires power and functions only while powered. |
 | 8 — compact tanks and network performance | **Complete** | Confirmed in-game: 1x2 tanks use the intended battery-scale fit and centered gauge, the `Ammo Pipes` label fits, and each network applies its configured tank capacity and reload speed. |
 | 9 — custom machinery graphics and square magazines | **Complete** | Confirmed in-game: custom autoloader, input, and magazine graphics render clearly with matching network accents; all machinery retains one fixed visual orientation, and square 2x2 magazines keep their storage gauge centered on the lid. |
+| 10 — hidden ammunition pipes | **Implemented; acceptance pending** | Confirm mixed visible and hidden segments share one network, hidden segments disappear after construction and resist attacks, and the network designator can remove them. |
 
 Phase 0 manual acceptance passed. The stock CE gizmos and interaction spot were
 also observed; these are intentionally retained by the spike and must not be
@@ -146,13 +147,21 @@ and acceptable at normal game scale, the fixed orientations and magazine gauge
 placement were correct, and the representative piped-autoloader setup remained
 functional.
 
+Phase 10 adds a hidden variant to each configurable network without introducing
+a second graph or runtime behavior. Hidden and visible segments remain ordinary
+VEF `Building_Pipe` transmitters registered on the same `PipeNetDef`. The hidden
+variant uses VEF's established invisible pipe texture and RimWorld's hidden
+conduit menu icon, costs 4 steel, requires 280 work, and cannot be targeted or
+damaged by attacks. It remains selectable so deliberate removal and VEF's
+network-specific deconstruction designator continue to work. Gameplay acceptance
+is pending the representative mixed-segment smoke test.
+
 ## Unprioritized future features
 
 The following features are candidates for future implementation in no particular
 order:
 
 - Add a custom linked-pipe atlas and menu/blueprint icons.
-- Add a hidden pipe variant.
 - Add a mod icon.
 
 ### Phase 1 XML-only conversion note
