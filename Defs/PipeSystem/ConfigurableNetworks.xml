@@ -99,15 +99,15 @@
   </ThingDef>
 
   <ThingDef ParentName="PipedCEAutoloaders_PipeBase">
-    <defName>PipedCEAutoloaders_AmberPipe</defName><label>amber ammunition pipe</label><description>Transfers rounds assigned to the amber ammunition network.</description>
+    <defName>PipedCEAutoloaders_AmberPipe</defName><label>amber ammunition pipe</label><description>Carries the configured ammunition for the amber network.</description>
     <comps><li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_AmberNet</pipeNet></li></comps>
   </ThingDef>
   <ThingDef ParentName="PipedCEAutoloaders_PipeBase">
-    <defName>PipedCEAutoloaders_BluePipe</defName><label>blue ammunition pipe</label><description>Transfers rounds assigned to the blue ammunition network.</description>
+    <defName>PipedCEAutoloaders_BluePipe</defName><label>blue ammunition pipe</label><description>Carries the configured ammunition for the blue network.</description>
     <comps><li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_BlueNet</pipeNet></li></comps>
   </ThingDef>
   <ThingDef ParentName="PipedCEAutoloaders_PipeBase">
-    <defName>PipedCEAutoloaders_GreenPipe</defName><label>green ammunition pipe</label><description>Transfers rounds assigned to the green ammunition network.</description>
+    <defName>PipedCEAutoloaders_GreenPipe</defName><label>green ammunition pipe</label><description>Carries the configured ammunition for the green network.</description>
     <comps><li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_GreenNet</pipeNet></li></comps>
   </ThingDef>
 
@@ -126,15 +126,15 @@
   </ThingDef>
 
   <ThingDef ParentName="PipedCEAutoloaders_HiddenPipeBase">
-    <defName>PipedCEAutoloaders_AmberHiddenPipe</defName><label>hidden amber ammunition pipe</label><description>Hidden pipes that transfer rounds assigned to the amber ammunition network.</description>
+    <defName>PipedCEAutoloaders_AmberHiddenPipe</defName><label>hidden amber ammunition pipe</label><description>Carries the configured ammunition for the amber network. Invisible after construction and cannot be targeted or damaged by attacks.</description>
     <comps><li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_AmberNet</pipeNet></li></comps>
   </ThingDef>
   <ThingDef ParentName="PipedCEAutoloaders_HiddenPipeBase">
-    <defName>PipedCEAutoloaders_BlueHiddenPipe</defName><label>hidden blue ammunition pipe</label><description>Hidden pipes that transfer rounds assigned to the blue ammunition network.</description>
+    <defName>PipedCEAutoloaders_BlueHiddenPipe</defName><label>hidden blue ammunition pipe</label><description>Carries the configured ammunition for the blue network. Invisible after construction and cannot be targeted or damaged by attacks.</description>
     <comps><li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_BlueNet</pipeNet></li></comps>
   </ThingDef>
   <ThingDef ParentName="PipedCEAutoloaders_HiddenPipeBase">
-    <defName>PipedCEAutoloaders_GreenHiddenPipe</defName><label>hidden green ammunition pipe</label><description>Hidden pipes that transfer rounds assigned to the green ammunition network.</description>
+    <defName>PipedCEAutoloaders_GreenHiddenPipe</defName><label>hidden green ammunition pipe</label><description>Carries the configured ammunition for the green network. Invisible after construction and cannot be targeted or damaged by attacks.</description>
     <comps><li Class="PipeSystem.CompProperties_Resource"><pipeNet>PipedCEAutoloaders_GreenNet</pipeNet></li></comps>
   </ThingDef>
 
@@ -155,17 +155,17 @@
   </ThingDef>
 
   <ThingDef ParentName="PipedCEAutoloaders_TankBase">
-    <defName>PipedCEAutoloaders_AmberTank</defName><label>amber ammunition magazine</label><description>Stores rounds assigned to the amber ammunition network.</description>
+    <defName>PipedCEAutoloaders_AmberTank</defName><label>amber ammunition magazine</label><description>Stores ammunition for the amber network. Capacity is configured in Mod Settings.</description>
     <graphicData><texPath>Things/Building/PipedCEAutoloaders/AmberMagazine</texPath></graphicData>
     <comps><li Class="PipeSystem.CompProperties_ResourceStorage"><pipeNet>PipedCEAutoloaders_AmberNet</pipeNet><storageCapacity>1000</storageCapacity><barSize>(1.3,0.25)</barSize><centerOffset>(0,0,0.2)</centerOffset></li></comps>
   </ThingDef>
   <ThingDef ParentName="PipedCEAutoloaders_TankBase">
-    <defName>PipedCEAutoloaders_BlueTank</defName><label>blue ammunition magazine</label><description>Stores rounds assigned to the blue ammunition network.</description>
+    <defName>PipedCEAutoloaders_BlueTank</defName><label>blue ammunition magazine</label><description>Stores ammunition for the blue network. Capacity is configured in Mod Settings.</description>
     <graphicData><texPath>Things/Building/PipedCEAutoloaders/BlueMagazine</texPath></graphicData>
     <comps><li Class="PipeSystem.CompProperties_ResourceStorage"><pipeNet>PipedCEAutoloaders_BlueNet</pipeNet><storageCapacity>1000</storageCapacity><barSize>(1.3,0.25)</barSize><centerOffset>(0,0,0.2)</centerOffset></li></comps>
   </ThingDef>
   <ThingDef ParentName="PipedCEAutoloaders_TankBase">
-    <defName>PipedCEAutoloaders_GreenTank</defName><label>green ammunition magazine</label><description>Stores rounds assigned to the green ammunition network.</description>
+    <defName>PipedCEAutoloaders_GreenTank</defName><label>green ammunition magazine</label><description>Stores ammunition for the green network. Capacity is configured in Mod Settings.</description>
     <graphicData><texPath>Things/Building/PipedCEAutoloaders/GreenMagazine</texPath></graphicData>
     <comps><li Class="PipeSystem.CompProperties_ResourceStorage"><pipeNet>PipedCEAutoloaders_GreenNet</pipeNet><storageCapacity>1000</storageCapacity><barSize>(1.3,0.25)</barSize><centerOffset>(0,0,0.2)</centerOffset></li></comps>
   </ThingDef>
@@ -192,17 +192,17 @@
   </ThingDef>
 
   <ThingDef ParentName="PipedCEAutoloaders_InputBase">
-    <defName>PipedCEAutoloaders_AmberInput</defName><label>amber ammunition input</label><description>Consumes the exact physical round assigned to the amber network. One item contributes its Combat Extended round count.</description>
+    <defName>PipedCEAutoloaders_AmberInput</defName><label>amber ammunition input</label><description>Accepts only the physical ammunition configured for the amber network. Adds every round in each item to the network.</description>
     <graphicData><texPath>Things/Building/PipedCEAutoloaders/AmberInput</texPath></graphicData>
     <comps><li Class="PipedCEAutoloaders.CompProperties_PipedAmmoInput"><pipeNet>PipedCEAutoloaders_AmberNet</pipeNet></li></comps>
   </ThingDef>
   <ThingDef ParentName="PipedCEAutoloaders_InputBase">
-    <defName>PipedCEAutoloaders_BlueInput</defName><label>blue ammunition input</label><description>Consumes the exact physical round assigned to the blue network. One item contributes its Combat Extended round count.</description>
+    <defName>PipedCEAutoloaders_BlueInput</defName><label>blue ammunition input</label><description>Accepts only the physical ammunition configured for the blue network. Adds every round in each item to the network.</description>
     <graphicData><texPath>Things/Building/PipedCEAutoloaders/BlueInput</texPath></graphicData>
     <comps><li Class="PipedCEAutoloaders.CompProperties_PipedAmmoInput"><pipeNet>PipedCEAutoloaders_BlueNet</pipeNet></li></comps>
   </ThingDef>
   <ThingDef ParentName="PipedCEAutoloaders_InputBase">
-    <defName>PipedCEAutoloaders_GreenInput</defName><label>green ammunition input</label><description>Consumes the exact physical round assigned to the green network. One item contributes its Combat Extended round count.</description>
+    <defName>PipedCEAutoloaders_GreenInput</defName><label>green ammunition input</label><description>Accepts only the physical ammunition configured for the green network. Adds every round in each item to the network.</description>
     <graphicData><texPath>Things/Building/PipedCEAutoloaders/GreenInput</texPath></graphicData>
     <comps><li Class="PipedCEAutoloaders.CompProperties_PipedAmmoInput"><pipeNet>PipedCEAutoloaders_GreenNet</pipeNet></li></comps>
   </ThingDef>

@@ -57,6 +57,20 @@ Defs, and runs package validation. Dependency DLLs are compile references only
 and are never packaged. Install locally with `./scripts/install-local.sh` after
 building (use the same environment variables if needed).
 
+## Localization
+
+English keyed catalogs under `Languages/English/Keyed/` are the source for all
+runtime text created by C#, including startup, settings, validation feedback, and
+the restart dialog. Building and architect text remains in its Defs as RimWorld's
+canonical English source; another language can override those standard `label`
+and `description` fields through its normal `DefInjected` files.
+
+VEF's nested pipe resource `name` and `unit` fields are not marked as
+translatable, and VEF derives cached identifiers from the resource name. The
+three color-network resource names and their `rounds` unit therefore remain
+English rather than being mutated after Def loading. Runtime logs, DefNames,
+save keys, and other developer identifiers are intentionally not localized.
+
 ## Artwork
 
 Artwork is generated through Scenario, reviewed by a human, and processed

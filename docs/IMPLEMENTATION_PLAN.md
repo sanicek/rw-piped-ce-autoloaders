@@ -161,6 +161,10 @@ network deconstruction designator removed them.
 Startup-localization maintenance acceptance passed: RimWorld displayed
 `Initializing Piped CE Autoloaders` without missing-translation markers.
 
+Runtime-localization maintenance acceptance passed: settings, tooltips, and the
+restart dialog rendered without raw keys or missing-translation markers, and the
+reviewed building descriptions were readable and matched their functions.
+
 ## Unprioritized future features
 
 The following features are candidates for future implementation in no particular
