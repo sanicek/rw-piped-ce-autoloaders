@@ -91,10 +91,9 @@ QA matrix. After `./scripts/install-local.sh`, build the setup introduced by the
 current phase and confirm its intended path works. The pull request supplies the
 short setup and expected observation for that phase.
 
-Phase 10 awaits its smoke test: connect one network through mixed normal and
-hidden segments, confirm ammunition transfer and overlay connectivity, verify
-that completed hidden segments disappear and resist attacks, then remove them
-with the network deconstruction designator.
+Phase 10 passed its smoke test: mixed normal and hidden segments transferred
+ammunition as one connected network, completed hidden segments disappeared and
+resisted attacks, and the network deconstruction designator removed them.
 
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for completed
 phase evidence, the current roadmap, and future work.

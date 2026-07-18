@@ -48,7 +48,7 @@ exhaustive QA matrix.
 | 7 — powered autoloaders | **Complete** | Confirmed in-game: an autoloader requires power and functions only while powered. |
 | 8 — compact tanks and network performance | **Complete** | Confirmed in-game: 1x2 tanks use the intended battery-scale fit and centered gauge, the `Ammo Pipes` label fits, and each network applies its configured tank capacity and reload speed. |
 | 9 — custom machinery graphics and square magazines | **Complete** | Confirmed in-game: custom autoloader, input, and magazine graphics render clearly with matching network accents; all machinery retains one fixed visual orientation, and square 2x2 magazines keep their storage gauge centered on the lid. |
-| 10 — hidden ammunition pipes | **Implemented; acceptance pending** | Confirm mixed visible and hidden segments share one network, hidden segments disappear after construction and resist attacks, and the network designator can remove them. |
+| 10 — hidden ammunition pipes | **Complete** | Confirmed in-game: mixed visible and hidden segments share one network, hidden segments disappear after construction and resist attacks, and the network designator can remove them. |
 
 Phase 0 manual acceptance passed. The stock CE gizmos and interaction spot were
 also observed; these are intentionally retained by the spike and must not be
@@ -153,8 +153,10 @@ VEF `Building_Pipe` transmitters registered on the same `PipeNetDef`. The hidden
 variant uses VEF's established invisible pipe texture and RimWorld's hidden
 conduit menu icon, costs 4 steel, requires 280 work, and cannot be targeted or
 damaged by attacks. It remains selectable so deliberate removal and VEF's
-network-specific deconstruction designator continue to work. Gameplay acceptance
-is pending the representative mixed-segment smoke test.
+network-specific deconstruction designator continue to work. Manual acceptance
+passed: mixed normal and hidden segments transferred ammunition as one connected
+network, completed hidden segments disappeared and resisted attacks, and the
+network deconstruction designator removed them.
 
 ## Unprioritized future features
 
