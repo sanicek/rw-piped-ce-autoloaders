@@ -89,11 +89,9 @@ QA matrix. After `./scripts/install-local.sh`, build the setup introduced by the
 current phase and confirm its intended path works. The pull request supplies the
 short setup and expected observation for that phase.
 
-Phase 6 awaits its smoke test. Save a colony with pipe resource, a loaded
-autoloader, and old physical ammunition on an input; change that network's
-binding and restart. Confirm the stored and buffered round counts use the new
-binding, the existing input accepts only the new round, and the old physical
-stack remains available to haul elsewhere.
+Phase 6 passed its smoke test: after rebinding and restarting, existing stored
+and buffered round counts used the new binding, the existing input accepted the
+new round, and old physical ammunition remained available to haul elsewhere.
 
 See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for completed
 phase evidence, the current roadmap, and future work.

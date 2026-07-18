@@ -44,7 +44,7 @@ exhaustive QA matrix.
 | 3 — end-to-end native CE reload | **Complete** | Confirmed in-game: pipe supply produced the expected partial turret reload, and forbidding the turret cancelled an active reload cleanly. |
 | 4 — close external mutation/lifecycle paths | **Complete** | Confirmed in-game: pawn refill and CE gizmos are absent, adjacent loaders control manual turret reload eligibility without breaking native reload, and deconstruction stops an active reload and its sound. |
 | 5 — settings and three networks | **Complete** | Confirmed in-game: three independent configured networks supply functional autoloaders, and restart rebinding applies to newly built network buildings. This completes the MVP. |
-| 6 — authoritative existing-save rebinding | **Implementation/build complete; manual acceptance pending** | Existing pipe resource and autoloader counts adopt the newly configured round, while existing inputs accept only that round after restart. |
+| 6 — authoritative existing-save rebinding | **Complete** | Confirmed in-game: existing pipe resource and autoloader counts adopted the newly configured round, while existing inputs accepted that round after restart. |
 | 7 — powered autoloaders | **Complete** | Confirmed in-game: an autoloader requires power and functions only while powered. |
 | 8 — compact tanks and network performance | **Complete** | Confirmed in-game: 1x2 tanks use the intended battery-scale fit and centered gauge, the `Ammo Pipes` label fits, and each network applies its configured tank capacity and reload speed. |
 | 9 — custom machinery graphics and square magazines | **Complete** | Confirmed in-game: custom autoloader, input, and magazine graphics render clearly with matching network accents; all machinery retains one fixed visual orientation, and square 2x2 magazines keep their storage gauge centered on the lid. |
@@ -109,7 +109,9 @@ any saved active reload is cancelled when that identity changes. Existing input
 buildings replace their saved item filter with the configured round while
 preserving storage priority and physical items already on the cell. Those old
 items are no longer consumed and can be hauled to other compatible storage.
-Manual acceptance is pending.
+Manual acceptance passed: after rebinding and restarting, existing stored and
+buffered round counts used the new binding, the existing input accepted the new
+round, and old physical ammunition remained available to haul elsewhere.
 
 Phase 7 adds a standard 100 W `CompPowerTrader` to all three autoloaders and
 uses CE's native power check to gate operation. Unpowered loaders preserve their
