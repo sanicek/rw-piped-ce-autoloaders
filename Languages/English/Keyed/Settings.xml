@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Settings and restart UI use keyed text because they are created in C#. -->
+  <PCA_Settings_Category>Piped CE Autoloaders</PCA_Settings_Category>
+  <PCA_Settings_Restart_Message>Piped CE Autoloaders settings were saved. Restart RimWorld to apply the new network configuration.</PCA_Settings_Restart_Message>
+  <PCA_Settings_RestartNow>Restart now</PCA_Settings_RestartNow>
+  <PCA_Settings_Later>Later</PCA_Settings_Later>
+  <PCA_Settings_Restart_Title>Restart required</PCA_Settings_Restart_Title>
+
+  <PCA_Settings_Overview>Each color network carries one exact Combat Extended ammunition type and has independent reload speed and magazine capacity settings. Changes apply after restarting RimWorld.</PCA_Settings_Overview>
+  <PCA_Settings_RebindingWarning>After restart, existing stored rounds and autoloader contents adopt the new ammunition binding, and input filters update automatically. Empty magazines before reducing capacity.</PCA_Settings_RebindingWarning>
+  <PCA_Settings_AmberNetwork>Amber network</PCA_Settings_AmberNetwork>
+  <PCA_Settings_BlueNetwork>Blue network</PCA_Settings_BlueNetwork>
+  <PCA_Settings_GreenNetwork>Green network</PCA_Settings_GreenNetwork>
+  <PCA_Settings_AmmoSet>Ammo set</PCA_Settings_AmmoSet>
+  <PCA_Settings_ExactRound>Exact round</PCA_Settings_ExactRound>
+  <PCA_Settings_ReloadSpeed>Reload speed: {0}x</PCA_Settings_ReloadSpeed>
+  <PCA_Settings_ReloadSpeedTooltip>Higher values make adjacent turret reloads faster.</PCA_Settings_ReloadSpeedTooltip>
+  <PCA_Settings_MagazineCapacity>Magazine capacity: {0}</PCA_Settings_MagazineCapacity>
+  <PCA_Settings_MagazineCapacityTooltip>Maximum rounds stored by each magazine on this network.</PCA_Settings_MagazineCapacityTooltip>
+
+  <PCA_Settings_Error_Network>{0}: {1}</PCA_Settings_Error_Network>
+  <PCA_Settings_Error_AmmoSetMissing>ammo set '{0}' was not found</PCA_Settings_Error_AmmoSetMissing>
+  <PCA_Settings_Error_RoundMissing>round '{0}' was not found</PCA_Settings_Error_RoundMissing>
+  <PCA_Settings_Error_RoundUnusable>round '{0}' is not a usable physical ammunition type</PCA_Settings_Error_RoundUnusable>
+  <PCA_Settings_Error_RoundNotInSet>round '{0}' does not belong to ammo set '{1}'</PCA_Settings_Error_RoundNotInSet>
+  <PCA_Settings_Error_RoundAlreadyAssigned>round '{0}' is already assigned to another network</PCA_Settings_Error_RoundAlreadyAssigned>
+</LanguageData>

@@ -44,7 +44,7 @@ namespace PipedCEAutoloaders
 
         public override string SettingsCategory()
         {
-            return "Piped CE Autoloaders";
+            return "PCA_Settings_Category".Translate();
         }
 
         public override void DoSettingsWindowContents(Rect inRect)
@@ -58,12 +58,12 @@ namespace PipedCEAutoloaders
             if (startupSettingsSnapshot != SettingsSnapshot())
             {
                 Find.WindowStack.Add(new Dialog_MessageBox(
-                    "Piped CE Autoloaders settings were saved. Restart RimWorld to apply the new network configuration.",
-                    "Restart now",
+                    "PCA_Settings_Restart_Message".Translate(),
+                    "PCA_Settings_RestartNow".Translate(),
                     GenCommandLine.Restart,
-                    "Later",
+                    "PCA_Settings_Later".Translate(),
                     null,
-                    "Restart required"));
+                    "PCA_Settings_Restart_Title".Translate()));
             }
         }
 

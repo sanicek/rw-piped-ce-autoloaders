@@ -250,12 +250,37 @@ def validate_defs(package: Path) -> None:
     # pipe, tank, physical input, and CE buffer. A wrong required edge would make
     # settings validation appear correct while moving the wrong resource.
     for slot, (default_set, _default_ammo) in slots.items():
+        slot_lower = slot.lower()
         net_name = f"PipedCEAutoloaders_{slot}Net"
         pipe_name = f"PipedCEAutoloaders_{slot}Pipe"
         hidden_pipe_name = f"PipedCEAutoloaders_{slot}HiddenPipe"
         tank_name = f"PipedCEAutoloaders_{slot}Tank"
         input_name = f"PipedCEAutoloaders_{slot}Input"
         loader_name = f"PipedCEAutoloaders_{slot}Autoloader"
+        expected_network_copy = {
+            pipe_name: (
+                f"{slot_lower} ammunition pipe",
+                f"Carries the configured ammunition for the {slot_lower} network.",
+            ),
+            hidden_pipe_name: (
+                f"hidden {slot_lower} ammunition pipe",
+                f"Carries the configured ammunition for the {slot_lower} network. "
+                "Invisible after construction and cannot be targeted or damaged by attacks.",
+            ),
+            tank_name: (
+                f"{slot_lower} ammunition magazine",
+                f"Stores ammunition for the {slot_lower} network. Capacity is configured in Mod Settings.",
+            ),
+            input_name: (
+                f"{slot_lower} ammunition input",
+                f"Accepts only the physical ammunition configured for the {slot_lower} network. "
+                "Adds every round in each item to the network.",
+            ),
+        }
+        for thing_name, (label, description) in expected_network_copy.items():
+            thing = network_things[thing_name]
+            if thing.findtext("label") != label or thing.findtext("description") != description:
+                fail(f"{thing_name} must retain its reviewed English label and description")
         pipe_defs = [element.text for element in nets[net_name].findall("./pipeDefs/li")]
         if pipe_defs != [pipe_name, hidden_pipe_name]:
             fail(f"{slot} PipeNetDef must identify its visible and hidden pipes in order")
@@ -278,6 +303,15 @@ def validate_defs(package: Path) -> None:
                 if comp.findtext("centerOffset") != "(0,0,0.2)":
                     fail(f"{tank_name} must center its storage gauge on the magazine lid")
         loader = loaders[loader_name]
+        expected_loader_description = (
+            f"Automatically reloads a compatible adjacent Combat Extended turret using ammunition "
+            f"from the {slot_lower} network. Requires power."
+        )
+        if (
+            loader.findtext("label") != f"{slot_lower} piped autoloader"
+            or loader.findtext("description") != expected_loader_description
+        ):
+            fail(f"{loader_name} must retain its reviewed English label and description")
         expected_loader_texture = f"Things/Building/PipedCEAutoloaders/{slot}Autoloader"
         if loader.findtext("./graphicData/texPath") != expected_loader_texture:
             fail(f"{loader_name} must use its matching custom autoloader texture")
@@ -307,27 +341,60 @@ def validate_defs(package: Path) -> None:
 
 
 def validate_languages(package: Path) -> None:
-    """Require the English key consumed by the startup long event."""
+    """Require the complete English source catalog consumed by runtime C#."""
     languages = package / "Languages"
     require_directory(languages)
-    keyed_path = languages / "English" / "Keyed" / "LongEventHandler.xml"
+    expected_catalogs = {
+        "English/Keyed/LongEventHandler.xml": {
+            "PCA_LongEvent_Initialize": "Initializing Piped CE Autoloaders",
+        },
+        "English/Keyed/Settings.xml": {
+            "PCA_Settings_Category": "Piped CE Autoloaders",
+            "PCA_Settings_Restart_Message": "Piped CE Autoloaders settings were saved. Restart RimWorld to apply the new network configuration.",
+            "PCA_Settings_RestartNow": "Restart now",
+            "PCA_Settings_Later": "Later",
+            "PCA_Settings_Restart_Title": "Restart required",
+            "PCA_Settings_Overview": "Each color network carries one exact Combat Extended ammunition type and has independent reload speed and magazine capacity settings. Changes apply after restarting RimWorld.",
+            "PCA_Settings_RebindingWarning": "After restart, existing stored rounds and autoloader contents adopt the new ammunition binding, and input filters update automatically. Empty magazines before reducing capacity.",
+            "PCA_Settings_AmberNetwork": "Amber network",
+            "PCA_Settings_BlueNetwork": "Blue network",
+            "PCA_Settings_GreenNetwork": "Green network",
+            "PCA_Settings_AmmoSet": "Ammo set",
+            "PCA_Settings_ExactRound": "Exact round",
+            "PCA_Settings_ReloadSpeed": "Reload speed: {0}x",
+            "PCA_Settings_ReloadSpeedTooltip": "Higher values make adjacent turret reloads faster.",
+            "PCA_Settings_MagazineCapacity": "Magazine capacity: {0}",
+            "PCA_Settings_MagazineCapacityTooltip": "Maximum rounds stored by each magazine on this network.",
+            "PCA_Settings_Error_Network": "{0}: {1}",
+            "PCA_Settings_Error_AmmoSetMissing": "ammo set '{0}' was not found",
+            "PCA_Settings_Error_RoundMissing": "round '{0}' was not found",
+            "PCA_Settings_Error_RoundUnusable": "round '{0}' is not a usable physical ammunition type",
+            "PCA_Settings_Error_RoundNotInSet": "round '{0}' does not belong to ammo set '{1}'",
+            "PCA_Settings_Error_RoundAlreadyAssigned": "round '{0}' is already assigned to another network",
+        },
+    }
     files = {
         path.relative_to(languages).as_posix()
         for path in languages.rglob("*")
         if path.is_file()
     }
-    if files != {"English/Keyed/LongEventHandler.xml"}:
-        fail("Languages must contain exactly the English startup long-event translation")
-    require_file(keyed_path)
+    if files != set(expected_catalogs):
+        fail("Languages must contain exactly the reviewed English keyed catalogs")
     parse_xml_files(languages)
-    root = ET.parse(keyed_path).getroot()
-    if root.tag != "LanguageData" or root.attrib:
-        fail("startup translation must use an unadorned LanguageData root")
-    entries = list(root)
-    if len(entries) != 1 or entries[0].tag != "PCA_LongEvent_Initialize":
-        fail("startup translation must define exactly PCA_LongEvent_Initialize")
-    if (entries[0].text or "").strip() != "Initializing Piped CE Autoloaders":
-        fail("PCA_LongEvent_Initialize must use the expected English text")
+    for relative_path, expected_entries in expected_catalogs.items():
+        path = languages / relative_path
+        require_file(path)
+        root = ET.parse(path).getroot()
+        if root.tag != "LanguageData" or root.attrib:
+            fail(f"English keyed catalog must use an unadorned LanguageData root: {path}")
+        entries = list(root)
+        actual_entries = {(entry.tag): (entry.text or "").strip() for entry in entries}
+        if len(actual_entries) != len(entries):
+            fail(f"English keyed catalog contains duplicate keys: {path}")
+        if any(entry.attrib or len(entry) for entry in entries):
+            fail(f"English keyed catalog entries must contain text only: {path}")
+        if actual_entries != expected_entries:
+            fail(f"English keyed catalog does not match its reviewed source text: {path}")
 
 
 def validate_png(path: Path, dimensions: tuple[int, int], color_type: int) -> None:

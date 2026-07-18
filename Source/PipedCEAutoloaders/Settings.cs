@@ -180,12 +180,32 @@ namespace PipedCEAutoloaders
         internal AmmoDef Ammo { get; }
     }
 
+    // Resolution returns a stable reason rather than display text. Startup can
+    // retain searchable English diagnostics while the settings window formats
+    // the same failure through the active RimWorld language.
+    internal enum PipedAmmoBindingError
+    {
+        None,
+        AmmoSetMissing,
+        RoundMissing,
+        RoundUnusable,
+        RoundNotInSet,
+        RoundAlreadyAssigned
+    }
+
     internal static class PipedAmmoBindings
     {
         // These arrays form one positional schema shared with the settings UI
         // and the corresponding XML Defs. Entries at each index must continue
         // to describe the same Amber, Blue, or Green network family.
         internal static readonly string[] SlotNames = { "Amber", "Blue", "Green" };
+
+        private static readonly string[] SlotLabelKeys =
+        {
+            "PCA_Settings_AmberNetwork",
+            "PCA_Settings_BlueNetwork",
+            "PCA_Settings_GreenNetwork"
+        };
 
         private static readonly string[] NetworkDefNames =
         {
@@ -228,6 +248,11 @@ namespace PipedCEAutoloaders
             return null;
         }
 
+        internal static string SlotLabel(int slot)
+        {
+            return SlotLabelKeys[slot].Translate();
+        }
+
         internal static void Initialize()
         {
             // Initialization is a one-time session pass. Resource identity and
@@ -242,11 +267,14 @@ namespace PipedCEAutoloaders
                 ThingDef input = DefDatabase<ThingDef>.GetNamedSilentFail(InputDefNames[slot]);
                 ThingDef loader = DefDatabase<ThingDef>.GetNamedSilentFail(LoaderDefNames[slot]);
                 ThingDef tank = DefDatabase<ThingDef>.GetNamedSilentFail(TankDefNames[slot]);
+                string ammoSetDefName = PipedCEAutoloadersMod.Settings.AmmoSetFor(slot);
+                string ammoDefName = PipedCEAutoloadersMod.Settings.AmmoFor(slot);
                 PipedAmmoBinding binding = Resolve(
-                    PipedCEAutoloadersMod.Settings.AmmoSetFor(slot),
-                    PipedCEAutoloadersMod.Settings.AmmoFor(slot),
+                    ammoSetDefName,
+                    ammoDefName,
                     usedAmmo,
-                    out string error);
+                    out PipedAmmoBindingError bindingError);
+                string error = BindingErrorForLog(bindingError, ammoSetDefName, ammoDefName);
 
                 CompProperties_AmmoListUser ammoProperties =
                     loader?.GetCompProperties<CompProperties_AmmoListUser>();
@@ -289,14 +317,18 @@ namespace PipedCEAutoloaders
             var errors = new List<string>();
             for (int slot = 0; slot < SlotNames.Length; slot++)
             {
+                string ammoSetDefName = settings.AmmoSetFor(slot);
+                string ammoDefName = settings.AmmoFor(slot);
                 PipedAmmoBinding binding = Resolve(
-                    settings.AmmoSetFor(slot),
-                    settings.AmmoFor(slot),
+                    ammoSetDefName,
+                    ammoDefName,
                     usedAmmo,
-                    out string error);
+                    out PipedAmmoBindingError error);
                 if (binding == null)
                 {
-                    errors.Add($"{SlotNames[slot]}: {error}");
+                    errors.Add("PCA_Settings_Error_Network".Translate(
+                        SlotLabel(slot),
+                        BindingErrorForDisplay(error, ammoSetDefName, ammoDefName)));
                 }
                 else
                 {
@@ -334,39 +366,83 @@ namespace PipedCEAutoloaders
             string ammoSetDefName,
             string ammoDefName,
             HashSet<AmmoDef> usedAmmo,
-            out string error)
+            out PipedAmmoBindingError error)
         {
             AmmoSetDef ammoSet = DefDatabase<AmmoSetDef>.GetNamedSilentFail(ammoSetDefName);
             if (ammoSet == null)
             {
-                error = $"ammo set '{ammoSetDefName}' was not found";
+                error = PipedAmmoBindingError.AmmoSetMissing;
                 return null;
             }
 
             AmmoDef ammo = DefDatabase<AmmoDef>.GetNamedSilentFail(ammoDefName);
             if (ammo == null)
             {
-                error = $"round '{ammoDefName}' was not found";
+                error = PipedAmmoBindingError.RoundMissing;
                 return null;
             }
             if (ammo.menuHidden || ammo.ammoCount <= 0)
             {
-                error = $"round '{ammoDefName}' is not a usable physical ammunition type";
+                error = PipedAmmoBindingError.RoundUnusable;
                 return null;
             }
             if (ammoSet.ammoTypes == null || !ammoSet.ammoTypes.Any(link => link?.ammo == ammo))
             {
-                error = $"round '{ammoDefName}' does not belong to ammo set '{ammoSetDefName}'";
+                error = PipedAmmoBindingError.RoundNotInSet;
                 return null;
             }
             if (usedAmmo.Contains(ammo))
             {
-                error = $"round '{ammoDefName}' is already assigned to another network";
+                error = PipedAmmoBindingError.RoundAlreadyAssigned;
                 return null;
             }
 
-            error = null;
+            error = PipedAmmoBindingError.None;
             return new PipedAmmoBinding(ammoSet, ammo);
+        }
+
+        private static string BindingErrorForLog(
+            PipedAmmoBindingError error,
+            string ammoSetDefName,
+            string ammoDefName)
+        {
+            switch (error)
+            {
+                case PipedAmmoBindingError.AmmoSetMissing:
+                    return $"ammo set '{ammoSetDefName}' was not found";
+                case PipedAmmoBindingError.RoundMissing:
+                    return $"round '{ammoDefName}' was not found";
+                case PipedAmmoBindingError.RoundUnusable:
+                    return $"round '{ammoDefName}' is not a usable physical ammunition type";
+                case PipedAmmoBindingError.RoundNotInSet:
+                    return $"round '{ammoDefName}' does not belong to ammo set '{ammoSetDefName}'";
+                case PipedAmmoBindingError.RoundAlreadyAssigned:
+                    return $"round '{ammoDefName}' is already assigned to another network";
+                default:
+                    return null;
+            }
+        }
+
+        private static string BindingErrorForDisplay(
+            PipedAmmoBindingError error,
+            string ammoSetDefName,
+            string ammoDefName)
+        {
+            switch (error)
+            {
+                case PipedAmmoBindingError.AmmoSetMissing:
+                    return "PCA_Settings_Error_AmmoSetMissing".Translate(ammoSetDefName);
+                case PipedAmmoBindingError.RoundMissing:
+                    return "PCA_Settings_Error_RoundMissing".Translate(ammoDefName);
+                case PipedAmmoBindingError.RoundUnusable:
+                    return "PCA_Settings_Error_RoundUnusable".Translate(ammoDefName);
+                case PipedAmmoBindingError.RoundNotInSet:
+                    return "PCA_Settings_Error_RoundNotInSet".Translate(ammoDefName, ammoSetDefName);
+                case PipedAmmoBindingError.RoundAlreadyAssigned:
+                    return "PCA_Settings_Error_RoundAlreadyAssigned".Translate(ammoDefName);
+                default:
+                    return string.Empty;
+            }
         }
 
         private static void ConfigureInput(ThingDef input, AmmoDef ammo)
@@ -432,8 +508,8 @@ namespace PipedCEAutoloaders
             Widgets.BeginScrollView(inRect, ref scrollPosition, viewRect);
             var listing = new Listing_Standard();
             listing.Begin(viewRect);
-            listing.Label("Each network carries one exact CE round type and has independent performance settings. Changes take effect after restarting RimWorld.");
-            listing.Label("After a restart, rebinding converts stored pipe resource and loader contents to the new round and updates existing inputs. Empty magazines before lowering capacity.");
+            listing.Label("PCA_Settings_Overview".Translate());
+            listing.Label("PCA_Settings_RebindingWarning".Translate());
             listing.GapLine();
             for (int slot = 0; slot < PipedAmmoBindings.SlotNames.Length; slot++)
             {
@@ -453,13 +529,12 @@ namespace PipedCEAutoloaders
 
         private void DrawSlot(Listing_Standard listing, int slot)
         {
-            string slotName = PipedAmmoBindings.SlotNames[slot];
             AmmoSetDef selectedSet = DefDatabase<AmmoSetDef>.GetNamedSilentFail(settings.AmmoSetFor(slot));
             AmmoDef selectedAmmo = DefDatabase<AmmoDef>.GetNamedSilentFail(settings.AmmoFor(slot));
 
-            listing.Label($"{slotName} network");
+            listing.Label(PipedAmmoBindings.SlotLabel(slot));
             Rect setRow = listing.GetRect(30f);
-            Widgets.Label(setRow.LeftPart(0.35f), "Ammo set");
+            Widgets.Label(setRow.LeftPart(0.35f), "PCA_Settings_AmmoSet".Translate());
             if (Widgets.ButtonText(setRow.RightPart(0.65f), selectedSet?.LabelCap ?? settings.AmmoSetFor(slot)))
             {
                 var options = new List<FloatMenuOption>();
@@ -477,7 +552,7 @@ namespace PipedCEAutoloaders
             }
 
             Rect ammoRow = listing.GetRect(30f);
-            Widgets.Label(ammoRow.LeftPart(0.35f), "Exact round");
+            Widgets.Label(ammoRow.LeftPart(0.35f), "PCA_Settings_ExactRound".Translate());
             if (Widgets.ButtonText(ammoRow.RightPart(0.65f), selectedAmmo?.LabelCap ?? settings.AmmoFor(slot)))
             {
                 var options = new List<FloatMenuOption>();
@@ -490,20 +565,20 @@ namespace PipedCEAutoloaders
             }
             float reloadSpeed = settings.ReloadSpeedFor(slot);
             reloadSpeed = listing.SliderLabeled(
-                $"Reload speed: {reloadSpeed:0.0}x",
+                "PCA_Settings_ReloadSpeed".Translate(reloadSpeed.ToString("0.0")),
                 reloadSpeed,
                 PipedCEAutoloadersSettings.MinimumReloadSpeed,
                 PipedCEAutoloadersSettings.MaximumReloadSpeed,
-                tooltip: "Higher values reload adjacent turrets faster.");
+                tooltip: "PCA_Settings_ReloadSpeedTooltip".Translate());
             settings.SetReloadSpeed(slot, Mathf.Round(reloadSpeed * 10f) / 10f);
 
             float tankCapacity = settings.TankCapacityFor(slot);
             tankCapacity = listing.SliderLabeled(
-                $"Magazine capacity: {tankCapacity:0}",
+                "PCA_Settings_MagazineCapacity".Translate(tankCapacity.ToString("0")),
                 tankCapacity,
                 PipedCEAutoloadersSettings.MinimumTankCapacity,
                 PipedCEAutoloadersSettings.MaximumTankCapacity,
-                tooltip: "Maximum rounds stored by each magazine in this network.");
+                tooltip: "PCA_Settings_MagazineCapacityTooltip".Translate());
             settings.SetTankCapacity(slot, Mathf.Round(tankCapacity / 100f) * 100f);
         }
     }
