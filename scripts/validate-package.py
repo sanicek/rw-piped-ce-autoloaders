@@ -20,7 +20,7 @@ from typing import Dict, Optional
 # These allowlists are release policy, not a general RimWorld package schema.
 # Expanding supported versions or package content requires changing the build,
 # routing, metadata, and these expectations together.
-EXPECTED_TOP_LEVEL = {"About", "Defs", "Textures", "LoadFolders.xml", "1.6"}
+EXPECTED_TOP_LEVEL = {"About", "Defs", "Languages", "Textures", "LoadFolders.xml", "1.6"}
 EXPECTED_VERSIONS = ("1.6",)
 FORBIDDEN_NAMES = {"Source", ".git", "scripts", "bin", "obj", ".vs"}
 ASSEMBLY_NAME = "PipedCEAutoloaders.dll"
@@ -306,6 +306,30 @@ def validate_defs(package: Path) -> None:
         fail("release networks must not contain Phase 1 diagnostic outputs")
 
 
+def validate_languages(package: Path) -> None:
+    """Require the English key consumed by the startup long event."""
+    languages = package / "Languages"
+    require_directory(languages)
+    keyed_path = languages / "English" / "Keyed" / "LongEventHandler.xml"
+    files = {
+        path.relative_to(languages).as_posix()
+        for path in languages.rglob("*")
+        if path.is_file()
+    }
+    if files != {"English/Keyed/LongEventHandler.xml"}:
+        fail("Languages must contain exactly the English startup long-event translation")
+    require_file(keyed_path)
+    parse_xml_files(languages)
+    root = ET.parse(keyed_path).getroot()
+    if root.tag != "LanguageData" or root.attrib:
+        fail("startup translation must use an unadorned LanguageData root")
+    entries = list(root)
+    if len(entries) != 1 or entries[0].tag != "PCA_LongEvent_Initialize":
+        fail("startup translation must define exactly PCA_LongEvent_Initialize")
+    if (entries[0].text or "").strip() != "Initializing Piped CE Autoloaders":
+        fail("PCA_LongEvent_Initialize must use the expected English text")
+
+
 def validate_png(path: Path, dimensions: tuple[int, int], color_type: int) -> None:
     """Decode the complete PNG stream rather than trusting header metadata."""
     require_file(path)
@@ -397,7 +421,7 @@ def main() -> None:
     if not package.is_dir():
         fail(f"package directory does not exist: {package}")
     if {path.name for path in package.iterdir()} != EXPECTED_TOP_LEVEL:
-        fail("package must contain exactly About, Defs, Textures, LoadFolders.xml, and 1.6")
+        fail("package must contain exactly About, Defs, Languages, Textures, LoadFolders.xml, and 1.6")
     for path in package.rglob("*"):
         if path.is_symlink():
             fail(f"symlinks are not allowed in package: {path}")
@@ -420,6 +444,7 @@ def main() -> None:
     mapping = load_folder_mapping(load_folders)
     parse_xml_files(about)
     validate_defs(package)
+    validate_languages(package)
     validate_textures(package)
     for version in EXPECTED_VERSIONS:
         validate_version(package, version)
