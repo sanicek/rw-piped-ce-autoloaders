@@ -9,9 +9,19 @@ set -euo pipefail
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 rimworld_input="${RIMWORLD_DIR:-${HOME:?HOME must be set}/.steam/steam/steamapps/common/RimWorld}"
 project="$repo_root/Source/PipedCEAutoloaders/PipedCEAutoloaders.csproj"
+metadata="$repo_root/About/About.xml"
 artifact_dir="$repo_root/artifacts/PipedCEAutoloaders"
 built_dll="$repo_root/Source/PipedCEAutoloaders/bin/Release/net472/PipedCEAutoloaders.dll"
 versions=("1.6")
+
+# About.xml is the single release-version source used by RimWorld, the assembly,
+# release archives, tags, and GitHub releases. XML parsing avoids fragile text
+# extraction when metadata formatting changes.
+mod_version="$(python3 -c 'import sys, xml.etree.ElementTree as ET; print(ET.parse(sys.argv[1]).getroot().findtext("modVersion", "").strip())' "$metadata")"
+if [[ ! "$mod_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+    printf 'Error: About/About.xml modVersion is not valid SemVer: %s\n' "$mod_version" >&2
+    exit 1
+fi
 
 canonical_dir() {
     if [[ ! -d "$1" ]]; then
@@ -63,9 +73,9 @@ fi
 # Phase 2: restore the locked dependency graph and compile against the resolved
 # game and mod APIs. The project file independently checks the reference files
 # needed by direct dotnet builds before reference resolution.
-printf 'Repository: %s\nRimWorld: %s\nManaged DLLs: %s\nCombat Extended: %s\nCombat Extended assembly: %s\nVanilla Expanded Framework: %s\n' "$repo_root" "$rimworld_dir" "$managed_dir" "$combat_extended_dir" "$combat_extended_assembly" "$vanilla_expanded_framework_dir"
+printf 'Repository: %s\nVersion: %s\nRimWorld: %s\nManaged DLLs: %s\nCombat Extended: %s\nCombat Extended assembly: %s\nVanilla Expanded Framework: %s\n' "$repo_root" "$mod_version" "$rimworld_dir" "$managed_dir" "$combat_extended_dir" "$combat_extended_assembly" "$vanilla_expanded_framework_dir"
 dotnet restore "$project" --locked-mode
-dotnet build "$project" --configuration Release --no-restore -p:RimWorldManagedDir="$managed_dir" -p:CombatExtendedDir="$combat_extended_dir" -p:CombatExtendedAssembly="$combat_extended_assembly" -p:VanillaExpandedFrameworkDir="$vanilla_expanded_framework_dir"
+dotnet build "$project" --configuration Release --no-restore -p:ModVersion="$mod_version" -p:RimWorldManagedDir="$managed_dir" -p:CombatExtendedDir="$combat_extended_dir" -p:CombatExtendedAssembly="$combat_extended_assembly" -p:VanillaExpandedFrameworkDir="$vanilla_expanded_framework_dir"
 
 if [[ ! -f "$built_dll" ]]; then
     printf 'Error: build output is missing: %s\n' "$built_dll" >&2
@@ -82,6 +92,8 @@ cp -a -- "$repo_root/Defs" "$artifact_dir/"
 cp -a -- "$repo_root/Languages" "$artifact_dir/"
 cp -a -- "$repo_root/Textures" "$artifact_dir/"
 cp -- "$repo_root/LoadFolders.xml" "$artifact_dir/LoadFolders.xml"
+cp -- "$repo_root/LICENSE" "$artifact_dir/LICENSE"
+cp -- "$repo_root/THIRD_PARTY_NOTICES.md" "$artifact_dir/THIRD_PARTY_NOTICES.md"
 for version in "${versions[@]}"; do
     mkdir -p -- "$artifact_dir/$version/Assemblies"
     cp -- "$built_dll" "$artifact_dir/$version/Assemblies/PipedCEAutoloaders.dll"

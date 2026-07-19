@@ -16,7 +16,7 @@ path; manual intake remains available for recovered or externally produced art:
 ./scripts/artwork.sh generate magazine --confirm-cost
 ./scripts/artwork.sh select magazine 4
 ./scripts/artwork.sh approve magazine
-./scripts/artwork.sh stamp-ce-logo
+./scripts/artwork.sh stamp-ce-badge
 
 # Manual fallback
 ./scripts/artwork.sh intake autoloader /path/to/download.png
@@ -31,9 +31,10 @@ normalizes every output variant, and prints one numbered contact sheet. Run
 `approve`. A generation receipt prevents an interrupted command from silently
 submitting another paid batch; `--restart` is the explicit escape hatch.
 
-`stamp-ce-logo` composites CE's checksum-pinned official full emblem and a
-`CE ONLY` dependency label onto the approved preview. Run it only after
-approving `preview`.
+`stamp-ce-badge` composites CE's checksum-pinned official third-party
+compatibility badge onto the approved preview. Combat Extended provides this
+badge for compatible mod authors in its media pack under CE's CC BY-NC-SA 4.0
+license. Run the command only after approving `preview`.
 
 `mod-icon` is the reusable blank maker badge. `mod-icon-final` uses its uploaded
 Scenario asset as an exact visual reference and renders the project-specific
