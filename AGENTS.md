@@ -6,6 +6,8 @@
   of version control.
 - Validate package structure with `python3 scripts/validate-package.py <package>`.
 - Do not add Workshop publication identifiers until a page has been published.
+- Treat `About/About.xml` `modVersion` as the single release version. Tags and
+  GitHub releases use the matching `vMAJOR.MINOR.PATCH` form.
 
 ## Engineering guardrails
 
@@ -68,7 +70,8 @@
 - Do not expand manual acceptance into an exhaustive QA matrix unless the user
   explicitly requests it.
 - Do not merge a gameplay pull request until the user confirms that smoke test
-  passed. Record that confirmation in the roadmap and pull request body.
+  passed. Record that confirmation in the relevant release record or durable
+  design document and in the pull request body.
 - Documentation-only and process-only changes do not require a RimWorld smoke
   test; validate only the affected documentation, scripts, or package structure.
 - Keep validation in this local OpenCode workflow. Do not add CI services or
@@ -91,8 +94,9 @@
   still pending.
 - If the user requests changes, reuse the existing feature branch. Make the
   changes, validate, commit, and push; the PR updates automatically.
-- When the user confirms the smoke test passed, update the roadmap, commit and
-  push the acceptance note, update the PR body, mark the PR ready, then ask
+- When the user confirms the smoke test passed, update the relevant release
+  record or durable design document, commit and push the acceptance note, update
+  the PR body, mark the PR ready, then ask
   whether it is ready to merge or needs additional changes.
 - Before merging, inspect the clean worktree, all commits in the PR, and the
   complete diff from `main`. No hosted status checks are expected.
@@ -100,3 +104,22 @@
   synchronize local `main`, delete the local feature branch if it still exists,
   and run `git remote prune origin`.
 - This workflow applies to every change, including updates to `AGENTS.md` itself.
+
+## Release workflow
+
+- Keep releases local and operator-driven; do not add hosted CI/CD unless the
+  user explicitly changes this policy.
+- Prepare the version and its `docs/releases/` record on a feature branch. Record
+  the exact RimWorld, CE, VEF, source, and tool versions used for the candidate.
+- From a clean candidate commit, run `python3 scripts/package-release.py`, then
+  `scripts/install-local.sh --release` and the representative RimWorld smoke
+  test. Record the candidate checksum; do not publish an untested package.
+- After acceptance is recorded and the pull request is merged, synchronize a
+  clean `main`, rebuild the archive, and require its checksum to match the tested
+  candidate. If it differs, install and smoke-test the final archive again.
+- Create and push an annotated version tag, then use `gh release create` with the
+  installable ZIP, checksum, and matching release record as its notes.
+- GitHub's generated source archives are not installable RimWorld packages. The
+  attached versioned ZIP is the supported GitHub download.
+- Add `PublishedFileId.txt` only after the Workshop page exists; Workshop upload
+  remains a separate, explicit publication step.

@@ -2,14 +2,24 @@
   <!--
     RimWorld 1.6 loads .NET Framework 4.7.2 assemblies. Deterministic compilation
     and the lockfile make builds repeatable for fixed game and mod references,
-    while manual AssemblyInfo supplies version and descriptive attributes.
+    while About.xml supplies the release version passed through the build script.
   -->
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>PipedCEAutoloaders</AssemblyName>
     <RootNamespace>PipedCEAutoloaders</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Version>$(ModVersion)</Version>
+    <AssemblyTitle>PipedCEAutoloaders</AssemblyTitle>
+    <Description>Piped CE Autoloaders for RimWorld</Description>
+    <Company>Sanicek</Company>
+    <Product>PipedCEAutoloaders</Product>
+    <Copyright>Copyright © 2026 Sanicek</Copyright>
+    <ComVisible>false</ComVisible>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Deterministic>true</Deterministic>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <!-- Dependency locations are portable inputs supplied by the build environment. -->
@@ -61,6 +71,7 @@
 
   <!-- Fail before reference resolution with actionable errors for direct builds. -->
   <Target Name="ValidateRimWorldManagedDir" BeforeTargets="ResolveReferences;CoreCompile">
+    <Error Condition="'$(ModVersion)' == ''" Text="ModVersion must be supplied from About/About.xml by scripts/build.sh." />
     <Error Condition="'$(RimWorldManagedDir)' == ''" Text="RimWorldManagedDir must be supplied and point to RimWorldLinux_Data/Managed." />
     <Error Condition="!Exists('$(RimWorldManagedDir)/Assembly-CSharp.dll')" Text="Assembly-CSharp.dll was not found in RimWorldManagedDir: $(RimWorldManagedDir)" />
     <Error Condition="'$(CombatExtendedAssembly)' == ''" Text="CombatExtendedAssembly (or COMBAT_EXTENDED_ASSEMBLY) must point to a built CombatExtended.dll." />

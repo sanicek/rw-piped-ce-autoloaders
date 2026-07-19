@@ -20,11 +20,17 @@ from typing import Dict, Optional
 # These allowlists are release policy, not a general RimWorld package schema.
 # Expanding supported versions or package content requires changing the build,
 # routing, metadata, and these expectations together.
-EXPECTED_TOP_LEVEL = {"About", "Defs", "Languages", "Textures", "LoadFolders.xml", "1.6"}
+EXPECTED_TOP_LEVEL = {"About", "Defs", "Languages", "Textures", "LoadFolders.xml", "LICENSE", "THIRD_PARTY_NOTICES.md", "1.6"}
 EXPECTED_VERSIONS = ("1.6",)
 FORBIDDEN_NAMES = {"Source", ".git", "scripts", "bin", "obj", ".vs"}
 ASSEMBLY_NAME = "PipedCEAutoloaders.dll"
 PACKAGE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]*\.[A-Za-z0-9][A-Za-z0-9_.-]*$")
+SEMVER = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
+PROJECT_URL = "https://github.com/sanicek/rw-piped-ce-autoloaders"
+DEPENDENCY_WORKSHOP_URLS = {
+    "CETeam.CombatExtended": "https://steamcommunity.com/sharedfiles/filedetails/?id=2890901044",
+    "OskarPotocki.VanillaFactionsExpanded.Core": "https://steamcommunity.com/workshop/filedetails/?id=2023507013",
+}
 
 
 def fail(message: str) -> None:
@@ -561,7 +567,7 @@ def main() -> None:
     if not package.is_dir():
         fail(f"package directory does not exist: {package}")
     if {path.name for path in package.iterdir()} != EXPECTED_TOP_LEVEL:
-        fail("package must contain exactly About, Defs, Languages, Textures, LoadFolders.xml, and 1.6")
+        fail("package must contain exactly About, Defs, Languages, Textures, LoadFolders.xml, LICENSE, THIRD_PARTY_NOTICES.md, and 1.6")
     for path in package.rglob("*"):
         if path.is_symlink():
             fail(f"symlinks are not allowed in package: {path}")
@@ -583,6 +589,8 @@ def main() -> None:
         validate_png(about / "Preview.png", (630, 330), color_type=2)
     load_folders = package / "LoadFolders.xml"
     require_file(load_folders)
+    require_file(package / "LICENSE")
+    require_file(package / "THIRD_PARTY_NOTICES.md")
     mapping = load_folder_mapping(load_folders)
     parse_xml_files(about)
     validate_defs(package)
@@ -598,6 +606,8 @@ def main() -> None:
     name = metadata.findtext("name", default="").strip()
     description = metadata.findtext("description", default="").strip()
     package_id = metadata.findtext("packageId", default="").strip()
+    mod_version = metadata.findtext("modVersion", default="").strip()
+    project_url = metadata.findtext("url", default="").strip()
     versions = [element.text.strip() for element in metadata.findall("./supportedVersions/li") if element.text and element.text.strip()]
     dependency_elements = metadata.findall("./modDependencies/li")
     dependencies = {element.findtext("packageId", default="").strip() for element in dependency_elements}
@@ -607,12 +617,21 @@ def main() -> None:
         fail("About description must reflect the packaged Phase 2 pipe-backed loader")
     if package_id != "Sanicek.PipedCEAutoloaders" or not PACKAGE_ID.fullmatch(package_id):
         fail(f"About/About.xml has an invalid packageId: {package_id!r}")
+    if not SEMVER.fullmatch(mod_version):
+        fail(f"About/About.xml modVersion is not valid SemVer: {mod_version!r}")
+    if project_url != PROJECT_URL:
+        fail(f"About/About.xml must link to the canonical project URL: {PROJECT_URL}")
     if versions != [mapping["v1.6"][-1]]:
         fail("About supportedVersions must exactly be [1.6]")
     if dependencies != {"CETeam.CombatExtended", "OskarPotocki.VanillaFactionsExpanded.Core"}:
         fail("About must declare hard Combat Extended and Vanilla Expanded Framework dependencies")
     if any(not element.findtext("downloadUrl", default="").strip() for element in dependency_elements):
         fail("each hard dependency must provide a downloadUrl")
+    for element in dependency_elements:
+        dependency_id = element.findtext("packageId", default="").strip()
+        workshop_url = element.findtext("steamWorkshopUrl", default="").strip()
+        if workshop_url != DEPENDENCY_WORKSHOP_URLS[dependency_id]:
+            fail(f"{dependency_id} must provide its canonical Steam Workshop URL")
 
     if args.rimworld_dir:
         version = installed_version(args.rimworld_dir)

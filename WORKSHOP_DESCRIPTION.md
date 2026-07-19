@@ -1,30 +1,67 @@
 [h1]Piped CE Autoloaders[/h1]
 
-This project is under development. It provides three color-coded ammunition
-pipe networks, each configured with a Combat Extended ammo set and exact round.
-Each network also has independent 0.1x-5.0x reload speed and 100-10,000-round
-magazine capacity settings. Configuration is validated at startup and remains fixed
-until RimWorld restarts. Rebinding an existing network converts its stored pipe
-resource and autoloader counts to the newly selected round and updates its input
-filters; physical ammunition already on an input remains available to haul away.
-Empty magazines before lowering their capacity.
-Pipe-backed autoloaders retain native partial-transfer, shortage, and
-cancellation behavior while excluding pawn refill, adjacent-turret manual
-reload, and CE ammo-management interactions. Ammunition magazines occupy 2x2 cells,
-and all network buildings use the compact Ammo Pipes architect category.
-Each color also includes a hidden pipe. Hidden pipes take longer and cost more
-steel to build, disappear when completed, and cannot be targeted or damaged by
-attacks.
-Existing 1x2 storage expands to a square 2x2 footprint after updating, so empty
-and deconstruct old magazines first or inspect nearby structures after loading.
+Move Combat Extended ammunition through Vanilla Expanded Framework pipe
+networks and into powered autoloaders that retain CE's native turret reload
+behavior.
 
-[h2]Compatibility[/h2]
+[h2]Features[/h2]
 
-Targets RimWorld 1.6 and requires Combat Extended and Vanilla Expanded
-Framework.
+[list]
+[*]Three independent Amber, Blue, and Green ammunition networks
+[*]Exact CE ammo-set and physical-round binding under Mod Settings
+[*]Per-network 0.1x-5.0x reload speed and 100-10,000-round magazine capacity
+[*]Powered autoloaders with native partial reload, shortage, and cancellation behavior
+[*]Normal and hidden pipes connected to the same network
+[*]Simplified Chinese, French, German, Russian, and Spanish translations
+[/list]
+
+[h2]Requirements[/h2]
+
+Targets RimWorld 1.6 and requires:
+
+[list]
+[*][url=https://steamcommunity.com/sharedfiles/filedetails/?id=2890901044]Combat Extended[/url]
+[*][url=https://steamcommunity.com/workshop/filedetails/?id=2023507013]Vanilla Expanded Framework[/url]
+[/list]
+
+Use RimWorld's automatic mod sorting before starting the game.
+
+[h2]Configuration[/h2]
+
+Each network selects one CE ammo set and one exact physical round. Bindings,
+reload speeds, and magazine capacities apply after restart and remain fixed for
+that session. Invalid or duplicate round assignments disable only the affected
+network.
+
+[h2]Existing colonies[/h2]
+
+Rebinding changes existing stored pipe resource and autoloader counts to the
+newly selected round after restart. Physical ammunition already on an input
+remains available to haul away.
+
+[b]Empty magazines before lowering their configured capacity.[/b] VEF may
+discard rounds above the reduced capacity during loading or serialization.
+
+Older development builds used 1x2 storage. Final magazines occupy 2x2 cells, so
+empty and deconstruct old storage first or inspect nearby walls, roofs, paths,
+and pipe connections after updating.
+
+[h2]Problems and logs[/h2]
+
+Reports can be left in the Workshop comments or opened as a
+[url=https://github.com/sanicek/rw-piped-ce-autoloaders/issues]GitHub issue[/url].
+Please include the RimWorld, CE, VEF, and mod versions; reproduction steps; mod
+list and load order; and a link to the relevant Player.log. Link the log through
+a paste or file-sharing service rather than posting the entire file in a comment.
 
 [h2]Source and license[/h2]
 
-Source: [url=https://github.com/sanicek/rw-piped-ce-autoloaders]github.com/sanicek/rw-piped-ce-autoloaders[/url]
+Source and manual releases:
+[url=https://github.com/sanicek/rw-piped-ce-autoloaders]github.com/sanicek/rw-piped-ce-autoloaders[/url]
 
-License: [url=https://github.com/sanicek/rw-piped-ce-autoloaders/blob/main/LICENSE]MIT License[/url]
+License:
+[url=https://github.com/sanicek/rw-piped-ce-autoloaders/blob/main/LICENSE]MIT License[/url]
+
+The preview incorporates Combat Extended's official third-party compatibility
+badge under
+[url=https://creativecommons.org/licenses/by-nc-sa/4.0/]CC BY-NC-SA 4.0[/url].

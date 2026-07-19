@@ -1,43 +1,88 @@
 # Piped CE Autoloaders
 
-RimWorld 1.6 mod project implementing Combat Extended autoloaders backed by
-Vanilla Expanded Framework pipe networks. Three color-coded networks each bind
-to a configured CE ammo set and exact physical round after startup validation.
-Pipe-backed loaders delegate turret reloads to Combat Extended's native path
-while excluding pawn refill and CE ammo-management interactions. Each loader
-draws 100 W and operates only while powered. Square 2x2 ammunition magazines and
-independently configured network performance let each line fit a different role.
-Each network provides normal pipes and slower, more expensive hidden pipes that
-disappear after construction and cannot be targeted or damaged by attacks. All
-network buildings appear under the short `Ammo Pipes` architect category.
+Piped CE Autoloaders adds three configurable ammunition pipe networks to
+RimWorld 1.6. Physical Combat Extended ammunition enters through an intake,
+moves through Vanilla Expanded Framework pipes and magazines, and fills powered
+autoloaders that use CE's native turret reload behavior.
 
-Bindings, reload-speed multipliers, and magazine capacities are configured under Mod
-Settings. Each network supports 0.1x-5.0x reload speed and 100-10,000 rounds per
-magazine. Changes require a restart and are then immutable for the session.
-Duplicate, missing, hidden, or mismatched rounds disable the affected network
-instead of silently selecting another resource. After a binding changes and
-RimWorld restarts, that setting is authoritative for existing colonies: stored
-pipe resource and buffered autoloader counts become the newly selected round,
-and existing input filters update to accept it. Old physical ammunition already
-on an input remains on the map and can be hauled to compatible storage.
+## Features
 
-Lowering magazine capacity is also not migrated. Empty affected magazines before saving
-the new setting because VEF can discard stored resource above the reduced
-capacity when the colony next loads or the magazine is later serialized.
+- Three independent Amber, Blue, and Green ammunition networks.
+- Exact ammo-set and physical-round binding under Mod Settings.
+- Per-network 0.1x-5.0x reload speed and 100-10,000-round magazine capacity.
+- Powered autoloaders that preserve CE partial reloads, shortages, and cancellation.
+- Normal pipes and slower, more expensive hidden pipes on the same network.
+- Complete Simplified Chinese, French, German, Russian, and Spanish translations.
 
-Updating an existing colony changes placed ammunition storage from 1x2 back to
-2x2 in place. Empty and deconstruct existing magazines before updating when
-possible. After loading an older save, inspect walls, rooms, roofs, paths, and
-pipe connections around every expanded footprint and rebuild obstructed layouts.
+## Requirements
 
-## Build
+- RimWorld 1.6
+- [Combat Extended](https://steamcommunity.com/sharedfiles/filedetails/?id=2890901044)
+- [Vanilla Expanded Framework](https://steamcommunity.com/workshop/filedetails/?id=2023507013)
 
-Prerequisites: Python 3, a .NET SDK capable of targeting .NET Framework 4.7.2,
-RimWorld 1.6, Combat Extended, and Vanilla Expanded Framework.
+The RimWorld mod manager declares both dependencies and loads this mod after
+them. Use its automatic sort before starting a colony.
 
-Set portable dependency locations when they are not sibling checkouts. The
-build also recognizes `$HOME/gitproj/public/CombatExtended` and
-`$HOME/gitproj/public/VanillaExpandedFramework`:
+## Installation
+
+Download the versioned ZIP from [GitHub Releases](https://github.com/sanicek/rw-piped-ce-autoloaders/releases),
+extract its `PipedCEAutoloaders` directory into RimWorld's `Mods` directory, and
+enable it in the mod manager. The ZIP attached to each release is the supported
+manual download; GitHub's automatically generated source archives are not
+installable mod packages.
+
+Steam Workshop installation will be documented after the Workshop page is
+published.
+
+## Configuration
+
+Each network selects one CE ammo set and one exact, non-hidden physical round.
+Bindings, reload speeds, and magazine capacities are validated at startup and
+remain fixed until RimWorld restarts. Invalid or duplicate round assignments
+disable only the affected network instead of silently selecting another round.
+
+An input converts each physical ammunition item's CE round count into pipe units.
+Existing physical ammunition that no longer matches a rebound input remains on
+the map and can be hauled to compatible storage.
+
+## Updating Existing Colonies
+
+Network settings are authoritative after restart. Rebinding a network preserves
+the numeric counts in existing pipe storage and autoloader buffers but changes
+those counts to the newly selected round. Existing inputs update their filters.
+
+Lowering magazine capacity is not migrated. Empty affected magazines before
+saving the new setting because VEF may discard stored rounds above the reduced
+capacity during load or later serialization.
+
+Development builds used 1x2 ammunition storage before the final 2x2 magazine.
+Empty and deconstruct those older magazines before updating when possible. After
+loading an older save, inspect nearby walls, rooms, roofs, paths, and pipe
+connections for conflicts with the expanded footprint.
+
+## Troubleshooting and Reports
+
+Reports are welcome in GitHub Issues or the Steam Workshop comments after the
+page is published. To make a report actionable, include:
+
+- RimWorld, Combat Extended, Vanilla Expanded Framework, and mod versions.
+- A short reproduction sequence and whether it also occurs in a new colony.
+- The active mod list and load order.
+- A link to the relevant `Player.log`, especially for startup or loading errors.
+
+On Windows, `Player.log` is normally under
+`%USERPROFILE%\AppData\LocalLow\Ludeon Studios\RimWorld by Ludeon Studios`.
+On Linux it is under
+`~/.config/unity3d/Ludeon Studios/RimWorld by Ludeon Studios`. Upload the log to
+a paste or file-sharing service and link it rather than placing the whole log in
+a Workshop comment.
+
+## Building
+
+Prerequisites are Python 3, a .NET SDK capable of targeting .NET Framework
+4.7.2, RimWorld 1.6, Combat Extended, and Vanilla Expanded Framework. The build
+recognizes the environment variables below and also checks the repository's
+documented sibling and home-checkout locations:
 
 ```bash
 RIMWORLD_DIR=/path/to/RimWorld \
@@ -46,75 +91,32 @@ VANILLA_EXPANDED_FRAMEWORK_DIR=/path/to/VanillaExpandedFramework \
 ./scripts/build.sh
 ```
 
-The CE source checkout is used as an integration reference. Compilation needs a
-built `CombatExtended.dll`; resolution prefers the checkout's `Assemblies/`
-output, then the installed CE mod. Override both with
-`COMBAT_EXTENDED_ASSEMBLY=/path/to/CombatExtended.dll` when needed. Pipe APIs
-compile against VEF's `1.6/Assemblies/PipeSystem.dll`, not `VEF.dll`.
+Compilation needs a built `CombatExtended.dll`; resolution prefers the CE
+checkout, then the installed CE mod. `COMBAT_EXTENDED_ASSEMBLY` can override the
+assembly directly. VEF pipe APIs compile against `1.6/Assemblies/PipeSystem.dll`.
+Dependency DLLs are compile references and are never included in this package.
 
-The build writes `artifacts/PipedCEAutoloaders/`, copies the constrained source
-Defs, and runs package validation. Dependency DLLs are compile references only
-and are never packaged. Install locally with `./scripts/install-local.sh` after
-building (use the same environment variables if needed).
+`scripts/build.sh` creates and validates `artifacts/PipedCEAutoloaders/`.
+`scripts/install-local.sh` builds and transactionally installs that package for
+testing. `python3 scripts/package-release.py` creates the versioned installable
+ZIP and SHA-256 checksum used by the local release workflow.
 
-## Localization
+## Maintainer Documentation
 
-English keyed catalogs under `Languages/English/Keyed/` are the source for all
-runtime text created by C#, including startup, settings, validation feedback, and
-the restart dialog. Building and architect text remains in its Defs as RimWorld's
-canonical English source; another language can override those standard `label`
-and `description` fields through its normal `DefInjected` files.
+- [Design and compatibility invariants](docs/DESIGN.md)
+- [Release policy and records](docs/RELEASES.md)
+- [Artwork workflow](artwork/README.md)
+- [Repository workflow](AGENTS.md)
 
-The package includes complete Simplified Chinese, French, German, Russian, and
-Spanish translations. Each language mirrors the English keyed catalogs and adds
-`DefInjected` catalogs for the architect category and every concrete building.
-Translations preserve each keyed placeholder occurrence while allowing its order
-and surrounding grammar to follow the target language. Language additions must
-update the validator's supported-language set and provide the same four files.
+## Artwork and License
 
-VEF's nested pipe resource `name` and `unit` fields are not marked as
-translatable, and VEF derives cached identifiers from the resource name. The
-three color-network resource names and their `rounds` unit therefore remain
-English rather than being mutated after Def loading. Runtime logs, DefNames,
-save keys, and other developer identifiers are intentionally not localized.
+Project artwork is generated, reviewed, and processed through the tracked
+manifest and local approval workflow. The preview uses Combat Extended's
+official compatibility badge for third-party mod authors from the
+[CE media pack](https://github.com/CombatExtended-Continued/CombatExtended/tree/Development/Media).
 
-## Artwork
-
-Artwork is generated through Scenario, reviewed by a human, and processed
-deterministically. The tracked `artwork/manifest.toml` pins each request's prompt,
-model parameters, references, canvas contract, and game outputs. The sibling
-`rw-art-pipeline` first estimates the cost, submits a paid four-option batch only
-after explicit confirmation, and stores originals, receipts, and review sheets
-outside Git. After an option is selected, approval promotes its processed color
-variants into the tracked `Textures/` tree. Manual intake remains a fallback for
-externally generated or recovered source images. Credentials and raw provider
-downloads never enter this repository. See `artwork/README.md` for the commands.
-
-## Maintenance style
-
-Maintained source follows the literate programming convention in `AGENTS.md`:
-files and nontrivial phases introduce their purpose, invariants, and tradeoffs
-before the implementation. Comments explain why a constraint exists rather than
-repeat what the syntax already says, and must change with the behavior they
-describe.
-
-Apply that convention to the active C#, scripts, build configuration, mod
-metadata, version routing, and 1.6 Defs. Simple declarative files need only the
-context required to maintain their contracts. Do not rewrite generated output,
-dependency lockfiles, solution files, binaries, artwork, publishing IDs, legal
-text, or the checksum-frozen 1.5 payload to add commentary; document their
-contracts in the maintained code that produces or validates them instead.
-
-## Manual Smoke Test
-
-Gameplay phases use one representative in-game verification, not an exhaustive
-QA matrix. After `./scripts/install-local.sh`, build the setup introduced by the
-current phase and confirm its intended path works. The pull request supplies the
-short setup and expected observation for that phase.
-
-Phase 10 passed its smoke test: mixed normal and hidden segments transferred
-ammunition as one connected network, completed hidden segments disappeared and
-resisted attacks, and the network deconstruction designator removed them.
-
-See [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) for completed
-phase evidence, the current roadmap, and future work.
+Piped CE Autoloaders is released under the [MIT License](LICENSE). Combat
+Extended's compatibility badge remains subject to Combat Extended's
+[CC BY-NC-SA 4.0 license](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+See [the third-party notice](THIRD_PARTY_NOTICES.md) for its pinned source and
+the compositing performed for the preview.
