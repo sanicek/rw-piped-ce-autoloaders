@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Ladeautomaten -->
+  <PipedCEAutoloaders_AmberAutoloader.label>bernsteinfarbener Ladeautomat</PipedCEAutoloaders_AmberAutoloader.label>
+  <PipedCEAutoloaders_AmberAutoloader.description>Lädt einen kompatiblen angrenzenden Geschützturm von Combat Extended automatisch mit Munition aus dem bernsteinfarbenen Netzwerk nach. Benötigt Strom.</PipedCEAutoloaders_AmberAutoloader.description>
+  <PipedCEAutoloaders_BlueAutoloader.label>blauer Ladeautomat</PipedCEAutoloaders_BlueAutoloader.label>
+  <PipedCEAutoloaders_BlueAutoloader.description>Lädt einen kompatiblen angrenzenden Geschützturm von Combat Extended automatisch mit Munition aus dem blauen Netzwerk nach. Benötigt Strom.</PipedCEAutoloaders_BlueAutoloader.description>
+  <PipedCEAutoloaders_GreenAutoloader.label>grüner Ladeautomat</PipedCEAutoloaders_GreenAutoloader.label>
+  <PipedCEAutoloaders_GreenAutoloader.description>Lädt einen kompatiblen angrenzenden Geschützturm von Combat Extended automatisch mit Munition aus dem grünen Netzwerk nach. Benötigt Strom.</PipedCEAutoloaders_GreenAutoloader.description>
+
+  <!-- Sichtbare und versteckte Leitungen -->
+  <PipedCEAutoloaders_AmberPipe.label>bernsteinfarbene Munitionsleitung</PipedCEAutoloaders_AmberPipe.label>
+  <PipedCEAutoloaders_AmberPipe.description>Transportiert die für das bernsteinfarbene Netzwerk festgelegte Munition.</PipedCEAutoloaders_AmberPipe.description>
+  <PipedCEAutoloaders_BluePipe.label>blaue Munitionsleitung</PipedCEAutoloaders_BluePipe.label>
+  <PipedCEAutoloaders_BluePipe.description>Transportiert die für das blaue Netzwerk festgelegte Munition.</PipedCEAutoloaders_BluePipe.description>
+  <PipedCEAutoloaders_GreenPipe.label>grüne Munitionsleitung</PipedCEAutoloaders_GreenPipe.label>
+  <PipedCEAutoloaders_GreenPipe.description>Transportiert die für das grüne Netzwerk festgelegte Munition.</PipedCEAutoloaders_GreenPipe.description>
+
+  <PipedCEAutoloaders_AmberHiddenPipe.label>versteckte bernsteinfarbene Munitionsleitung</PipedCEAutoloaders_AmberHiddenPipe.label>
+  <PipedCEAutoloaders_AmberHiddenPipe.description>Transportiert die für das bernsteinfarbene Netzwerk festgelegte Munition. Nach dem Bau unsichtbar und weder anvisierbar noch durch Angriffe beschädigbar.</PipedCEAutoloaders_AmberHiddenPipe.description>
+  <PipedCEAutoloaders_BlueHiddenPipe.label>versteckte blaue Munitionsleitung</PipedCEAutoloaders_BlueHiddenPipe.label>
+  <PipedCEAutoloaders_BlueHiddenPipe.description>Transportiert die für das blaue Netzwerk festgelegte Munition. Nach dem Bau unsichtbar und weder anvisierbar noch durch Angriffe beschädigbar.</PipedCEAutoloaders_BlueHiddenPipe.description>
+  <PipedCEAutoloaders_GreenHiddenPipe.label>versteckte grüne Munitionsleitung</PipedCEAutoloaders_GreenHiddenPipe.label>
+  <PipedCEAutoloaders_GreenHiddenPipe.description>Transportiert die für das grüne Netzwerk festgelegte Munition. Nach dem Bau unsichtbar und weder anvisierbar noch durch Angriffe beschädigbar.</PipedCEAutoloaders_GreenHiddenPipe.description>
+
+  <!-- Magazine -->
+  <PipedCEAutoloaders_AmberTank.label>bernsteinfarbenes Munitionsmagazin</PipedCEAutoloaders_AmberTank.label>
+  <PipedCEAutoloaders_AmberTank.description>Lagert Munition für das bernsteinfarbene Netzwerk. Die Kapazität wird in den Mod-Einstellungen festgelegt.</PipedCEAutoloaders_AmberTank.description>
+  <PipedCEAutoloaders_BlueTank.label>blaues Munitionsmagazin</PipedCEAutoloaders_BlueTank.label>
+  <PipedCEAutoloaders_BlueTank.description>Lagert Munition für das blaue Netzwerk. Die Kapazität wird in den Mod-Einstellungen festgelegt.</PipedCEAutoloaders_BlueTank.description>
+  <PipedCEAutoloaders_GreenTank.label>grünes Munitionsmagazin</PipedCEAutoloaders_GreenTank.label>
+  <PipedCEAutoloaders_GreenTank.description>Lagert Munition für das grüne Netzwerk. Die Kapazität wird in den Mod-Einstellungen festgelegt.</PipedCEAutoloaders_GreenTank.description>
+
+  <!-- Munitionszufuhr -->
+  <PipedCEAutoloaders_AmberInput.label>bernsteinfarbene Munitionszufuhr</PipedCEAutoloaders_AmberInput.label>
+  <PipedCEAutoloaders_AmberInput.description>Nimmt nur den für das bernsteinfarbene Netzwerk festgelegten physischen Munitionstyp an. Führt dem Netzwerk jede enthaltene Munitionseinheit zu.</PipedCEAutoloaders_AmberInput.description>
+  <PipedCEAutoloaders_BlueInput.label>blaue Munitionszufuhr</PipedCEAutoloaders_BlueInput.label>
+  <PipedCEAutoloaders_BlueInput.description>Nimmt nur den für das blaue Netzwerk festgelegten physischen Munitionstyp an. Führt dem Netzwerk jede enthaltene Munitionseinheit zu.</PipedCEAutoloaders_BlueInput.description>
+  <PipedCEAutoloaders_GreenInput.label>grüne Munitionszufuhr</PipedCEAutoloaders_GreenInput.label>
+  <PipedCEAutoloaders_GreenInput.description>Nimmt nur den für das grüne Netzwerk festgelegten physischen Munitionstyp an. Führt dem Netzwerk jede enthaltene Munitionseinheit zu.</PipedCEAutoloaders_GreenInput.description>
+</LanguageData>

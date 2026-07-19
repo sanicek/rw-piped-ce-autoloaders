@@ -340,15 +340,44 @@ def validate_defs(package: Path) -> None:
         fail("release networks must not contain Phase 1 diagnostic outputs")
 
 
+def language_entries(path: Path) -> Dict[str, str]:
+    """Read one flat LanguageData catalog after rejecting ambiguous entries."""
+    require_file(path)
+    root = ET.parse(path).getroot()
+    if root.tag != "LanguageData" or root.attrib:
+        fail(f"language catalog must use an unadorned LanguageData root: {path}")
+    entries = list(root)
+    actual = {entry.tag: entry.text or "" for entry in entries}
+    if len(actual) != len(entries):
+        fail(f"language catalog contains duplicate keys: {path}")
+    if any(entry.attrib or len(entry) for entry in entries):
+        fail(f"language catalog entries must contain text only: {path}")
+    if any(not value.strip() for value in actual.values()):
+        fail(f"language catalog entries must not be empty: {path}")
+    if any(value != value.strip() for value in actual.values()):
+        fail(f"language catalog entries must not contain surrounding whitespace: {path}")
+    return actual
+
+
+def format_placeholders(text: str, path: Path, key: str) -> list[str]:
+    """Return positional placeholders after rejecting malformed brace syntax."""
+    placeholders = re.findall(r"\{\d+\}", text)
+    remainder = re.sub(r"\{\d+\}", "", text)
+    if "{" in remainder or "}" in remainder:
+        fail(f"language catalog entry contains malformed placeholders: {path}: {key}")
+    return sorted(placeholders)
+
+
 def validate_languages(package: Path) -> None:
-    """Require the complete English source catalog consumed by runtime C#."""
+    """Require complete keyed and DefInjected catalogs for supported languages."""
     languages = package / "Languages"
     require_directory(languages)
-    expected_catalogs = {
-        "English/Keyed/LongEventHandler.xml": {
+    translations = ("ChineseSimplified", "French", "German", "Russian", "Spanish")
+    english_catalogs = {
+        "Keyed/LongEventHandler.xml": {
             "PCA_LongEvent_Initialize": "Initializing Piped CE Autoloaders",
         },
-        "English/Keyed/Settings.xml": {
+        "Keyed/Settings.xml": {
             "PCA_Settings_Category": "Piped CE Autoloaders",
             "PCA_Settings_Restart_Message": "Piped CE Autoloaders settings were saved. Restart RimWorld to apply the new network configuration.",
             "PCA_Settings_RestartNow": "Restart now",
@@ -373,28 +402,72 @@ def validate_languages(package: Path) -> None:
             "PCA_Settings_Error_RoundAlreadyAssigned": "round '{0}' is already assigned to another network",
         },
     }
+    injected_paths = (
+        "DefInjected/DesignationCategoryDef/PipeNetworks.xml",
+        "DefInjected/ThingDef/Buildings.xml",
+    )
+    expected_files = {f"English/{path}" for path in english_catalogs}
+    expected_files.update(
+        f"{language}/{path}"
+        for language in translations
+        for path in (*english_catalogs, *injected_paths)
+    )
     files = {
         path.relative_to(languages).as_posix()
         for path in languages.rglob("*")
         if path.is_file()
     }
-    if files != set(expected_catalogs):
-        fail("Languages must contain exactly the reviewed English keyed catalogs")
+    if files != expected_files:
+        fail("Languages must contain exactly the supported keyed and DefInjected catalogs")
     parse_xml_files(languages)
-    for relative_path, expected_entries in expected_catalogs.items():
-        path = languages / relative_path
-        require_file(path)
-        root = ET.parse(path).getroot()
-        if root.tag != "LanguageData" or root.attrib:
-            fail(f"English keyed catalog must use an unadorned LanguageData root: {path}")
-        entries = list(root)
-        actual_entries = {(entry.tag): (entry.text or "").strip() for entry in entries}
-        if len(actual_entries) != len(entries):
-            fail(f"English keyed catalog contains duplicate keys: {path}")
-        if any(entry.attrib or len(entry) for entry in entries):
-            fail(f"English keyed catalog entries must contain text only: {path}")
-        if actual_entries != expected_entries:
-            fail(f"English keyed catalog does not match its reviewed source text: {path}")
+
+    # English remains the exact source contract. Translations may reorder prose
+    # and placeholders, but must retain every key and placeholder occurrence.
+    allowed_unchanged_keys = {"PCA_Settings_Category", "PCA_Settings_Error_Network"}
+    for relative_path, expected_entries in english_catalogs.items():
+        english_path = languages / "English" / relative_path
+        if language_entries(english_path) != expected_entries:
+            fail(f"English keyed catalog does not match its reviewed source text: {english_path}")
+        for language in translations:
+            path = languages / language / relative_path
+            actual = language_entries(path)
+            if set(actual) != set(expected_entries):
+                fail(f"translated keyed catalog does not match the English key set: {path}")
+            for key, english_text in expected_entries.items():
+                if format_placeholders(actual[key], path, key) != format_placeholders(english_text, english_path, key):
+                    fail(f"translated keyed entry changed placeholders: {path}: {key}")
+                if actual[key] == english_text and key not in allowed_unchanged_keys:
+                    fail(f"translated keyed entry unexpectedly falls back to English: {path}: {key}")
+
+    # DefInjected coverage mirrors every concrete player-facing Def field. The
+    # translated prose is deliberately not frozen in this validator so native
+    # speakers can improve wording without duplicating it in maintained code.
+    networks_root = ET.parse(package / "Defs" / "PipeSystem" / "ConfigurableNetworks.xml").getroot()
+    autoloaders_root = ET.parse(package / "Defs" / "Buildings" / "Autoloaders.xml").getroot()
+    english_things = {}
+    for root in (networks_root, autoloaders_root):
+        for thing in root.findall("ThingDef"):
+            def_name = thing.findtext("defName")
+            if def_name:
+                english_things[f"{def_name}.label"] = thing.findtext("label", default="").strip()
+                english_things[f"{def_name}.description"] = thing.findtext("description", default="").strip()
+    category = networks_root.find("DesignationCategoryDef")
+    english_category = {"PipedCEAutoloaders_PipeNetworks.label": category.findtext("label").strip()}
+    for language in translations:
+        category_path = languages / language / injected_paths[0]
+        category_entries = language_entries(category_path)
+        if set(category_entries) != set(english_category):
+            fail(f"translated architect category does not match the English key set: {category_path}")
+        if category_entries == english_category:
+            fail(f"translated architect category unexpectedly falls back to English: {category_path}")
+
+        things_path = languages / language / injected_paths[1]
+        thing_entries = language_entries(things_path)
+        if set(thing_entries) != set(english_things):
+            fail(f"translated ThingDef catalog does not match the concrete English Def fields: {things_path}")
+        for key, english_text in english_things.items():
+            if thing_entries[key] == english_text:
+                fail(f"translated ThingDef entry unexpectedly falls back to English: {things_path}: {key}")
 
 
 def validate_png(path: Path, dimensions: tuple[int, int], color_type: int) -> None:

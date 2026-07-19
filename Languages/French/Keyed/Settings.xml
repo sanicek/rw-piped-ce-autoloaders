@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Paramètres et redémarrage. -->
+  <PCA_Settings_Category>Piped CE Autoloaders</PCA_Settings_Category>
+  <PCA_Settings_Restart_Message>Les paramètres de Piped CE Autoloaders ont été enregistrés. Redémarrez RimWorld pour appliquer la nouvelle configuration des réseaux.</PCA_Settings_Restart_Message>
+  <PCA_Settings_RestartNow>Redémarrer maintenant</PCA_Settings_RestartNow>
+  <PCA_Settings_Later>Plus tard</PCA_Settings_Later>
+  <PCA_Settings_Restart_Title>Redémarrage requis</PCA_Settings_Restart_Title>
+
+  <PCA_Settings_Overview>Chaque réseau coloré transporte un type précis de munition de Combat Extended et possède ses propres réglages de vitesse de rechargement et de capacité. Les modifications s'appliquent après le redémarrage de RimWorld.</PCA_Settings_Overview>
+  <PCA_Settings_RebindingWarning>Après le redémarrage, les munitions déjà stockées et celles contenues dans les chargeurs automatiques seront réaffectées selon la nouvelle configuration. Les filtres des entrées seront mis à jour automatiquement. Videz les magasins avant d'en réduire la capacité.</PCA_Settings_RebindingWarning>
+  <PCA_Settings_AmberNetwork>Réseau ambre</PCA_Settings_AmberNetwork>
+  <PCA_Settings_BlueNetwork>Réseau bleu</PCA_Settings_BlueNetwork>
+  <PCA_Settings_GreenNetwork>Réseau vert</PCA_Settings_GreenNetwork>
+  <PCA_Settings_AmmoSet>Gabarit</PCA_Settings_AmmoSet>
+  <PCA_Settings_ExactRound>Type de munition</PCA_Settings_ExactRound>
+  <PCA_Settings_ReloadSpeed>Vitesse de rechargement : {0}x</PCA_Settings_ReloadSpeed>
+  <PCA_Settings_ReloadSpeedTooltip>Une valeur élevée accélère le rechargement des tourelles adjacentes.</PCA_Settings_ReloadSpeedTooltip>
+  <PCA_Settings_MagazineCapacity>Capacité du magasin : {0}</PCA_Settings_MagazineCapacity>
+  <PCA_Settings_MagazineCapacityTooltip>Nombre maximal de munitions stockées dans chaque magasin de ce réseau.</PCA_Settings_MagazineCapacityTooltip>
+
+  <!-- Erreurs de validation de la configuration. -->
+  <PCA_Settings_Error_Network>{0} : {1}</PCA_Settings_Error_Network>
+  <PCA_Settings_Error_AmmoSetMissing>le gabarit « {0} » est introuvable</PCA_Settings_Error_AmmoSetMissing>
+  <PCA_Settings_Error_RoundMissing>la munition « {0} » est introuvable</PCA_Settings_Error_RoundMissing>
+  <PCA_Settings_Error_RoundUnusable>« {0} » n'est pas une munition physique utilisable</PCA_Settings_Error_RoundUnusable>
+  <PCA_Settings_Error_RoundNotInSet>la munition « {0} » n'appartient pas au gabarit « {1} »</PCA_Settings_Error_RoundNotInSet>
+  <PCA_Settings_Error_RoundAlreadyAssigned>la munition « {0} » est déjà affectée à un autre réseau</PCA_Settings_Error_RoundAlreadyAssigned>
+</LanguageData>

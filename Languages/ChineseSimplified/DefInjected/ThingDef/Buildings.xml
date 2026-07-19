@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 弹药管道 -->
+  <PipedCEAutoloaders_AmberPipe.label>琥珀色弹药管道</PipedCEAutoloaders_AmberPipe.label>
+  <PipedCEAutoloaders_AmberPipe.description>为琥珀色网络输送已配置的弹药。</PipedCEAutoloaders_AmberPipe.description>
+  <PipedCEAutoloaders_BluePipe.label>蓝色弹药管道</PipedCEAutoloaders_BluePipe.label>
+  <PipedCEAutoloaders_BluePipe.description>为蓝色网络输送已配置的弹药。</PipedCEAutoloaders_BluePipe.description>
+  <PipedCEAutoloaders_GreenPipe.label>绿色弹药管道</PipedCEAutoloaders_GreenPipe.label>
+  <PipedCEAutoloaders_GreenPipe.description>为绿色网络输送已配置的弹药。</PipedCEAutoloaders_GreenPipe.description>
+
+  <!-- 隐藏式弹药管道 -->
+  <PipedCEAutoloaders_AmberHiddenPipe.label>隐藏式琥珀色弹药管道</PipedCEAutoloaders_AmberHiddenPipe.label>
+  <PipedCEAutoloaders_AmberHiddenPipe.description>为琥珀色网络输送已配置的弹药。建成后不可见，无法成为攻击目标，也不会受到攻击伤害。</PipedCEAutoloaders_AmberHiddenPipe.description>
+  <PipedCEAutoloaders_BlueHiddenPipe.label>隐藏式蓝色弹药管道</PipedCEAutoloaders_BlueHiddenPipe.label>
+  <PipedCEAutoloaders_BlueHiddenPipe.description>为蓝色网络输送已配置的弹药。建成后不可见，无法成为攻击目标，也不会受到攻击伤害。</PipedCEAutoloaders_BlueHiddenPipe.description>
+  <PipedCEAutoloaders_GreenHiddenPipe.label>隐藏式绿色弹药管道</PipedCEAutoloaders_GreenHiddenPipe.label>
+  <PipedCEAutoloaders_GreenHiddenPipe.description>为绿色网络输送已配置的弹药。建成后不可见，无法成为攻击目标，也不会受到攻击伤害。</PipedCEAutoloaders_GreenHiddenPipe.description>
+
+  <!-- 弹药库 -->
+  <PipedCEAutoloaders_AmberTank.label>琥珀色弹药库</PipedCEAutoloaders_AmberTank.label>
+  <PipedCEAutoloaders_AmberTank.description>储存琥珀色网络的弹药。容量可在 Mod 设置中调整。</PipedCEAutoloaders_AmberTank.description>
+  <PipedCEAutoloaders_BlueTank.label>蓝色弹药库</PipedCEAutoloaders_BlueTank.label>
+  <PipedCEAutoloaders_BlueTank.description>储存蓝色网络的弹药。容量可在 Mod 设置中调整。</PipedCEAutoloaders_BlueTank.description>
+  <PipedCEAutoloaders_GreenTank.label>绿色弹药库</PipedCEAutoloaders_GreenTank.label>
+  <PipedCEAutoloaders_GreenTank.description>储存绿色网络的弹药。容量可在 Mod 设置中调整。</PipedCEAutoloaders_GreenTank.description>
+
+  <!-- 弹药输入口 -->
+  <PipedCEAutoloaders_AmberInput.label>琥珀色弹药输入口</PipedCEAutoloaders_AmberInput.label>
+  <PipedCEAutoloaders_AmberInput.description>仅接收琥珀色网络所配置的弹药物品，并将每件物品所含的所有弹药加入网络。</PipedCEAutoloaders_AmberInput.description>
+  <PipedCEAutoloaders_BlueInput.label>蓝色弹药输入口</PipedCEAutoloaders_BlueInput.label>
+  <PipedCEAutoloaders_BlueInput.description>仅接收蓝色网络所配置的弹药物品，并将每件物品所含的所有弹药加入网络。</PipedCEAutoloaders_BlueInput.description>
+  <PipedCEAutoloaders_GreenInput.label>绿色弹药输入口</PipedCEAutoloaders_GreenInput.label>
+  <PipedCEAutoloaders_GreenInput.description>仅接收绿色网络所配置的弹药物品，并将每件物品所含的所有弹药加入网络。</PipedCEAutoloaders_GreenInput.description>
+
+  <!-- 管道式自动装载机 -->
+  <PipedCEAutoloaders_AmberAutoloader.label>琥珀色管道式自动装载机</PipedCEAutoloaders_AmberAutoloader.label>
+  <PipedCEAutoloaders_AmberAutoloader.description>使用琥珀色网络中的弹药，自动为相邻且兼容的 Combat Extended 炮塔装填。需要电力。</PipedCEAutoloaders_AmberAutoloader.description>
+  <PipedCEAutoloaders_BlueAutoloader.label>蓝色管道式自动装载机</PipedCEAutoloaders_BlueAutoloader.label>
+  <PipedCEAutoloaders_BlueAutoloader.description>使用蓝色网络中的弹药，自动为相邻且兼容的 Combat Extended 炮塔装填。需要电力。</PipedCEAutoloaders_BlueAutoloader.description>
+  <PipedCEAutoloaders_GreenAutoloader.label>绿色管道式自动装载机</PipedCEAutoloaders_GreenAutoloader.label>
+  <PipedCEAutoloaders_GreenAutoloader.description>使用绿色网络中的弹药，自动为相邻且兼容的 Combat Extended 炮塔装填。需要电力。</PipedCEAutoloaders_GreenAutoloader.description>
+</LanguageData>

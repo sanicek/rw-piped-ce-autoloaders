@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Neustart und allgemeine Einstellungen -->
+  <PCA_Settings_Category>Piped CE Autoloaders</PCA_Settings_Category>
+  <PCA_Settings_Restart_Message>Die Einstellungen von Piped CE Autoloaders wurden gespeichert. Starte RimWorld neu, um die neue Netzwerkkonfiguration anzuwenden.</PCA_Settings_Restart_Message>
+  <PCA_Settings_RestartNow>Jetzt neu starten</PCA_Settings_RestartNow>
+  <PCA_Settings_Later>Später</PCA_Settings_Later>
+  <PCA_Settings_Restart_Title>Neustart erforderlich</PCA_Settings_Restart_Title>
+
+  <!-- Netzwerkkonfiguration -->
+  <PCA_Settings_Overview>Jedes farblich gekennzeichnete Netzwerk transportiert genau einen Munitionstyp von Combat Extended und besitzt eigene Einstellungen für Nachladegeschwindigkeit und Magazinkapazität. Änderungen werden nach einem Neustart von RimWorld wirksam.</PCA_Settings_Overview>
+  <PCA_Settings_RebindingWarning>Nach dem Neustart übernehmen eingelagerte Munition und Inhalte von Ladeautomaten die neue Munitionszuweisung. Die Zufuhrfilter werden automatisch aktualisiert. Leere die Magazine, bevor du ihre Kapazität verringerst.</PCA_Settings_RebindingWarning>
+  <PCA_Settings_AmberNetwork>Bernsteinfarbenes Netzwerk</PCA_Settings_AmberNetwork>
+  <PCA_Settings_BlueNetwork>Blaues Netzwerk</PCA_Settings_BlueNetwork>
+  <PCA_Settings_GreenNetwork>Grünes Netzwerk</PCA_Settings_GreenNetwork>
+  <PCA_Settings_AmmoSet>Kaliber</PCA_Settings_AmmoSet>
+  <PCA_Settings_ExactRound>Munitionstyp</PCA_Settings_ExactRound>
+  <PCA_Settings_ReloadSpeed>Nachladegeschwindigkeit: {0}x</PCA_Settings_ReloadSpeed>
+  <PCA_Settings_ReloadSpeedTooltip>Höhere Werte beschleunigen das Nachladen angrenzender Geschütztürme.</PCA_Settings_ReloadSpeedTooltip>
+  <PCA_Settings_MagazineCapacity>Magazinkapazität: {0}</PCA_Settings_MagazineCapacity>
+  <PCA_Settings_MagazineCapacityTooltip>Maximale Anzahl an Munitionseinheiten, die jedes Magazin dieses Netzwerks lagern kann.</PCA_Settings_MagazineCapacityTooltip>
+
+  <!-- Validierungsfehler -->
+  <PCA_Settings_Error_Network>{0}: {1}</PCA_Settings_Error_Network>
+  <PCA_Settings_Error_AmmoSetMissing>Kaliber „{0}“ wurde nicht gefunden</PCA_Settings_Error_AmmoSetMissing>
+  <PCA_Settings_Error_RoundMissing>Munitionstyp „{0}“ wurde nicht gefunden</PCA_Settings_Error_RoundMissing>
+  <PCA_Settings_Error_RoundUnusable>Munitionstyp „{0}“ ist nicht als verwendbarer Gegenstand verfügbar</PCA_Settings_Error_RoundUnusable>
+  <PCA_Settings_Error_RoundNotInSet>Munitionstyp „{0}“ gehört nicht zum Kaliber „{1}“</PCA_Settings_Error_RoundNotInSet>
+  <PCA_Settings_Error_RoundAlreadyAssigned>Munitionstyp „{0}“ ist bereits einem anderen Netzwerk zugewiesen</PCA_Settings_Error_RoundAlreadyAssigned>
+</LanguageData>
