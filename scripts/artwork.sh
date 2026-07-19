@@ -13,33 +13,36 @@ if [[ ! -f "$pipeline_dir/rw_art_pipeline/__main__.py" ]]; then
     exit 1
 fi
 if [[ $# -lt 1 ]]; then
-    printf 'Usage: %s {prompt|intake|approve|render-mod-icon|stamp-ce-logo|validate} [arguments...]\n' "$0" >&2
+    printf 'Usage: %s {prompt|intake|approve|stamp-mod-icon-glyph|stamp-ce-logo|validate} [arguments...]\n' "$0" >&2
     exit 2
 fi
 
 command="$1"
 shift
 
-# The mod-list badge is maintained as simple vector geometry. Rendering through
-# one pinned command keeps its transparent canvas and PNG encoding reproducible
-# while leaving the SVG easy to adapt for future mods.
-if [[ "$command" == "render-mod-icon" ]]; then
-    source="$repo_root/artwork/mod-icon.svg"
+# The approved mod-list badge is a reusable generated frame. This deterministic
+# second phase adds only the project glyph, keeping future family icons easy to
+# adapt without asking an image model to reproduce exact functional symbols.
+if [[ "$command" == "stamp-mod-icon-glyph" ]]; then
+    source="$repo_root/artwork/mod-icon-glyph.svg"
     output="$repo_root/About/ModIcon.png"
-    if [[ ! -f "$source" ]]; then
-        printf 'Error: mod icon source is missing: %s\n' "$source" >&2
+    if [[ ! -f "$source" || ! -f "$output" ]]; then
+        printf 'Error: approved mod icon and glyph source are required.\n' >&2
         exit 1
     fi
     if ! command -v magick >/dev/null 2>&1; then
-        printf 'Error: ImageMagick with SVG support is required to render the mod icon.\n' >&2
+        printf 'Error: ImageMagick with SVG support is required to stamp the mod icon.\n' >&2
         exit 1
     fi
+    glyph="$(mktemp "$repo_root/About/.ModIconGlyph.png.XXXXXX")"
     temporary="$(mktemp "$repo_root/About/.ModIcon.png.XXXXXX")"
-    trap 'rm -f -- "$temporary"' EXIT
-    magick -background none "$source" -resize 256x256 -alpha on -depth 8 -strip "PNG32:$temporary"
+    trap 'rm -f -- "$glyph" "$temporary"' EXIT
+    magick -background none "$source" -resize 256x256 -alpha on -depth 8 -strip "PNG32:$glyph"
+    magick "$output" "$glyph" -compose over -composite -depth 8 -strip "PNG32:$temporary"
     mv -- "$temporary" "$output"
     trap - EXIT
-    printf 'Rendered mod icon: %s\n' "$output"
+    rm -f -- "$glyph"
+    printf 'Stamped mod icon glyph: %s\n' "$output"
     exit 0
 fi
 
