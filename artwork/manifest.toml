@@ -241,6 +241,57 @@ STYLE AND TECHNICAL REQUIREMENTS
 - Return exactly one isolated badge, one view, as a high-resolution PNG
 """
 
+# The final mod icon is generated as one coherent illustration from the approved
+# blank badge. This avoids mixing the frame's dimensional rendering with a flat
+# symbol while preserving the shared maker identity as the visual anchor.
+[[requests]]
+id = "mod-icon-final"
+title = "Metallic piped autoloader mod icon"
+width = 256
+height = 256
+occupied_fraction = 1.0
+alpha_required = true
+background_removal = "light-checkerboard"
+fit = "cover"
+output_mode = "RGBA"
+generation = { provider = "scenario", model_id = "model_openai-gpt-image-2", candidates = 4, reference_parameter = "referenceImages", parameters = { width = 1024, height = 1024, quality = "medium", background = "opaque", numOutputs = 1 } }
+references = ["mod-icon"]
+outputs = [
+  { path = "About/ModIcon.png" },
+]
+prompt = """
+Create one finished grayscale mod-list icon for Piped CE Autoloaders by completing the empty lower opening of the attached approved Sanicek badge.
+
+PRESERVE THE APPROVED BADGE
+- Treat the attached image as the authoritative design and composition reference
+- Preserve the exact circular silhouette, metallic outer rim, top crown, integrated S emblem, grayscale palette, lighting direction, and proportions
+- Do not redraw, reinterpret, simplify, recolor, cover, crop, or distort the rim, crown, or S
+- Add content only inside the empty lower opening and keep every new element clear of both the crown and metallic rim
+
+MOD-SPECIFIC LOWER EMBLEM
+- Fill the lower opening with one compact, immediately readable piped ammunition autoloader emblem
+- Show one broad horizontal rifle cartridge feeding toward the right through a central mechanical loading block
+- Three short ammunition pipe feeds converge upward into the bottom of the loading block, representing three configurable pipe networks without using color
+- Keep the loader centered and large, but leave clean breathing room around it so no part touches the inner rim or crown
+- The cartridge, loader, and three pipe feeds must read as one unified industrial symbol, not as a gun, robot, vehicle, letter, or abstract arrow
+- Use a dark charcoal recessed enamel field behind the machinery so the lower half feels complete rather than transparent or empty
+
+MATCHING MATERIAL AND STYLE
+- Match the badge's polished dimensional rendering exactly: sculpted silver and gunmetal, dark enamel recesses, crisp black edging, restrained white highlights, and smooth beveled surfaces
+- Use the same top-centered lighting and controlled metallic reflections as the S and rim
+- Premium game-logo finish with bold simple masses that remain legible at 32 by 32 pixels
+- The machinery should feel embossed into the same physical medallion, never pasted on, flat-vector, hand-drawn, outlined clip art, or a separate icon layer
+- Strict monochrome grayscale only; no amber, blue, green, colored reflections, or glow
+
+TECHNICAL REQUIREMENTS
+- One isolated circular badge centered on a square canvas
+- Solid pure white outside the outer rim for deterministic local removal
+- Nothing may cross or protrude beyond the outer circle
+- No text, letters, numbers, labels, UI, border around the canvas, cast shadow, watermark, or signature beyond the existing approved S
+- No additional ammunition, turret, weapon, bullets, gears, decorative flourishes, or background scene
+- Return exactly one finished icon, one view, as a high-resolution PNG
+"""
+
 # RimWorld displays this wide RGB image as the mod's browser and Workshop
 # preview. The approved machines anchor its visual identity, while the center-safe
 # composition survives the deterministic crop from Scenario's landscape canvas.

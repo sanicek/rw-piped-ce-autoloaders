@@ -21,11 +21,6 @@ path; manual intake remains available for recovered or externally produced art:
 # Manual fallback
 ./scripts/artwork.sh intake autoloader /path/to/download.png
 ./scripts/artwork.sh approve autoloader
-
-# Reusable mod badge base followed by the exact project glyph
-./scripts/artwork.sh intake mod-icon /path/to/sanicek-logo.png
-./scripts/artwork.sh approve mod-icon --replace
-./scripts/artwork.sh stamp-mod-icon-glyph
 ./scripts/artwork.sh validate
 ```
 
@@ -40,10 +35,11 @@ submitting another paid batch; `--restart` is the explicit escape hatch.
 `CE ONLY` dependency label onto the approved preview. Run it only after
 approving `preview`.
 
-`stamp-mod-icon-glyph` composites the maintained `artwork/mod-icon-glyph.svg`
-onto the approved 256x256 RGBA `About/ModIcon.png`. The generated badge base
-provides the shared family identity; the deterministic SVG overlay provides the
-replaceable mod-specific symbol. Run it only after approving `mod-icon`.
+`mod-icon` is the reusable blank maker badge. `mod-icon-final` uses its uploaded
+Scenario asset as an exact visual reference and renders the project-specific
+lower emblem in the same dimensional style. Its selected output replaces the
+blank base at `About/ModIcon.png`; raw sources and reference bindings remain in
+the local pipeline state like other generation receipts.
 
 Credentials come from `SCENARIO_API_KEY` plus `SCENARIO_API_SECRET`, or from the
 mode-0600 file created interactively by `auth scenario`. Neither credentials nor
