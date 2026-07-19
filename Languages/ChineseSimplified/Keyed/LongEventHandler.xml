@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 长时间事件 -->
+  <PCA_LongEvent_Initialize>正在初始化 Piped CE Autoloaders</PCA_LongEvent_Initialize>
+</LanguageData>

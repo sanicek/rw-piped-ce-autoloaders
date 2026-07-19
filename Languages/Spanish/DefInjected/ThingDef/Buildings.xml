@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Conductos visibles. -->
+  <PipedCEAutoloaders_AmberPipe.label>conducto de munición ámbar</PipedCEAutoloaders_AmberPipe.label>
+  <PipedCEAutoloaders_AmberPipe.description>Transporta la munición configurada para la red ámbar.</PipedCEAutoloaders_AmberPipe.description>
+  <PipedCEAutoloaders_BluePipe.label>conducto de munición azul</PipedCEAutoloaders_BluePipe.label>
+  <PipedCEAutoloaders_BluePipe.description>Transporta la munición configurada para la red azul.</PipedCEAutoloaders_BluePipe.description>
+  <PipedCEAutoloaders_GreenPipe.label>conducto de munición verde</PipedCEAutoloaders_GreenPipe.label>
+  <PipedCEAutoloaders_GreenPipe.description>Transporta la munición configurada para la red verde.</PipedCEAutoloaders_GreenPipe.description>
+
+  <!-- Conductos ocultos. -->
+  <PipedCEAutoloaders_AmberHiddenPipe.label>conducto oculto de munición ámbar</PipedCEAutoloaders_AmberHiddenPipe.label>
+  <PipedCEAutoloaders_AmberHiddenPipe.description>Transporta la munición configurada para la red ámbar. Queda invisible tras construirse y no puede ser seleccionado como objetivo ni sufrir daños por ataques.</PipedCEAutoloaders_AmberHiddenPipe.description>
+  <PipedCEAutoloaders_BlueHiddenPipe.label>conducto oculto de munición azul</PipedCEAutoloaders_BlueHiddenPipe.label>
+  <PipedCEAutoloaders_BlueHiddenPipe.description>Transporta la munición configurada para la red azul. Queda invisible tras construirse y no puede ser seleccionado como objetivo ni sufrir daños por ataques.</PipedCEAutoloaders_BlueHiddenPipe.description>
+  <PipedCEAutoloaders_GreenHiddenPipe.label>conducto oculto de munición verde</PipedCEAutoloaders_GreenHiddenPipe.label>
+  <PipedCEAutoloaders_GreenHiddenPipe.description>Transporta la munición configurada para la red verde. Queda invisible tras construirse y no puede ser seleccionado como objetivo ni sufrir daños por ataques.</PipedCEAutoloaders_GreenHiddenPipe.description>
+
+  <!-- Depósitos de la red. -->
+  <PipedCEAutoloaders_AmberTank.label>depósito de munición ámbar</PipedCEAutoloaders_AmberTank.label>
+  <PipedCEAutoloaders_AmberTank.description>Almacena munición para la red ámbar. Su capacidad se configura en los ajustes del mod.</PipedCEAutoloaders_AmberTank.description>
+  <PipedCEAutoloaders_BlueTank.label>depósito de munición azul</PipedCEAutoloaders_BlueTank.label>
+  <PipedCEAutoloaders_BlueTank.description>Almacena munición para la red azul. Su capacidad se configura en los ajustes del mod.</PipedCEAutoloaders_BlueTank.description>
+  <PipedCEAutoloaders_GreenTank.label>depósito de munición verde</PipedCEAutoloaders_GreenTank.label>
+  <PipedCEAutoloaders_GreenTank.description>Almacena munición para la red verde. Su capacidad se configura en los ajustes del mod.</PipedCEAutoloaders_GreenTank.description>
+
+  <!-- Entradas de munición. -->
+  <PipedCEAutoloaders_AmberInput.label>entrada de munición ámbar</PipedCEAutoloaders_AmberInput.label>
+  <PipedCEAutoloaders_AmberInput.description>Solo acepta la munición física configurada para la red ámbar. Añade a la red toda la munición contenida en cada objeto.</PipedCEAutoloaders_AmberInput.description>
+  <PipedCEAutoloaders_BlueInput.label>entrada de munición azul</PipedCEAutoloaders_BlueInput.label>
+  <PipedCEAutoloaders_BlueInput.description>Solo acepta la munición física configurada para la red azul. Añade a la red toda la munición contenida en cada objeto.</PipedCEAutoloaders_BlueInput.description>
+  <PipedCEAutoloaders_GreenInput.label>entrada de munición verde</PipedCEAutoloaders_GreenInput.label>
+  <PipedCEAutoloaders_GreenInput.description>Solo acepta la munición física configurada para la red verde. Añade a la red toda la munición contenida en cada objeto.</PipedCEAutoloaders_GreenInput.description>
+
+  <!-- Autocargadores conectados a la red. -->
+  <PipedCEAutoloaders_AmberAutoloader.label>autocargador de red ámbar</PipedCEAutoloaders_AmberAutoloader.label>
+  <PipedCEAutoloaders_AmberAutoloader.description>Recarga automáticamente una torreta de Combat Extended compatible que se encuentre adyacente usando munición de la red ámbar. Requiere energía.</PipedCEAutoloaders_AmberAutoloader.description>
+  <PipedCEAutoloaders_BlueAutoloader.label>autocargador de red azul</PipedCEAutoloaders_BlueAutoloader.label>
+  <PipedCEAutoloaders_BlueAutoloader.description>Recarga automáticamente una torreta de Combat Extended compatible que se encuentre adyacente usando munición de la red azul. Requiere energía.</PipedCEAutoloaders_BlueAutoloader.description>
+  <PipedCEAutoloaders_GreenAutoloader.label>autocargador de red verde</PipedCEAutoloaders_GreenAutoloader.label>
+  <PipedCEAutoloaders_GreenAutoloader.description>Recarga automáticamente una torreta de Combat Extended compatible que se encuentre adyacente usando munición de la red verde. Requiere energía.</PipedCEAutoloaders_GreenAutoloader.description>
+</LanguageData>

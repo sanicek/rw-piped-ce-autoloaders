@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Длительные операции -->
+  <PCA_LongEvent_Initialize>Инициализация Piped CE Autoloaders</PCA_LongEvent_Initialize>
+</LanguageData>

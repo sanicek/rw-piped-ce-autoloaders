@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- 设置与重启提示 -->
+  <PCA_Settings_Category>Piped CE Autoloaders</PCA_Settings_Category>
+  <PCA_Settings_Restart_Message>Piped CE Autoloaders 设置已保存。重启 RimWorld 后新的网络配置才会生效。</PCA_Settings_Restart_Message>
+  <PCA_Settings_RestartNow>立即重启</PCA_Settings_RestartNow>
+  <PCA_Settings_Later>稍后</PCA_Settings_Later>
+  <PCA_Settings_Restart_Title>需要重启</PCA_Settings_Restart_Title>
+
+  <!-- 网络配置 -->
+  <PCA_Settings_Overview>每种颜色的网络仅输送一种指定的 Combat Extended 弹药，并可分别设置装填速度和弹药库容量。更改将在重启 RimWorld 后生效。</PCA_Settings_Overview>
+  <PCA_Settings_RebindingWarning>重启后，网络中已储存的弹药和自动装载机内的弹药将采用新的弹药绑定，输入口筛选条件也会自动更新。降低容量前请先清空弹药库。</PCA_Settings_RebindingWarning>
+  <PCA_Settings_AmberNetwork>琥珀色网络</PCA_Settings_AmberNetwork>
+  <PCA_Settings_BlueNetwork>蓝色网络</PCA_Settings_BlueNetwork>
+  <PCA_Settings_GreenNetwork>绿色网络</PCA_Settings_GreenNetwork>
+  <PCA_Settings_AmmoSet>口径</PCA_Settings_AmmoSet>
+  <PCA_Settings_ExactRound>弹药类型</PCA_Settings_ExactRound>
+  <PCA_Settings_ReloadSpeed>换弹速度：{0}x</PCA_Settings_ReloadSpeed>
+  <PCA_Settings_ReloadSpeedTooltip>数值越高，相邻炮塔的换弹速度越快。</PCA_Settings_ReloadSpeedTooltip>
+  <PCA_Settings_MagazineCapacity>弹药库容量：{0}</PCA_Settings_MagazineCapacity>
+  <PCA_Settings_MagazineCapacityTooltip>此网络中的每座弹药库最多可储存多少发弹药。</PCA_Settings_MagazineCapacityTooltip>
+
+  <!-- 配置错误 -->
+  <PCA_Settings_Error_Network>{0}：{1}</PCA_Settings_Error_Network>
+  <PCA_Settings_Error_AmmoSetMissing>找不到口径“{0}”</PCA_Settings_Error_AmmoSetMissing>
+  <PCA_Settings_Error_RoundMissing>找不到弹药“{0}”</PCA_Settings_Error_RoundMissing>
+  <PCA_Settings_Error_RoundUnusable>“{0}”不是可用的弹药物品类型</PCA_Settings_Error_RoundUnusable>
+  <PCA_Settings_Error_RoundNotInSet>弹药“{0}”不属于口径“{1}”</PCA_Settings_Error_RoundNotInSet>
+  <PCA_Settings_Error_RoundAlreadyAssigned>弹药“{0}”已分配给其他网络</PCA_Settings_Error_RoundAlreadyAssigned>
+</LanguageData>

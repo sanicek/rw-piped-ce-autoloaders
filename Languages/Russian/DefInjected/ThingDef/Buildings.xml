@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Боепроводы -->
+  <PipedCEAutoloaders_AmberPipe.label>янтарный боепровод</PipedCEAutoloaders_AmberPipe.label>
+  <PipedCEAutoloaders_AmberPipe.description>Переносит выбранные боеприпасы по янтарной сети.</PipedCEAutoloaders_AmberPipe.description>
+  <PipedCEAutoloaders_BluePipe.label>синий боепровод</PipedCEAutoloaders_BluePipe.label>
+  <PipedCEAutoloaders_BluePipe.description>Переносит выбранные боеприпасы по синей сети.</PipedCEAutoloaders_BluePipe.description>
+  <PipedCEAutoloaders_GreenPipe.label>зелёный боепровод</PipedCEAutoloaders_GreenPipe.label>
+  <PipedCEAutoloaders_GreenPipe.description>Переносит выбранные боеприпасы по зелёной сети.</PipedCEAutoloaders_GreenPipe.description>
+
+  <!-- Скрытые боепроводы -->
+  <PipedCEAutoloaders_AmberHiddenPipe.label>скрытый янтарный боепровод</PipedCEAutoloaders_AmberHiddenPipe.label>
+  <PipedCEAutoloaders_AmberHiddenPipe.description>Переносит выбранные боеприпасы по янтарной сети. После постройки становится невидимым; его нельзя выбрать в качестве цели или повредить атакой.</PipedCEAutoloaders_AmberHiddenPipe.description>
+  <PipedCEAutoloaders_BlueHiddenPipe.label>скрытый синий боепровод</PipedCEAutoloaders_BlueHiddenPipe.label>
+  <PipedCEAutoloaders_BlueHiddenPipe.description>Переносит выбранные боеприпасы по синей сети. После постройки становится невидимым; его нельзя выбрать в качестве цели или повредить атакой.</PipedCEAutoloaders_BlueHiddenPipe.description>
+  <PipedCEAutoloaders_GreenHiddenPipe.label>скрытый зелёный боепровод</PipedCEAutoloaders_GreenHiddenPipe.label>
+  <PipedCEAutoloaders_GreenHiddenPipe.description>Переносит выбранные боеприпасы по зелёной сети. После постройки становится невидимым; его нельзя выбрать в качестве цели или повредить атакой.</PipedCEAutoloaders_GreenHiddenPipe.description>
+
+  <!-- Магазины -->
+  <PipedCEAutoloaders_AmberTank.label>магазин янтарной сети</PipedCEAutoloaders_AmberTank.label>
+  <PipedCEAutoloaders_AmberTank.description>Хранит боеприпасы янтарной сети. Ёмкость задаётся в настройках модов.</PipedCEAutoloaders_AmberTank.description>
+  <PipedCEAutoloaders_BlueTank.label>магазин синей сети</PipedCEAutoloaders_BlueTank.label>
+  <PipedCEAutoloaders_BlueTank.description>Хранит боеприпасы синей сети. Ёмкость задаётся в настройках модов.</PipedCEAutoloaders_BlueTank.description>
+  <PipedCEAutoloaders_GreenTank.label>магазин зелёной сети</PipedCEAutoloaders_GreenTank.label>
+  <PipedCEAutoloaders_GreenTank.description>Хранит боеприпасы зелёной сети. Ёмкость задаётся в настройках модов.</PipedCEAutoloaders_GreenTank.description>
+
+  <!-- Приёмники -->
+  <PipedCEAutoloaders_AmberInput.label>приёмник янтарной сети</PipedCEAutoloaders_AmberInput.label>
+  <PipedCEAutoloaders_AmberInput.description>Принимает только физические боеприпасы, выбранные для янтарной сети, и добавляет в неё все содержащиеся в них патроны.</PipedCEAutoloaders_AmberInput.description>
+  <PipedCEAutoloaders_BlueInput.label>приёмник синей сети</PipedCEAutoloaders_BlueInput.label>
+  <PipedCEAutoloaders_BlueInput.description>Принимает только физические боеприпасы, выбранные для синей сети, и добавляет в неё все содержащиеся в них патроны.</PipedCEAutoloaders_BlueInput.description>
+  <PipedCEAutoloaders_GreenInput.label>приёмник зелёной сети</PipedCEAutoloaders_GreenInput.label>
+  <PipedCEAutoloaders_GreenInput.description>Принимает только физические боеприпасы, выбранные для зелёной сети, и добавляет в неё все содержащиеся в них патроны.</PipedCEAutoloaders_GreenInput.description>
+
+  <!-- Автозарядчики -->
+  <PipedCEAutoloaders_AmberAutoloader.label>автозарядчик янтарной сети</PipedCEAutoloaders_AmberAutoloader.label>
+  <PipedCEAutoloaders_AmberAutoloader.description>Автоматически перезаряжает совместимую соседнюю турель Combat Extended боеприпасами из янтарной сети. Требует питания.</PipedCEAutoloaders_AmberAutoloader.description>
+  <PipedCEAutoloaders_BlueAutoloader.label>автозарядчик синей сети</PipedCEAutoloaders_BlueAutoloader.label>
+  <PipedCEAutoloaders_BlueAutoloader.description>Автоматически перезаряжает совместимую соседнюю турель Combat Extended боеприпасами из синей сети. Требует питания.</PipedCEAutoloaders_BlueAutoloader.description>
+  <PipedCEAutoloaders_GreenAutoloader.label>автозарядчик зелёной сети</PipedCEAutoloaders_GreenAutoloader.label>
+  <PipedCEAutoloaders_GreenAutoloader.description>Автоматически перезаряжает совместимую соседнюю турель Combat Extended боеприпасами из зелёной сети. Требует питания.</PipedCEAutoloaders_GreenAutoloader.description>
+</LanguageData>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Guardado y reinicio. -->
+  <PCA_Settings_Category>Piped CE Autoloaders</PCA_Settings_Category>
+  <PCA_Settings_Restart_Message>Se han guardado los ajustes de Piped CE Autoloaders. Reinicia RimWorld para aplicar la nueva configuración de las redes.</PCA_Settings_Restart_Message>
+  <PCA_Settings_RestartNow>Reiniciar ahora</PCA_Settings_RestartNow>
+  <PCA_Settings_Later>Más tarde</PCA_Settings_Later>
+  <PCA_Settings_Restart_Title>Reinicio necesario</PCA_Settings_Restart_Title>
+
+  <!-- Configuración de las redes. -->
+  <PCA_Settings_Overview>Cada red de color transporta un único tipo concreto de munición de Combat Extended y tiene sus propios ajustes de velocidad de recarga y capacidad de almacenamiento. Los cambios se aplican tras reiniciar RimWorld.</PCA_Settings_Overview>
+  <PCA_Settings_RebindingWarning>Tras reiniciar, la munición almacenada en las redes y los cargadores automáticos pasará a considerarse la nueva munición asignada, y los filtros de entrada se actualizarán automáticamente. Vacía los depósitos antes de reducir su capacidad.</PCA_Settings_RebindingWarning>
+  <PCA_Settings_AmberNetwork>Red ámbar</PCA_Settings_AmberNetwork>
+  <PCA_Settings_BlueNetwork>Red azul</PCA_Settings_BlueNetwork>
+  <PCA_Settings_GreenNetwork>Red verde</PCA_Settings_GreenNetwork>
+  <PCA_Settings_AmmoSet>Calibre</PCA_Settings_AmmoSet>
+  <PCA_Settings_ExactRound>Tipo de munición</PCA_Settings_ExactRound>
+  <PCA_Settings_ReloadSpeed>Velocidad de recarga: {0}x</PCA_Settings_ReloadSpeed>
+  <PCA_Settings_ReloadSpeedTooltip>Los valores más altos aceleran la recarga de las torretas adyacentes.</PCA_Settings_ReloadSpeedTooltip>
+  <PCA_Settings_MagazineCapacity>Capacidad del depósito: {0}</PCA_Settings_MagazineCapacity>
+  <PCA_Settings_MagazineCapacityTooltip>Número máximo de unidades de munición que almacena cada depósito de esta red.</PCA_Settings_MagazineCapacityTooltip>
+
+  <!-- Errores de validación. -->
+  <PCA_Settings_Error_Network>{0}: {1}</PCA_Settings_Error_Network>
+  <PCA_Settings_Error_AmmoSetMissing>no se encontró el calibre «{0}»</PCA_Settings_Error_AmmoSetMissing>
+  <PCA_Settings_Error_RoundMissing>no se encontró la munición «{0}»</PCA_Settings_Error_RoundMissing>
+  <PCA_Settings_Error_RoundUnusable>«{0}» no es un tipo de munición física utilizable</PCA_Settings_Error_RoundUnusable>
+  <PCA_Settings_Error_RoundNotInSet>la munición «{0}» no pertenece al calibre «{1}»</PCA_Settings_Error_RoundNotInSet>
+  <PCA_Settings_Error_RoundAlreadyAssigned>la munición «{0}» ya está asignada a otra red</PCA_Settings_Error_RoundAlreadyAssigned>
+</LanguageData>

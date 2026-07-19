@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Перезапуск и общие сведения -->
+  <PCA_Settings_Category>Piped CE Autoloaders</PCA_Settings_Category>
+  <PCA_Settings_Restart_Message>Настройки Piped CE Autoloaders сохранены. Перезапустите RimWorld, чтобы применить новую конфигурацию сетей.</PCA_Settings_Restart_Message>
+  <PCA_Settings_RestartNow>Перезапустить сейчас</PCA_Settings_RestartNow>
+  <PCA_Settings_Later>Позже</PCA_Settings_Later>
+  <PCA_Settings_Restart_Title>Требуется перезапуск</PCA_Settings_Restart_Title>
+
+  <PCA_Settings_Overview>Каждая сеть работает ровно с одним конкретным типом боеприпасов Combat Extended и имеет собственные настройки скорости перезарядки и ёмкости магазина. Изменения вступают в силу после перезапуска RimWorld.</PCA_Settings_Overview>
+  <PCA_Settings_RebindingWarning>После перезапуска уже хранящиеся в сетях патроны и содержимое автозарядчиков будут считаться боеприпасами нового выбранного типа, а фильтры приёмников обновятся автоматически. Перед уменьшением ёмкости опустошите магазины.</PCA_Settings_RebindingWarning>
+
+  <!-- Параметры сетей -->
+  <PCA_Settings_AmberNetwork>Янтарная сеть</PCA_Settings_AmberNetwork>
+  <PCA_Settings_BlueNetwork>Синяя сеть</PCA_Settings_BlueNetwork>
+  <PCA_Settings_GreenNetwork>Зелёная сеть</PCA_Settings_GreenNetwork>
+  <PCA_Settings_AmmoSet>Калибр</PCA_Settings_AmmoSet>
+  <PCA_Settings_ExactRound>Тип боеприпаса</PCA_Settings_ExactRound>
+  <PCA_Settings_ReloadSpeed>Скорость перезарядки: {0}x</PCA_Settings_ReloadSpeed>
+  <PCA_Settings_ReloadSpeedTooltip>Чем выше значение, тем быстрее перезаряжаются соседние турели.</PCA_Settings_ReloadSpeedTooltip>
+  <PCA_Settings_MagazineCapacity>Ёмкость магазина: {0}</PCA_Settings_MagazineCapacity>
+  <PCA_Settings_MagazineCapacityTooltip>Максимальное количество патронов, хранящихся в каждом магазине этой сети.</PCA_Settings_MagazineCapacityTooltip>
+
+  <!-- Ошибки конфигурации -->
+  <PCA_Settings_Error_Network>{0}: {1}</PCA_Settings_Error_Network>
+  <PCA_Settings_Error_AmmoSetMissing>калибр «{0}» не найден</PCA_Settings_Error_AmmoSetMissing>
+  <PCA_Settings_Error_RoundMissing>боеприпас «{0}» не найден</PCA_Settings_Error_RoundMissing>
+  <PCA_Settings_Error_RoundUnusable>«{0}» не является физическим боеприпасом, пригодным для использования</PCA_Settings_Error_RoundUnusable>
+  <PCA_Settings_Error_RoundNotInSet>боеприпас «{0}» не относится к калибру «{1}»</PCA_Settings_Error_RoundNotInSet>
+  <PCA_Settings_Error_RoundAlreadyAssigned>боеприпас «{0}» уже назначен другой сети</PCA_Settings_Error_RoundAlreadyAssigned>
+</LanguageData>

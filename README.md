@@ -65,6 +65,13 @@ the restart dialog. Building and architect text remains in its Defs as RimWorld'
 canonical English source; another language can override those standard `label`
 and `description` fields through its normal `DefInjected` files.
 
+The package includes complete Simplified Chinese, French, German, Russian, and
+Spanish translations. Each language mirrors the English keyed catalogs and adds
+`DefInjected` catalogs for the architect category and every concrete building.
+Translations preserve each keyed placeholder occurrence while allowing its order
+and surrounding grammar to follow the target language. Language additions must
+update the validator's supported-language set and provide the same four files.
+
 VEF's nested pipe resource `name` and `unit` fields are not marked as
 translatable, and VEF derives cached identifiers from the resource name. The
 three color-network resource names and their `rounds` unit therefore remain

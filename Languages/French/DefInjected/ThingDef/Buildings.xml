@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <!-- Conduites visibles. -->
+  <PipedCEAutoloaders_AmberPipe.label>conduite de munitions ambre</PipedCEAutoloaders_AmberPipe.label>
+  <PipedCEAutoloaders_AmberPipe.description>Transporte le type de munition configuré pour le réseau ambre.</PipedCEAutoloaders_AmberPipe.description>
+  <PipedCEAutoloaders_BluePipe.label>conduite de munitions bleue</PipedCEAutoloaders_BluePipe.label>
+  <PipedCEAutoloaders_BluePipe.description>Transporte le type de munition configuré pour le réseau bleu.</PipedCEAutoloaders_BluePipe.description>
+  <PipedCEAutoloaders_GreenPipe.label>conduite de munitions verte</PipedCEAutoloaders_GreenPipe.label>
+  <PipedCEAutoloaders_GreenPipe.description>Transporte le type de munition configuré pour le réseau vert.</PipedCEAutoloaders_GreenPipe.description>
+
+  <!-- Conduites dissimulées. -->
+  <PipedCEAutoloaders_AmberHiddenPipe.label>conduite de munitions ambre cachée</PipedCEAutoloaders_AmberHiddenPipe.label>
+  <PipedCEAutoloaders_AmberHiddenPipe.description>Transporte le type de munition configuré pour le réseau ambre. Invisible une fois construite, elle ne peut être ni ciblée ni endommagée par des attaques.</PipedCEAutoloaders_AmberHiddenPipe.description>
+  <PipedCEAutoloaders_BlueHiddenPipe.label>conduite de munitions bleue cachée</PipedCEAutoloaders_BlueHiddenPipe.label>
+  <PipedCEAutoloaders_BlueHiddenPipe.description>Transporte le type de munition configuré pour le réseau bleu. Invisible une fois construite, elle ne peut être ni ciblée ni endommagée par des attaques.</PipedCEAutoloaders_BlueHiddenPipe.description>
+  <PipedCEAutoloaders_GreenHiddenPipe.label>conduite de munitions verte cachée</PipedCEAutoloaders_GreenHiddenPipe.label>
+  <PipedCEAutoloaders_GreenHiddenPipe.description>Transporte le type de munition configuré pour le réseau vert. Invisible une fois construite, elle ne peut être ni ciblée ni endommagée par des attaques.</PipedCEAutoloaders_GreenHiddenPipe.description>
+
+  <!-- Magasins de stockage. -->
+  <PipedCEAutoloaders_AmberTank.label>magasin de munitions ambre</PipedCEAutoloaders_AmberTank.label>
+  <PipedCEAutoloaders_AmberTank.description>Stocke les munitions du réseau ambre. Sa capacité se règle dans les paramètres du mod.</PipedCEAutoloaders_AmberTank.description>
+  <PipedCEAutoloaders_BlueTank.label>magasin de munitions bleu</PipedCEAutoloaders_BlueTank.label>
+  <PipedCEAutoloaders_BlueTank.description>Stocke les munitions du réseau bleu. Sa capacité se règle dans les paramètres du mod.</PipedCEAutoloaders_BlueTank.description>
+  <PipedCEAutoloaders_GreenTank.label>magasin de munitions vert</PipedCEAutoloaders_GreenTank.label>
+  <PipedCEAutoloaders_GreenTank.description>Stocke les munitions du réseau vert. Sa capacité se règle dans les paramètres du mod.</PipedCEAutoloaders_GreenTank.description>
+
+  <!-- Entrées de munitions physiques. -->
+  <PipedCEAutoloaders_AmberInput.label>entrée de munitions ambre</PipedCEAutoloaders_AmberInput.label>
+  <PipedCEAutoloaders_AmberInput.description>N'accepte que le type de munition configuré pour le réseau ambre. Transfère au réseau toutes les munitions que représente chaque objet.</PipedCEAutoloaders_AmberInput.description>
+  <PipedCEAutoloaders_BlueInput.label>entrée de munitions bleue</PipedCEAutoloaders_BlueInput.label>
+  <PipedCEAutoloaders_BlueInput.description>N'accepte que le type de munition configuré pour le réseau bleu. Transfère au réseau toutes les munitions que représente chaque objet.</PipedCEAutoloaders_BlueInput.description>
+  <PipedCEAutoloaders_GreenInput.label>entrée de munitions verte</PipedCEAutoloaders_GreenInput.label>
+  <PipedCEAutoloaders_GreenInput.description>N'accepte que le type de munition configuré pour le réseau vert. Transfère au réseau toutes les munitions que représente chaque objet.</PipedCEAutoloaders_GreenInput.description>
+
+  <!-- Chargeurs automatiques Combat Extended. -->
+  <PipedCEAutoloaders_AmberAutoloader.label>chargeur automatique du réseau ambre</PipedCEAutoloaders_AmberAutoloader.label>
+  <PipedCEAutoloaders_AmberAutoloader.description>Recharge automatiquement en munitions une tourelle Combat Extended compatible située à côté, à partir du réseau ambre. Nécessite de l'électricité.</PipedCEAutoloaders_AmberAutoloader.description>
+  <PipedCEAutoloaders_BlueAutoloader.label>chargeur automatique du réseau bleu</PipedCEAutoloaders_BlueAutoloader.label>
+  <PipedCEAutoloaders_BlueAutoloader.description>Recharge automatiquement en munitions une tourelle Combat Extended compatible située à côté, à partir du réseau bleu. Nécessite de l'électricité.</PipedCEAutoloaders_BlueAutoloader.description>
+  <PipedCEAutoloaders_GreenAutoloader.label>chargeur automatique du réseau vert</PipedCEAutoloaders_GreenAutoloader.label>
+  <PipedCEAutoloaders_GreenAutoloader.description>Recharge automatiquement en munitions une tourelle Combat Extended compatible située à côté, à partir du réseau vert. Nécessite de l'électricité.</PipedCEAutoloaders_GreenAutoloader.description>
+</LanguageData>

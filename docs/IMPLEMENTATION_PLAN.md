@@ -165,6 +165,10 @@ Runtime-localization maintenance acceptance passed: settings, tooltips, and the
 restart dialog rendered without raw keys or missing-translation markers, and the
 reviewed building descriptions were readable and matched their functions.
 
+Multilingual-localization maintenance acceptance passed: with German selected,
+startup, settings, the restart dialog, architect text, and representative
+building descriptions rendered correctly without raw keys, markers, or clipping.
+
 ## Unprioritized future features
 
 The following features are candidates for future implementation in no particular
