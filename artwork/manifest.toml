@@ -186,8 +186,8 @@ TECHNICAL REQUIREMENTS
 """
 
 # This shared badge base carries the maker identity while deliberately leaving
-# its lower field empty. After approval, artwork.sh overlays the exact
-# project-specific loader glyph without asking the image model to reproduce it.
+# its lower field empty. The final-icon request uses it as the visual reference
+# for a project-specific lower emblem rendered in the same dimensional style.
 [[requests]]
 id = "mod-icon"
 title = "Symmetrical Sanicek mod badge base"
