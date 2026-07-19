@@ -55,11 +55,6 @@ Lowering magazine capacity is not migrated. Empty affected magazines before
 saving the new setting because VEF may discard stored rounds above the reduced
 capacity during load or later serialization.
 
-Development builds used 1x2 ammunition storage before the final 2x2 magazine.
-Empty and deconstruct those older magazines before updating when possible. After
-loading an older save, inspect nearby walls, rooms, roofs, paths, and pipe
-connections for conflicts with the expanded footprint.
-
 ## Troubleshooting and Reports
 
 Reports are welcome in GitHub Issues or the Steam Workshop comments after the

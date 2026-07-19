@@ -501,6 +501,12 @@ namespace PipedCEAutoloaders
 
         internal void Draw(Rect inRect)
         {
+            List<AmmoSetDef> selectableAmmoSets = PipedAmmoBindings.SelectableAmmoSets().ToList();
+            var duplicateAmmoSetLabels = new HashSet<string>(
+                selectableAmmoSets
+                    .GroupBy(ammoSet => ammoSet.LabelCap.ToString())
+                    .Where(group => group.Count() > 1)
+                    .Select(group => group.Key));
             string errors = PipedAmmoBindings.ValidateSettings(settings);
             float viewWidth = inRect.width - 16f;
             float errorHeight = errors.NullOrEmpty() ? 0f : Text.CalcHeight(errors, viewWidth);
@@ -513,7 +519,7 @@ namespace PipedCEAutoloaders
             listing.GapLine();
             for (int slot = 0; slot < PipedAmmoBindings.SlotNames.Length; slot++)
             {
-                DrawSlot(listing, slot);
+                DrawSlot(listing, slot, selectableAmmoSets, duplicateAmmoSetLabels);
                 listing.Gap();
             }
 
@@ -527,7 +533,11 @@ namespace PipedCEAutoloaders
             Widgets.EndScrollView();
         }
 
-        private void DrawSlot(Listing_Standard listing, int slot)
+        private void DrawSlot(
+            Listing_Standard listing,
+            int slot,
+            List<AmmoSetDef> selectableAmmoSets,
+            HashSet<string> duplicateAmmoSetLabels)
         {
             AmmoSetDef selectedSet = DefDatabase<AmmoSetDef>.GetNamedSilentFail(settings.AmmoSetFor(slot));
             AmmoDef selectedAmmo = DefDatabase<AmmoDef>.GetNamedSilentFail(settings.AmmoFor(slot));
@@ -535,13 +545,16 @@ namespace PipedCEAutoloaders
             listing.Label(PipedAmmoBindings.SlotLabel(slot));
             Rect setRow = listing.GetRect(30f);
             Widgets.Label(setRow.LeftPart(0.35f), "PCA_Settings_AmmoSet".Translate());
-            if (Widgets.ButtonText(setRow.RightPart(0.65f), selectedSet?.LabelCap ?? settings.AmmoSetFor(slot)))
+            string selectedSetLabel = selectedSet == null
+                ? settings.AmmoSetFor(slot)
+                : AmmoSetDisplayLabel(selectedSet, duplicateAmmoSetLabels);
+            if (Widgets.ButtonText(setRow.RightPart(0.65f), selectedSetLabel))
             {
                 var options = new List<FloatMenuOption>();
-                foreach (AmmoSetDef ammoSet in PipedAmmoBindings.SelectableAmmoSets())
+                foreach (AmmoSetDef ammoSet in selectableAmmoSets)
                 {
                     AmmoSetDef capturedSet = ammoSet;
-                    options.Add(new FloatMenuOption(ammoSet.LabelCap, () =>
+                    options.Add(new FloatMenuOption(AmmoSetDisplayLabel(ammoSet, duplicateAmmoSetLabels), () =>
                     {
                         settings.SetAmmoSet(slot, capturedSet.defName);
                         AmmoDef firstAmmo = PipedAmmoBindings.SelectableAmmo(capturedSet).FirstOrDefault();
@@ -580,6 +593,20 @@ namespace PipedCEAutoloaders
                 PipedCEAutoloadersSettings.MaximumTankCapacity,
                 tooltip: "PCA_Settings_MagazineCapacityTooltip".Translate());
             settings.SetTankCapacity(slot, Mathf.Round(tankCapacity / 100f) * 100f);
+        }
+
+        private static string AmmoSetDisplayLabel(
+            AmmoSetDef ammoSet,
+            HashSet<string> duplicateAmmoSetLabels)
+        {
+            // CE intentionally gives distinct sets the same caliber label when
+            // they map shared physical rounds to different projectile families.
+            // Keep every set selectable and expose DefNames only where the
+            // player-facing labels would otherwise be indistinguishable.
+            string label = ammoSet.LabelCap.ToString();
+            return duplicateAmmoSetLabels.Contains(label)
+                ? $"{label} [{ammoSet.defName}]"
+                : label;
         }
     }
 }
