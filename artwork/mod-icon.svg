@@ -13,21 +13,28 @@
   </defs>
 
   <!-- The transparent corners let RimWorld present the artwork as a true badge. -->
-  <circle cx="128" cy="128" r="116" fill="#17191b" stroke="#e5e4df" stroke-width="8"/>
-  <circle cx="128" cy="128" r="103" fill="none" stroke="#5e6366" stroke-width="3"/>
+  <circle cx="128" cy="128" r="116" fill="#e5e4df" stroke="#17191b" stroke-width="8"/>
+  <circle cx="128" cy="128" r="103" fill="none" stroke="#737778" stroke-width="3"/>
 
   <g clip-path="url(#badge-interior)">
-    <!-- A curved cap gives every icon the same badge-like header. Its smooth,
-         open S channel is negative space, not a second symbol laid on top. -->
+    <!-- The crown and its central lobe form one continuous maker's badge. The
+         custom S follows that lobe instead of behaving like typeset lettering. -->
     <path id="maker-cap"
-          d="M38 82 C50 45 84 24 128 24 C172 24 206 45 218 82
-             C194 101 164 110 128 110 C92 110 62 101 38 82 Z"
-          fill="#e5e4df"/>
+          d="M18 12 H238 V77
+             C220 78 208 72 197 63
+             C181 69 168 82 158 98
+             C149 112 139 119 126 119
+             C108 119 97 108 85 93
+             C74 79 64 68 50 64
+             C39 73 29 80 18 82 Z"
+          fill="#17191b"/>
     <path id="maker-mark"
-          d="M158 22 C149 39 99 27 99 48
-             C99 66 158 53 158 75
-             C158 94 119 101 99 87"
-          fill="none" stroke="#17191b" stroke-width="16"
+          d="M153 39
+             C143 27 112 28 103 42
+             C93 58 112 65 130 67
+             C150 69 160 77 155 91
+             C149 107 118 110 100 95"
+          fill="none" stroke="#e5e4df" stroke-width="15"
           stroke-linecap="round" stroke-linejoin="round"/>
 
     <!-- Three pipe feeds converge on one loader that presents a single large round. -->
@@ -42,12 +49,12 @@
       </g>
 
       <path d="M76 127 H130 L143 140 V177 L130 190 H76 L63 177 V140 Z"
-            fill="#aeb0af" stroke-width="8"/>
+            fill="#8d9192" stroke-width="8"/>
       <rect x="77" y="141" width="27" height="35" rx="4"
-            fill="#242729" stroke-width="6"/>
+            fill="#e5e4df" stroke-width="6"/>
       <path d="M99 141 H166 L192 158 L166 175 H99 Z"
-            fill="#e5e4df" stroke-width="7"/>
-      <path d="M160 142 V174" fill="none" stroke="#747879" stroke-width="6"/>
+            fill="#242729" stroke-width="7"/>
+      <path d="M160 142 V174" fill="none" stroke="#b8b9b7" stroke-width="6"/>
     </g>
   </g>
 </svg>
