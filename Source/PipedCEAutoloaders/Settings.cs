@@ -341,10 +341,38 @@ namespace PipedCEAutoloaders
 
         internal static IEnumerable<AmmoSetDef> SelectableAmmoSets()
         {
-            return DefDatabase<AmmoSetDef>.AllDefsListForReading
+            List<AmmoSetDef> ammoSets = DefDatabase<AmmoSetDef>.AllDefsListForReading
                 .Where(def => SelectableAmmo(def).Any())
+                .ToList();
+            var ammoBySet = ammoSets.ToDictionary(
+                ammoSet => ammoSet,
+                ammoSet => new HashSet<AmmoDef>(SelectableAmmo(ammoSet)));
+
+            return ammoSets
+                .Where(candidate => !ammoSets.Any(other =>
+                    SupersedesForPipeSelection(other, candidate, ammoBySet)))
                 .OrderBy(def => def.label)
                 .ThenBy(def => def.defName);
+        }
+
+        private static bool SupersedesForPipeSelection(
+            AmmoSetDef preferred,
+            AmmoSetDef candidate,
+            Dictionary<AmmoSetDef, HashSet<AmmoDef>> ammoBySet)
+        {
+            if (preferred == candidate
+                || preferred.LabelCap.ToString() != candidate.LabelCap.ToString()
+                || !ammoBySet[preferred].IsSupersetOf(ammoBySet[candidate]))
+            {
+                return false;
+            }
+
+            // CE autoloaders transfer the physical AmmoDef; the target turret
+            // retains its own AmmoSetDef and therefore its own projectile map.
+            // A same-label subset adds no pipe resource choice. For identical
+            // sets, stable DefName ordering chooses one canonical option.
+            return ammoBySet[preferred].Count > ammoBySet[candidate].Count
+                || string.CompareOrdinal(preferred.defName, candidate.defName) < 0;
         }
 
         internal static IEnumerable<AmmoDef> SelectableAmmo(AmmoSetDef ammoSet)
@@ -601,8 +629,8 @@ namespace PipedCEAutoloaders
         {
             // CE intentionally gives distinct sets the same caliber label when
             // they map shared physical rounds to different projectile families.
-            // Keep every set selectable and expose DefNames only where the
-            // player-facing labels would otherwise be indistinguishable.
+            // Redundant physical choices were removed earlier; expose DefNames
+            // only where the remaining labels would still be indistinguishable.
             string label = ammoSet.LabelCap.ToString();
             return duplicateAmmoSetLabels.Contains(label)
                 ? $"{label} [{ammoSet.defName}]"
