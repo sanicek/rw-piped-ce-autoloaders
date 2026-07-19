@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  This editable master separates the shared Sanicek badge from the mod-specific
+  glyph. Future mod icons can retain the medallion and maker's mark while
+  replacing only the group named "mod-glyph" with one strong silhouette.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+  <!-- The transparent corners let RimWorld present the artwork as a true badge. -->
+  <circle cx="128" cy="128" r="116" fill="#17191b" stroke="#e5e4df" stroke-width="8"/>
+  <circle cx="128" cy="128" r="103" fill="none" stroke="#5e6366" stroke-width="3"/>
+
+  <!-- This font-independent stencil S remains the common family signature. -->
+  <path id="maker-mark"
+        d="M151 34 C144 27 135 24 124 24 C106 24 95 32 95 44
+           C95 56 104 62 120 66 L134 70 C140 72 143 75 143 79
+           C143 84 137 87 128 87 C117 87 108 83 101 76 L91 88
+           C100 98 113 103 129 103 C148 103 161 93 161 78
+           C161 65 152 59 136 55 L121 51 C115 49 113 46 113 43
+           C113 39 118 36 126 36 C135 36 143 39 149 45 Z"
+        fill="#e5e4df"/>
+
+  <!-- Three pipe feeds converge on one loader that presents a single large round. -->
+  <g id="mod-glyph" stroke="#0b0c0d" stroke-linejoin="round">
+    <g fill="none" stroke-linecap="round">
+      <path d="M82 177 V197 H61 V220" stroke="#0b0c0d" stroke-width="24"/>
+      <path d="M104 181 V222" stroke="#0b0c0d" stroke-width="24"/>
+      <path d="M126 177 V198 H157 V220" stroke="#0b0c0d" stroke-width="24"/>
+      <path d="M82 177 V197 H61 V220" stroke="#b8b9b7" stroke-width="13"/>
+      <path d="M104 181 V222" stroke="#e5e4df" stroke-width="13"/>
+      <path d="M126 177 V198 H157 V220" stroke="#85898a" stroke-width="13"/>
+    </g>
+
+    <path d="M76 127 H130 L143 140 V177 L130 190 H76 L63 177 V140 Z"
+          fill="#aeb0af" stroke-width="8"/>
+    <rect x="77" y="141" width="27" height="35" rx="4"
+          fill="#242729" stroke-width="6"/>
+    <path d="M99 141 H166 L192 158 L166 175 H99 Z"
+          fill="#e5e4df" stroke-width="7"/>
+    <path d="M160 142 V174" fill="none" stroke="#747879" stroke-width="6"/>
+  </g>
+</svg>

@@ -574,9 +574,11 @@ def main() -> None:
     about = package / "About"
     require_directory(about)
     about_files = {path.name for path in about.iterdir()}
-    if "About.xml" not in about_files or not about_files <= {"About.xml", "Preview.png"}:
-        fail("About must contain About.xml and may contain one validated Preview.png")
+    if "About.xml" not in about_files or not about_files <= {"About.xml", "ModIcon.png", "Preview.png"}:
+        fail("About must contain About.xml and may contain validated ModIcon.png and Preview.png")
     require_file(about / "About.xml")
+    if "ModIcon.png" in about_files:
+        validate_png(about / "ModIcon.png", (256, 256), color_type=6)
     if "Preview.png" in about_files:
         validate_png(about / "Preview.png", (630, 330), color_type=2)
     load_folders = package / "LoadFolders.xml"

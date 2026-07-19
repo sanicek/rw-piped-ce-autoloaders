@@ -13,12 +13,35 @@ if [[ ! -f "$pipeline_dir/rw_art_pipeline/__main__.py" ]]; then
     exit 1
 fi
 if [[ $# -lt 1 ]]; then
-    printf 'Usage: %s {prompt|intake|approve|stamp-ce-logo|validate} [arguments...]\n' "$0" >&2
+    printf 'Usage: %s {prompt|intake|approve|render-mod-icon|stamp-ce-logo|validate} [arguments...]\n' "$0" >&2
     exit 2
 fi
 
 command="$1"
 shift
+
+# The mod-list badge is maintained as simple vector geometry. Rendering through
+# one pinned command keeps its transparent canvas and PNG encoding reproducible
+# while leaving the SVG easy to adapt for future mods.
+if [[ "$command" == "render-mod-icon" ]]; then
+    source="$repo_root/artwork/mod-icon.svg"
+    output="$repo_root/About/ModIcon.png"
+    if [[ ! -f "$source" ]]; then
+        printf 'Error: mod icon source is missing: %s\n' "$source" >&2
+        exit 1
+    fi
+    if ! command -v magick >/dev/null 2>&1; then
+        printf 'Error: ImageMagick with SVG support is required to render the mod icon.\n' >&2
+        exit 1
+    fi
+    temporary="$(mktemp "$repo_root/About/.ModIcon.png.XXXXXX")"
+    trap 'rm -f -- "$temporary"' EXIT
+    magick -background none "$source" -resize 256x256 -alpha on -depth 8 -strip "PNG32:$temporary"
+    mv -- "$temporary" "$output"
+    trap - EXIT
+    printf 'Rendered mod icon: %s\n' "$output"
+    exit 0
+fi
 
 # The promotional preview uses CE's canonical full emblem as a deterministic
 # compatibility cue. Pinning the official media-pack source protects the final

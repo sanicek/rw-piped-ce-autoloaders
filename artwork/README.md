@@ -16,6 +16,7 @@ path; manual intake remains available for recovered or externally produced art:
 ./scripts/artwork.sh generate magazine --confirm-cost
 ./scripts/artwork.sh select magazine 4
 ./scripts/artwork.sh approve magazine
+./scripts/artwork.sh render-mod-icon
 ./scripts/artwork.sh stamp-ce-logo
 
 # Manual fallback
@@ -34,6 +35,11 @@ submitting another paid batch; `--restart` is the explicit escape hatch.
 `stamp-ce-logo` composites CE's checksum-pinned official full emblem and a
 `CE ONLY` dependency label onto the approved preview. Run it only after
 approving `preview`.
+
+`render-mod-icon` rasterizes the maintained `artwork/mod-icon.svg` master into
+the 256x256 RGBA `About/ModIcon.png` used by mod lists. The SVG deliberately
+keeps the shared circular badge and maker's mark separate from the replaceable
+mod-specific glyph so the visual family can be reused without image generation.
 
 Credentials come from `SCENARIO_API_KEY` plus `SCENARIO_API_SECRET`, or from the
 mode-0600 file created interactively by `auth scenario`. Neither credentials nor
