@@ -35,6 +35,12 @@ submitting another paid batch; `--restart` is the explicit escape hatch.
 `CE ONLY` dependency label onto the approved preview. Run it only after
 approving `preview`.
 
+`mod-icon` is the reusable blank maker badge. `mod-icon-final` uses its uploaded
+Scenario asset as an exact visual reference and renders the project-specific
+lower emblem in the same dimensional style. Its selected output replaces the
+blank base at `About/ModIcon.png`; raw sources and reference bindings remain in
+the local pipeline state like other generation receipts.
+
 Credentials come from `SCENARIO_API_KEY` plus `SCENARIO_API_SECRET`, or from the
 mode-0600 file created interactively by `auth scenario`. Neither credentials nor
 raw provider downloads enter Git. Approval does not overwrite an existing

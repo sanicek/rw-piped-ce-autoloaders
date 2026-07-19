@@ -185,6 +185,113 @@ TECHNICAL REQUIREMENTS
 - Return one high-resolution PNG
 """
 
+# This shared badge base carries the maker identity while deliberately leaving
+# its lower field empty. The final-icon request uses it as the visual reference
+# for a project-specific lower emblem rendered in the same dimensional style.
+[[requests]]
+id = "mod-icon"
+title = "Symmetrical Sanicek mod badge base"
+width = 256
+height = 256
+occupied_fraction = 1.0
+alpha_required = true
+background_removal = "none"
+fit = "cover"
+output_mode = "RGBA"
+generation = { provider = "scenario", model_id = "model_openai-gpt-image-2", candidates = 4, parameters = { width = 1024, height = 1024, quality = "medium", background = "opaque", numOutputs = 1 } }
+outputs = [
+  { path = "About/ModIcon.png" },
+]
+prompt = """
+Create one polished grayscale circular maker badge to serve as the reusable base for a family of RimWorld mod-list icons.
+
+EXACT BADGE STRUCTURE
+- A perfectly round, front-facing medallion centered on a square canvas
+- The badge and every internal contour must be precisely bilaterally symmetrical around the vertical centerline
+- Use a strong dark charcoal outer rim with one restrained inner gray keyline
+- The interior lower field is warm off-white or very light gray
+- A dark charcoal crown occupies approximately the upper 42 percent of the interior
+- The crown's lower boundary must be one smooth symmetrical curve: high near both side edges, flowing downward toward the center into one broad rounded central lobe
+- The central lobe is part of the same uninterrupted crown shape, like a tasteful maker's seal rather than a separate circle or tab
+
+MAKER MARK
+- Integrate exactly one custom capital S into the central crown and lobe
+- The S is warm off-white negative space cut cleanly from the dark crown
+- Make the S a beefy, substantial insignia built from one broad continuous band with thick strokes and strong visual mass
+- Combine the weight and instant readability of a superhero chest emblem with the smooth, aerodynamic continuity of a premium automotive marque, while creating a completely original shape that does not reproduce any existing logo
+- Use flowing rounded transitions, controlled tapering, and interlocking positive and negative curves; the result should feel sculpted and iconic rather than typeset
+- The upper sweep of the S must anchor broadly into the crown and its lower sweep must merge visually into the rounded central lobe, making the letter and crown read as one designed symbol
+- The S must occupy most of the central crown area and remain immediately recognizable at 32 pixels
+- Do not make the S thin, wispy, calligraphic, handwritten, italic, serifed, brush-like, flame-like, or composed of delicate ribbon tails
+- Do not surround the S with a separate shield, oval, ring, or crest inside the crown
+- No letters, words, initials, numbers, or symbols other than this single S
+
+EMPTY MOD FIELD
+- Keep the entire lower 58 percent of the badge blank and uninterrupted for a separate mod-specific graphic to be composited later
+- No placeholder, divider, ornament, texture, watermark, pipes, ammunition, machinery, weapons, pictogram, or decorative flourish in the lower field
+- Do not extend the crown or S into the lower blank field beyond the rounded central lobe
+
+STYLE AND TECHNICAL REQUIREMENTS
+- Premium monochrome game icon with crisp vector-like contours and restrained dimensional polish
+- Use only charcoal, medium gray, warm off-white, and subtle grayscale highlights
+- Bold simple forms that remain legible at 32 by 32 pixels; no tiny details, distressing, scratches, grain, or photorealistic material
+- Strict circular silhouette with nothing crossing or protruding beyond the outer rim
+- Solid pure white outside the medallion for deterministic local background removal
+- No external cast shadow, square tile, border around the canvas, scene, UI, text label, watermark, or signature
+- Return exactly one isolated badge, one view, as a high-resolution PNG
+"""
+
+# The final mod icon is generated as one coherent illustration from the approved
+# blank badge. This avoids mixing the frame's dimensional rendering with a flat
+# symbol while preserving the shared maker identity as the visual anchor.
+[[requests]]
+id = "mod-icon-final"
+title = "Metallic piped autoloader mod icon"
+width = 256
+height = 256
+occupied_fraction = 1.0
+alpha_required = true
+background_removal = "light-checkerboard"
+fit = "cover"
+output_mode = "RGBA"
+generation = { provider = "scenario", model_id = "model_openai-gpt-image-2", candidates = 4, reference_parameter = "referenceImages", parameters = { width = 1024, height = 1024, quality = "medium", background = "opaque", numOutputs = 1 } }
+references = ["mod-icon"]
+outputs = [
+  { path = "About/ModIcon.png" },
+]
+prompt = """
+Create one finished grayscale mod-list icon for Piped CE Autoloaders by completing the empty lower opening of the attached approved Sanicek badge.
+
+PRESERVE THE APPROVED BADGE
+- Treat the attached image as the authoritative design and composition reference
+- Preserve the exact circular silhouette, metallic outer rim, top crown, integrated S emblem, grayscale palette, lighting direction, and proportions
+- Do not redraw, reinterpret, simplify, recolor, cover, crop, or distort the rim, crown, or S
+- Add content only inside the empty lower opening and keep every new element clear of both the crown and metallic rim
+
+MOD-SPECIFIC LOWER EMBLEM
+- Fill the lower opening with one compact, immediately readable piped ammunition autoloader emblem
+- Show one broad horizontal rifle cartridge feeding toward the right through a central mechanical loading block
+- Three short ammunition pipe feeds converge upward into the bottom of the loading block, representing three configurable pipe networks without using color
+- Keep the loader centered and large, but leave clean breathing room around it so no part touches the inner rim or crown
+- The cartridge, loader, and three pipe feeds must read as one unified industrial symbol, not as a gun, robot, vehicle, letter, or abstract arrow
+- Use a dark charcoal recessed enamel field behind the machinery so the lower half feels complete rather than transparent or empty
+
+MATCHING MATERIAL AND STYLE
+- Match the badge's polished dimensional rendering exactly: sculpted silver and gunmetal, dark enamel recesses, crisp black edging, restrained white highlights, and smooth beveled surfaces
+- Use the same top-centered lighting and controlled metallic reflections as the S and rim
+- Premium game-logo finish with bold simple masses that remain legible at 32 by 32 pixels
+- The machinery should feel embossed into the same physical medallion, never pasted on, flat-vector, hand-drawn, outlined clip art, or a separate icon layer
+- Strict monochrome grayscale only; no amber, blue, green, colored reflections, or glow
+
+TECHNICAL REQUIREMENTS
+- One isolated circular badge centered on a square canvas
+- Solid pure white outside the outer rim for deterministic local removal
+- Nothing may cross or protrude beyond the outer circle
+- No text, letters, numbers, labels, UI, border around the canvas, cast shadow, watermark, or signature beyond the existing approved S
+- No additional ammunition, turret, weapon, bullets, gears, decorative flourishes, or background scene
+- Return exactly one finished icon, one view, as a high-resolution PNG
+"""
+
 # RimWorld displays this wide RGB image as the mod's browser and Workshop
 # preview. The approved machines anchor its visual identity, while the center-safe
 # composition survives the deterministic crop from Scenario's landscape canvas.
