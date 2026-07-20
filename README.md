@@ -8,7 +8,7 @@ autoloaders that use CE's native turret reload behavior.
 ## Features
 
 - Three independent Amber, Blue, and Green ammunition networks.
-- Exact ammo-set and physical-round binding under Mod Settings.
+- Caliber grouping and exact physical-round binding under Mod Settings.
 - Per-network 0.1x-5.0x reload speed and 100-10,000-round magazine capacity.
 - Powered autoloaders that preserve CE partial reloads, shortages, and cancellation.
 - Normal pipes and slower, more expensive hidden pipes on the same network.
@@ -36,10 +36,12 @@ published.
 
 ## Configuration
 
-Each network selects one CE ammo set and one exact, non-hidden physical round.
-Bindings, reload speeds, and magazine capacities are validated at startup and
-remain fixed until RimWorld restarts. Invalid or duplicate round assignments
-disable only the affected network instead of silently selecting another round.
+Each network selects one caliber group and one exact, non-hidden physical round.
+When CE uses several internal ammo sets for a caliber, their physical rounds are
+combined and the required containing set is derived automatically. Bindings,
+reload speeds, and magazine capacities are validated at startup and remain fixed
+until RimWorld restarts. Invalid or duplicate round assignments disable only the
+affected network instead of silently selecting another round.
 
 An input converts each physical ammunition item's CE round count into pipe units.
 Existing physical ammunition that no longer matches a rebound input remains on
@@ -54,11 +56,6 @@ those counts to the newly selected round. Existing inputs update their filters.
 Lowering magazine capacity is not migrated. Empty affected magazines before
 saving the new setting because VEF may discard stored rounds above the reduced
 capacity during load or later serialization.
-
-Development builds used 1x2 ammunition storage before the final 2x2 magazine.
-Empty and deconstruct those older magazines before updating when possible. After
-loading an older save, inspect nearby walls, rooms, roofs, paths, and pipe
-connections for conflicts with the expanded footprint.
 
 ## Troubleshooting and Reports
 

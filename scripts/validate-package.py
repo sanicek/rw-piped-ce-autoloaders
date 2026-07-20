@@ -394,7 +394,7 @@ def validate_languages(package: Path) -> None:
             "PCA_Settings_AmberNetwork": "Amber network",
             "PCA_Settings_BlueNetwork": "Blue network",
             "PCA_Settings_GreenNetwork": "Green network",
-            "PCA_Settings_AmmoSet": "Ammo set",
+            "PCA_Settings_AmmoSet": "Caliber",
             "PCA_Settings_ExactRound": "Exact round",
             "PCA_Settings_ReloadSpeed": "Reload speed: {0}x",
             "PCA_Settings_ReloadSpeedTooltip": "Higher values make adjacent turret reloads faster.",
