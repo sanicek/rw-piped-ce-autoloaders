@@ -8,7 +8,7 @@ behavior.
 
 [list]
 [*]Three independent Amber, Blue, and Green ammunition networks
-[*]Exact CE ammo-set and physical-round binding under Mod Settings
+[*]Caliber grouping and exact physical-round binding under Mod Settings
 [*]Per-network 0.1x-5.0x reload speed and 100-10,000-round magazine capacity
 [*]Powered autoloaders with native partial reload, shortage, and cancellation behavior
 [*]Normal and hidden pipes connected to the same network
@@ -28,10 +28,11 @@ Use RimWorld's automatic mod sorting before starting the game.
 
 [h2]Configuration[/h2]
 
-Each network selects one CE ammo set and one exact physical round. Bindings,
-reload speeds, and magazine capacities apply after restart and remain fixed for
-that session. Invalid or duplicate round assignments disable only the affected
-network.
+Each network selects one caliber group and one exact physical round. CE variants
+of the same caliber are combined, with their internal ammo set derived from the
+chosen round. Bindings, reload speeds, and magazine capacities apply after
+restart and remain fixed for that session. Invalid or duplicate round
+assignments disable only the affected network.
 
 [h2]Existing colonies[/h2]
 

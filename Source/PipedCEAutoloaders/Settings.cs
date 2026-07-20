@@ -180,6 +180,70 @@ namespace PipedCEAutoloaders
         internal AmmoDef Ammo { get; }
     }
 
+    // Settings present one caliber group per physical CE item category even
+    // when several weapon sets use those rounds. The exact physical round is
+    // the pipe resource; a containing set remains an internal buffer requirement.
+    internal sealed class PipedAmmoGroup
+    {
+        private readonly Dictionary<AmmoSetDef, HashSet<AmmoDef>> ammoBySet;
+        private readonly HashSet<string> duplicateAmmoLabels;
+
+        internal PipedAmmoGroup(
+            string identity,
+            string label,
+            IEnumerable<AmmoDef> ammoDefs,
+            IEnumerable<AmmoSetDef> ammoSets)
+        {
+            Identity = identity;
+            Label = label;
+            Ammo = ammoDefs
+                .OrderBy(ammoDef => ammoDef.label)
+                .ThenBy(ammoDef => ammoDef.defName, StringComparer.Ordinal)
+                .ToList();
+            var groupedAmmo = new HashSet<AmmoDef>(Ammo);
+            AmmoSets = ammoSets
+                .Where(ammoSet => PipedAmmoBindings.SelectableAmmo(ammoSet).Any(groupedAmmo.Contains))
+                .OrderBy(ammoSet => ammoSet.defName, StringComparer.Ordinal)
+                .ToList();
+            ammoBySet = AmmoSets.ToDictionary(
+                ammoSet => ammoSet,
+                ammoSet => new HashSet<AmmoDef>(PipedAmmoBindings.SelectableAmmo(ammoSet)));
+            duplicateAmmoLabels = new HashSet<string>(
+                Ammo.GroupBy(ammo => ammo.LabelCap.ToString())
+                    .Where(group => group.Count() > 1)
+                    .Select(group => group.Key));
+        }
+
+        internal string Identity { get; }
+        internal string Label { get; }
+        internal List<AmmoSetDef> AmmoSets { get; }
+        internal List<AmmoDef> Ammo { get; }
+
+        internal string LabelFor(AmmoDef ammo)
+        {
+            string label = ammo.LabelCap.ToString();
+            return duplicateAmmoLabels.Contains(label)
+                ? $"{label} [{ammo.defName}]"
+                : label;
+        }
+
+        internal AmmoSetDef SetFor(AmmoDef ammo, AmmoSetDef preferred = null)
+        {
+            if (preferred != null
+                && ammoBySet.TryGetValue(preferred, out HashSet<AmmoDef> preferredAmmo)
+                && preferredAmmo.Contains(ammo))
+            {
+                return preferred;
+            }
+
+            return AmmoSets
+                .Where(ammoSet => ammoBySet[ammoSet].Contains(ammo))
+                .OrderByDescending(ammoSet => ammoBySet[ammoSet].Count)
+                .ThenBy(ammoSet => ammoSet.defName, StringComparer.Ordinal)
+                .FirstOrDefault();
+        }
+    }
+
     // Resolution returns a stable reason rather than display text. Startup can
     // retain searchable English diagnostics while the settings window formats
     // the same failure through the active RimWorld language.
@@ -339,40 +403,46 @@ namespace PipedCEAutoloaders
             return string.Join("\n", errors.ToArray());
         }
 
-        internal static IEnumerable<AmmoSetDef> SelectableAmmoSets()
+        internal static IEnumerable<PipedAmmoGroup> SelectableAmmoGroups()
         {
             List<AmmoSetDef> ammoSets = DefDatabase<AmmoSetDef>.AllDefsListForReading
                 .Where(def => SelectableAmmo(def).Any())
                 .ToList();
-            var ammoBySet = ammoSets.ToDictionary(
-                ammoSet => ammoSet,
-                ammoSet => new HashSet<AmmoDef>(SelectableAmmo(ammoSet)));
 
             return ammoSets
-                .Where(candidate => !ammoSets.Any(other =>
-                    SupersedesForPipeSelection(other, candidate, ammoBySet)))
-                .OrderBy(def => def.label)
-                .ThenBy(def => def.defName);
+                .SelectMany(SelectableAmmo)
+                .Distinct()
+                .GroupBy(PhysicalAmmoGroupKey)
+                .Select(group => new PipedAmmoGroup(
+                    group.Key,
+                    PhysicalAmmoGroupLabel(group),
+                    group,
+                    ammoSets))
+                .OrderBy(group => group.Label);
         }
 
-        private static bool SupersedesForPipeSelection(
-            AmmoSetDef preferred,
-            AmmoSetDef candidate,
-            Dictionary<AmmoSetDef, HashSet<AmmoDef>> ammoBySet)
+        private static string PhysicalAmmoGroupKey(AmmoDef ammo)
         {
-            if (preferred == candidate
-                || preferred.LabelCap.ToString() != candidate.LabelCap.ToString()
-                || !ammoBySet[preferred].IsSupersetOf(ammoBySet[candidate]))
-            {
-                return false;
-            }
+            string[] categoryDefNames = (ammo.thingCategories ?? new List<ThingCategoryDef>())
+                .Where(category => category != null)
+                .Select(category => category.defName)
+                .OrderBy(defName => defName, StringComparer.Ordinal)
+                .ToArray();
+            return categoryDefNames.Length > 0
+                ? string.Join("|", categoryDefNames)
+                : $"AmmoDef:{ammo.defName}";
+        }
 
-            // CE autoloaders transfer the physical AmmoDef; the target turret
-            // retains its own AmmoSetDef and therefore its own projectile map.
-            // A same-label subset adds no pipe resource choice. For identical
-            // sets, stable DefName ordering chooses one canonical option.
-            return ammoBySet[preferred].Count > ammoBySet[candidate].Count
-                || string.CompareOrdinal(preferred.defName, candidate.defName) < 0;
+        private static string PhysicalAmmoGroupLabel(IEnumerable<AmmoDef> ammo)
+        {
+            AmmoDef representative = ammo
+                .OrderBy(ammoDef => ammoDef.defName, StringComparer.Ordinal)
+                .First();
+            ThingCategoryDef category = (representative.thingCategories
+                    ?? new List<ThingCategoryDef>())
+                .LastOrDefault(candidate => candidate != null);
+            return category?.LabelCap.ToString()
+                ?? representative.LabelCap.ToString();
         }
 
         internal static IEnumerable<AmmoDef> SelectableAmmo(AmmoSetDef ammoSet)
@@ -387,7 +457,7 @@ namespace PipedCEAutoloaders
                 .Select(link => link.ammo)
                 .Distinct()
                 .OrderBy(ammo => ammo.label)
-                .ThenBy(ammo => ammo.defName);
+                .ThenBy(ammo => ammo.defName, StringComparer.Ordinal);
         }
 
         private static PipedAmmoBinding Resolve(
@@ -529,10 +599,9 @@ namespace PipedCEAutoloaders
 
         internal void Draw(Rect inRect)
         {
-            List<AmmoSetDef> selectableAmmoSets = PipedAmmoBindings.SelectableAmmoSets().ToList();
-            var duplicateAmmoSetLabels = new HashSet<string>(
-                selectableAmmoSets
-                    .GroupBy(ammoSet => ammoSet.LabelCap.ToString())
+            List<PipedAmmoGroup> ammoGroups = PipedAmmoBindings.SelectableAmmoGroups().ToList();
+            var duplicateGroupLabels = new HashSet<string>(
+                ammoGroups.GroupBy(group => group.Label)
                     .Where(group => group.Count() > 1)
                     .Select(group => group.Key));
             string errors = PipedAmmoBindings.ValidateSettings(settings);
@@ -547,7 +616,7 @@ namespace PipedCEAutoloaders
             listing.GapLine();
             for (int slot = 0; slot < PipedAmmoBindings.SlotNames.Length; slot++)
             {
-                DrawSlot(listing, slot, selectableAmmoSets, duplicateAmmoSetLabels);
+                DrawSlot(listing, slot, ammoGroups, duplicateGroupLabels);
                 listing.Gap();
             }
 
@@ -564,43 +633,56 @@ namespace PipedCEAutoloaders
         private void DrawSlot(
             Listing_Standard listing,
             int slot,
-            List<AmmoSetDef> selectableAmmoSets,
-            HashSet<string> duplicateAmmoSetLabels)
+            List<PipedAmmoGroup> ammoGroups,
+            HashSet<string> duplicateGroupLabels)
         {
             AmmoSetDef selectedSet = DefDatabase<AmmoSetDef>.GetNamedSilentFail(settings.AmmoSetFor(slot));
             AmmoDef selectedAmmo = DefDatabase<AmmoDef>.GetNamedSilentFail(settings.AmmoFor(slot));
+            PipedAmmoGroup selectedGroup = ammoGroups.FirstOrDefault(
+                group => group.Ammo.Contains(selectedAmmo));
 
             listing.Label(PipedAmmoBindings.SlotLabel(slot));
             Rect setRow = listing.GetRect(30f);
             Widgets.Label(setRow.LeftPart(0.35f), "PCA_Settings_AmmoSet".Translate());
-            string selectedSetLabel = selectedSet == null
+            string selectedSetLabel = selectedGroup == null
                 ? settings.AmmoSetFor(slot)
-                : AmmoSetDisplayLabel(selectedSet, duplicateAmmoSetLabels);
+                : AmmoGroupDisplayLabel(selectedGroup, duplicateGroupLabels);
             if (Widgets.ButtonText(setRow.RightPart(0.65f), selectedSetLabel))
             {
                 var options = new List<FloatMenuOption>();
-                foreach (AmmoSetDef ammoSet in selectableAmmoSets)
+                foreach (PipedAmmoGroup ammoGroup in ammoGroups)
                 {
-                    AmmoSetDef capturedSet = ammoSet;
-                    options.Add(new FloatMenuOption(AmmoSetDisplayLabel(ammoSet, duplicateAmmoSetLabels), () =>
-                    {
-                        settings.SetAmmoSet(slot, capturedSet.defName);
-                        AmmoDef firstAmmo = PipedAmmoBindings.SelectableAmmo(capturedSet).FirstOrDefault();
-                        settings.SetAmmo(slot, firstAmmo?.defName);
-                    }));
+                    PipedAmmoGroup capturedGroup = ammoGroup;
+                    options.Add(new FloatMenuOption(
+                        AmmoGroupDisplayLabel(ammoGroup, duplicateGroupLabels),
+                        () =>
+                        {
+                            AmmoDef firstAmmo = capturedGroup.Ammo.FirstOrDefault();
+                            AmmoSetDef containingSet = capturedGroup.SetFor(firstAmmo);
+                            settings.SetAmmoSet(slot, containingSet?.defName);
+                            settings.SetAmmo(slot, firstAmmo?.defName);
+                        }));
                 }
                 Find.WindowStack.Add(new FloatMenu(options));
             }
 
             Rect ammoRow = listing.GetRect(30f);
             Widgets.Label(ammoRow.LeftPart(0.35f), "PCA_Settings_ExactRound".Translate());
-            if (Widgets.ButtonText(ammoRow.RightPart(0.65f), selectedAmmo?.LabelCap ?? settings.AmmoFor(slot)))
+            string selectedAmmoLabel = selectedAmmo == null
+                ? settings.AmmoFor(slot)
+                : selectedGroup?.LabelFor(selectedAmmo) ?? selectedAmmo.LabelCap;
+            if (Widgets.ButtonText(ammoRow.RightPart(0.65f), selectedAmmoLabel))
             {
                 var options = new List<FloatMenuOption>();
-                foreach (AmmoDef ammo in PipedAmmoBindings.SelectableAmmo(selectedSet))
+                foreach (AmmoDef ammo in selectedGroup?.Ammo ?? Enumerable.Empty<AmmoDef>())
                 {
                     AmmoDef capturedAmmo = ammo;
-                    options.Add(new FloatMenuOption(ammo.LabelCap, () => settings.SetAmmo(slot, capturedAmmo.defName)));
+                    options.Add(new FloatMenuOption(selectedGroup.LabelFor(ammo), () =>
+                    {
+                        AmmoSetDef containingSet = selectedGroup.SetFor(capturedAmmo, selectedSet);
+                        settings.SetAmmoSet(slot, containingSet?.defName);
+                        settings.SetAmmo(slot, capturedAmmo.defName);
+                    }));
                 }
                 Find.WindowStack.Add(new FloatMenu(options));
             }
@@ -623,18 +705,14 @@ namespace PipedCEAutoloaders
             settings.SetTankCapacity(slot, Mathf.Round(tankCapacity / 100f) * 100f);
         }
 
-        private static string AmmoSetDisplayLabel(
-            AmmoSetDef ammoSet,
-            HashSet<string> duplicateAmmoSetLabels)
+        private static string AmmoGroupDisplayLabel(
+            PipedAmmoGroup ammoGroup,
+            HashSet<string> duplicateGroupLabels)
         {
-            // CE intentionally gives distinct sets the same caliber label when
-            // they map shared physical rounds to different projectile families.
-            // Redundant physical choices were removed earlier; expose DefNames
-            // only where the remaining labels would still be indistinguishable.
-            string label = ammoSet.LabelCap.ToString();
-            return duplicateAmmoSetLabels.Contains(label)
-                ? $"{label} [{ammoSet.defName}]"
-                : label;
+            return duplicateGroupLabels.Contains(ammoGroup.Label)
+                ? $"{ammoGroup.Label} [{ammoGroup.Identity}]"
+                : ammoGroup.Label;
         }
+
     }
 }
