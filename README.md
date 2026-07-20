@@ -25,14 +25,13 @@ them. Use its automatic sort before starting a colony.
 
 ## Installation
 
-Download the versioned ZIP from [GitHub Releases](https://github.com/sanicek/rw-piped-ce-autoloaders/releases),
-extract its `PipedCEAutoloaders` directory into RimWorld's `Mods` directory, and
-enable it in the mod manager. The ZIP attached to each release is the supported
-manual download; GitHub's automatically generated source archives are not
-installable mod packages.
-
-Steam Workshop installation will be documented after the Workshop page is
-published.
+Subscribe on the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3768286113)
+or download the versioned ZIP from
+[GitHub Releases](https://github.com/sanicek/rw-piped-ce-autoloaders/releases).
+For a manual installation, extract the ZIP's `PipedCEAutoloaders` directory into
+RimWorld's `Mods` directory and enable it in the mod manager. The attached ZIP is
+the supported manual download; GitHub's automatically generated source archives
+are not installable mod packages.
 
 ## Configuration
 

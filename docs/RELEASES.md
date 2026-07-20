@@ -22,6 +22,7 @@ Each published version has one record that also serves as its GitHub release
 notes. The record states what changed, update risks, exact build dependencies,
 the tested source revision, and the representative smoke-test result.
 
+- [1.0.2](releases/1.0.2.md) - tracked Workshop publication identity
 - [1.0.1](releases/1.0.1.md) - grouped duplicate caliber options
 - [1.0.0](releases/1.0.0.md) - first stable release
 

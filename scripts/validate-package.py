@@ -27,6 +27,7 @@ ASSEMBLY_NAME = "PipedCEAutoloaders.dll"
 PACKAGE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.-]*\.[A-Za-z0-9][A-Za-z0-9_.-]*$")
 SEMVER = re.compile(r"^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$")
 PROJECT_URL = "https://github.com/sanicek/rw-piped-ce-autoloaders"
+WORKSHOP_ID = "3768286113"
 DEPENDENCY_WORKSHOP_URLS = {
     "CETeam.CombatExtended": "https://steamcommunity.com/sharedfiles/filedetails/?id=2890901044",
     "OskarPotocki.VanillaFactionsExpanded.Core": "https://steamcommunity.com/workshop/filedetails/?id=2023507013",
@@ -580,9 +581,14 @@ def main() -> None:
     about = package / "About"
     require_directory(about)
     about_files = {path.name for path in about.iterdir()}
-    if "About.xml" not in about_files or not about_files <= {"About.xml", "ModIcon.png", "Preview.png"}:
-        fail("About must contain About.xml and may contain validated ModIcon.png and Preview.png")
+    expected_about_files = {"About.xml", "ModIcon.png", "Preview.png", "PublishedFileId.txt"}
+    if about_files != expected_about_files:
+        fail("About must contain exactly About.xml, ModIcon.png, Preview.png, and PublishedFileId.txt")
     require_file(about / "About.xml")
+    published_file_id = about / "PublishedFileId.txt"
+    require_file(published_file_id)
+    if published_file_id.read_text(encoding="ascii").splitlines() != [WORKSHOP_ID]:
+        fail(f"About/PublishedFileId.txt must contain exactly the Workshop ID {WORKSHOP_ID}")
     if "ModIcon.png" in about_files:
         validate_png(about / "ModIcon.png", (256, 256), color_type=6)
     if "Preview.png" in about_files:
