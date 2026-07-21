@@ -97,6 +97,23 @@ Dependency DLLs are compile references and are never included in this package.
 testing. `python3 scripts/package-release.py` creates the versioned installable
 ZIP and SHA-256 checksum used by the local release workflow.
 
+### Maintainer Release Rule
+
+A change that alters the generated installable package or its runtime behavior
+must ship as a new Semantic Version. The same pull request selects the PATCH,
+MINOR, or MAJOR increment, updates `About/About.xml`, adds the matching release
+record, and tests the exact versioned archive before merge. Repository-only
+documentation, process, tests, and tooling changes are exempt when generated
+package output is unchanged.
+
+After an accepted release-bearing pull request is merged, rebuild the archive
+from clean `main` and require its checksum to match the tested candidate. Merge
+approval also authorizes publishing the matching annotated tag and GitHub
+release with the installable ZIP, checksum, and release record; checksum drift
+requires another install and smoke test instead of publication. See
+[the repository workflow](AGENTS.md) and
+[release policy](docs/RELEASES.md) for the complete procedure.
+
 ## Maintainer Documentation
 
 - [Design and compatibility invariants](docs/DESIGN.md)
