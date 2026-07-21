@@ -4,7 +4,7 @@
   <name>Piped CE Autoloaders</name>
   <author>Sanicek</author>
   <packageId>Sanicek.PipedCEAutoloaders</packageId>
-  <modVersion>1.0.2</modVersion>
+  <modVersion>1.0.3</modVersion>
   <url>https://github.com/sanicek/rw-piped-ce-autoloaders</url>
   <supportedVersions>
     <li>1.6</li>
