@@ -205,12 +205,15 @@ def validate_defs(package: Path) -> None:
         or tank_base.find("thingClass") is not None
         or tank_base.findtext("size") != "(2,2)"
         or tank_base.findtext("rotatable") != "false"
+        or tank_base.findtext("passability") != "PassThroughOnly"
+        or tank_base.findtext("fillPercent") != "0.5"
+        or tank_base.findtext("pathCost") != "50"
         or tank_base.findtext("./graphicData/graphicClass") != "Graphic_Single"
         or tank_base.findtext("./graphicData/drawSize") != "(2,2)"
         or tank_base.findtext("./graphicData/drawRotated") != "false"
         or tank_base.findtext("./graphicData/allowFlip") != "false"
     ):
-        fail("release magazines must use one fixed square graphic on their 2x2 footprint")
+        fail("release magazines must retain their fixed square graphic and costly low-cover pathing")
     if input_base is None or any(
         input_base.findtext(path) != value
         for path, value in {
@@ -237,6 +240,9 @@ def validate_defs(package: Path) -> None:
         or loader_base.findtext("drawerType") != "MapMeshAndRealTime"
         or loader_base.findtext("size") != "(1,1)"
         or loader_base.findtext("rotatable") != "false"
+        or loader_base.findtext("passability") != "PassThroughOnly"
+        or loader_base.findtext("fillPercent") != "0.5"
+        or loader_base.findtext("pathCost") != "50"
         or loader_base.findtext("./graphicData/graphicClass") != "Graphic_Single"
         or loader_base.findtext("./graphicData/drawSize") != "(1,1)"
         or loader_base.findtext("./graphicData/drawRotated") != "false"
@@ -244,7 +250,7 @@ def validate_defs(package: Path) -> None:
         or loader_base.findtext("hasInteractionCell") != "false"
         or loader_base.findtext("./statBases/ReloadSpeed") != "0.5"
     ):
-        fail("release autoloaders must retain fixed one-way graphics and required pipe-backed lifecycle settings")
+        fail("release autoloaders must retain fixed graphics, costly low-cover pathing, and pipe-backed lifecycle settings")
     loader_power_comps = loader_base.findall("./comps/li[@Class='CompProperties_Power']")
     if (
         len(loader_power_comps) != 1

@@ -142,12 +142,13 @@
     Magazine DefNames retain the earlier Tank suffix for save compatibility.
     Their square footprint, non-rotatable Def, and Graphic_Single art use
     RimWorld's normal fixed-orientation handling, including gravship placement.
-    This keeps the centered storage gauge on the same visual edge.
+    This keeps the centered storage gauge on the same visual edge. Magazines are
+    low cover that pawns can cross, but their machinery strongly discourages it.
   -->
   <ThingDef ParentName="BuildingBase" Name="PipedCEAutoloaders_TankBase" Abstract="True">
     <drawerType>MapMeshAndRealTime</drawerType>
     <graphicData><texPath>Things/Building/PipedCEAutoloaders/AmberMagazine</texPath><graphicClass>Graphic_Single</graphicClass><drawSize>(2,2)</drawSize><drawRotated>false</drawRotated><allowFlip>false</allowFlip></graphicData>
-    <rotatable>false</rotatable><altitudeLayer>Building</altitudeLayer><passability>Impassable</passability><fillPercent>1</fillPercent><tickerType>Normal</tickerType><size>(2,2)</size>
+    <rotatable>false</rotatable><altitudeLayer>Building</altitudeLayer><passability>PassThroughOnly</passability><fillPercent>0.5</fillPercent><pathCost>50</pathCost><tickerType>Normal</tickerType><size>(2,2)</size>
     <statBases><MaxHitPoints>150</MaxHitPoints><WorkToBuild>800</WorkToBuild><Mass>20</Mass><Flammability>0.5</Flammability></statBases>
     <costList><Steel>100</Steel><ComponentIndustrial>2</ComponentIndustrial></costList>
     <terrainAffordanceNeeded>Medium</terrainAffordanceNeeded><designationCategory>PipedCEAutoloaders_PipeNetworks</designationCategory><constructEffect>ConstructMetal</constructEffect>
