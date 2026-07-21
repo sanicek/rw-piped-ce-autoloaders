@@ -66,6 +66,19 @@ player-facing name is ammunition magazine. Existing buildings adopt their
 current 2x2 Def footprint in place, so any future footprint change requires an
 explicit migration warning and representative old-save test.
 
+### Cover and pathing
+
+Inputs remain standable hopper-like storage with 0.5 fill and path cost 50.
+Magazines and autoloaders are pass-through-only machinery with the same 0.5
+fill and path cost 50. Under Combat Extended this gives all three building
+types 0.88 m cover while allowing emergency traversal and strongly preferring
+an unobstructed route. Magazines retain 150 hit points and autoloaders retain
+100 hit points.
+
+On 2026-07-21, the user confirmed the representative RimWorld smoke test: the
+buildings reported the intended cover and durability, allowed traversal, and
+caused pawns to prefer the unobstructed route.
+
 ### Narrow integration surface
 
 Prefer XML, inheritance, composition, and supported CE or VEF APIs. A new or
